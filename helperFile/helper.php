@@ -313,8 +313,6 @@ function checkDateFormat($date)
     $today = new DateTime();
     $date2 = new DateTime($date);
 
-
-
     if ($date == null) {
         return "Please enter the date";
     } else if ($today <= $date2) {
