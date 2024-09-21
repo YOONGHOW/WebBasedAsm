@@ -24,11 +24,12 @@ if ($userId) {
     $GLOBALS['password'] = $user->user_password;
 }
 
+
+
 // Check if the form is submitted for updating user details
 if (is_post()) {
     // Retrieve updated details 
     $name = req('name');
-    $ic = req('ic');
     $phone = req('phone');
     $BirthDate = req('BirthDate');
     $user_id = req('user_id');
@@ -48,7 +49,7 @@ if (is_post()) {
         $stm->execute([$name, $phone, $BirthDate, $user_id]);
         $u = $stm->fetch();
         // check the query result
-        if ($u) {
+        if (!$u) {
             temp('info', 'User info update successfully');
             redirect("member_list.php");
         } else {

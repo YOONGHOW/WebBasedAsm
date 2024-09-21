@@ -10,6 +10,7 @@ $email = $_SESSION["forgetEmail"] ?? null;
 if (is_post()) {
     $password = req("password");
     $confirm = req("confirm");
+    $updateDate = date("d/m/Y");
 
 
     // Validate: password
@@ -26,9 +27,9 @@ if (is_post()) {
     // DB operation
     if (empty($_err)) {
 
-        $stm = $_db->prepare('UPDATE users SET user_password = SHA1(?) WHERE email = ?');
+        $stm = $_db->prepare('UPDATE users SET user_password = SHA1(?), user_password_update_date = ? WHERE email = ?');
 
-        $stm->execute([$password, $email]);
+        $stm->execute([$password,$updateDate, $email]);
         $u = $stm->fetch();
 
 

@@ -275,7 +275,7 @@ function validateDate($dateString)
     $month = substr($ic, 2, 2);
     $day = substr($ic, 4, 2);
 
-    return checkdate($month, $day, $year);
+    return checkdate((int)$month, (int)$day, (int)$year);
 }
 
 function checkICExist()

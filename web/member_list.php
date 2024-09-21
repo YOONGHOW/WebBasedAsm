@@ -78,7 +78,11 @@ $arr = $stmt->fetchAll();
 
               <td><?= $gender ?></td>
               <td><?= $s->user_birthday ?></td>
-              <td><a href="member_update.php?id=<?= $s->user_id ?>">Update</a></td>
+              <td>
+                <a href="member_update.php?id=<?= $s->user_id ?>">Update</a>
+                <a href="member_details.php?id=<?= $s->user_id ?>">Details</a>
+            </td>
+
             </tr>
           <?php endforeach; ?>
         </tbody>

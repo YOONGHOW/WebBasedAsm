@@ -83,6 +83,12 @@ if (is_post()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/member_registration.css">
     <title>Member Registration</title>
+
+    <script>
+        function refreshPage() {
+            location.reload(); 
+        }
+    </script>
 </head>
 
 <body>
@@ -179,13 +185,13 @@ if (is_post()) {
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="state">State</label>
+                        <label class="details" for="state" onchange="refreshPage()">State</label>
                         <?= displayStateList() ?>
                         <?= err('state') ?>
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="password">Address Line 2</label>
+                        <label class="details" for="city">Address Line 2</label>
                         <?= displayCitiesForEachState($state) ?>
                         <?= err('city') ?>
                     </div>

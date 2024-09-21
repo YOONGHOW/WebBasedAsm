@@ -6,7 +6,7 @@
     height: 22em;
     display: flex;
     box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
-    
+
 }
 
 .login-component {
@@ -19,7 +19,7 @@
 /* login left part */
 #com1 {
     background-color: white;
-    border-radius:10px 0 0 10px;
+    border-radius: 10px 0 0 10px;
 }
 
 /* login right part */
@@ -28,7 +28,7 @@
     color: white;
     padding-top: 5em;
     background: linear-gradient(to bottom, #000 0%, #88898a 100%);
-    border-radius:0 10px 10px 0;
+    border-radius: 0 10px 10px 0;
     vertical-align: middle;
 }
 
@@ -64,9 +64,9 @@ td {
     padding: 0.5em;
     border-radius: 10px 10px;
     transition: 0.3s;
-    float:right;
-    padding:3%;
-    width:25%;
+    float: right;
+    padding: 3%;
+    width: 25%;
 }
 
 .login-submit:hover {
@@ -76,7 +76,7 @@ td {
 }
 
 /* input field */
-.input-box > input{
+.input-box>input {
     height: 1rem;
     width: 20rem;
     border: 2px solid black;
@@ -84,23 +84,23 @@ td {
     margin-top: 5px;
     margin-bottom: 2px;
     transition: 0.3s;
-    padding:2%;
+    padding: 2%;
 }
 
-.input-box > input:focus{
+.input-box>input:focus {
     outline: none;
     border-color: blueviolet;
-    
+
 }
 
 /* forgetpassword hyperlink */
-.input-box > p > a{
+.input-box>p>a {
     text-decoration: none;
 }
 
-.input-box > p > a:hover{
-    color:#2881ce;
-    text-decoration:underline;
+.input-box>p>a:hover {
+    color: #2881ce;
+    text-decoration: underline;
 }
 
 /* Flash Message ----------------------------------------------------------- */
@@ -145,3 +145,39 @@ td {
         opacity: 0;
     }
 }
+
+/* user details page */
+
+/* image size and position */
+#image-content {
+    width: 12em;
+    height: 12em;
+    margin: auto;
+    border-radius: 60%;
+}
+
+#detail-table {
+    text-align: left;
+    margin: auto;
+    width: 50em;
+}
+
+#detail-table>tbody>tr {
+    width: 100%;
+}
+
+#detail-table>tbody>tr>td {
+    padding:0 2em 0 2em;
+    border: 0;
+}
+
+#back-hyperlink {
+    color:whitesmoke;
+    text-decoration:none;
+}
+
+#back-hyperlink:hover{
+    color:white;
+    text-decoration:overline;
+}
+
