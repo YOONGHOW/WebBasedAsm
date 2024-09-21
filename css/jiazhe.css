@@ -103,6 +103,12 @@ td {
     text-decoration: underline;
 }
 
+/*error message*/
+.err {
+    color: red;
+    font-size: 12px;
+}
+
 /* Flash Message ----------------------------------------------------------- */
 
 #info {
@@ -180,4 +186,6 @@ td {
     color:white;
     text-decoration:overline;
 }
+
+
 

@@ -144,6 +144,11 @@ function generatePassword($key, $attr = '')
     echo "<input type='password' id='$key' name='$key' value='$value' $attr>";
 }
 
+// Generate the file field
+function generateFileField($key, $accept = '', $attr = '') {
+    echo "<input type='file' id='$key' name='$key' accept='$accept' $attr>";
+}
+
 // generate the list of the gender
 function displayGenderList()
 {
@@ -166,7 +171,7 @@ function displayStateList()
 {
     global $states;
     $state = encode($GLOBALS["state"] ?? '');
-    echo '<select name="state">';
+    echo '<select name="state" id="state"  onchange="submitForm()">';
     echo '<option value="none">--select one state--</option>';
 
     foreach ($states as $id => $name) {
@@ -328,10 +333,18 @@ function checkDateFormat($date)
     }
 }
 
+function checkPhoneNumber($phoneNumber){
+    if ($phoneNumber == null) {
+        return 'Please enter your phone number.';
+    } else if (!preg_match('/^01[0-46-9]\d{7,8}$/', $phoneNumber)) {
+        return 'The format of the phone number is invalid';
+    } 
+}
+
 //address validation
 function checkAddress($address)
 {
-    if (preg_match('/^$/', $address)) {
+    if (preg_match('/^\d{1,5}[\w\s,.\'-]+$/', $address)) {
         return "The address format is invalid";
     }
 }
@@ -347,6 +360,46 @@ function retrieveDatefromIC()
     $formatDate = "$year-$month-$day";
     return $formatDate;
 }
+
+// image validation
+function checkImage($image){
+
+    // Validate: photo (file)
+    if ($image == null) {
+        $_err['photo'] = 'Required';
+    }
+    else if (!str_starts_with($image->type, 'image/')) { 
+        $_err['photo'] = 'Must be image';
+    }
+    else if ($image->size > 1 * 1024 * 1024) { 
+        $_err['photo'] = 'Maximum 1MB';
+    }
+}
+
+// Obtain uploaded file --> cast to object
+function get_file($key) {
+    $f = $_FILES[$key] ?? null;
+    
+    if ($f && $f['error'] == 0) {
+        return (object)$f;
+    }
+
+    return null;
+}
+
+// Crop, resize and save photo
+function save_photo($f, $folder, $width = 400, $height = 400) {
+    $photo = uniqid() . '.jpg';
+    
+    require_once '../lib/SimpleImage.php';
+    $img = new SimpleImage();
+    $img->fromFile($f->tmp_name)
+        ->thumbnail($width, $height)
+        ->toFile("$folder/$photo", 'image/jpeg');
+
+    return $photo;
+}
+
 
 // ============================================================================
 // Database Functions
@@ -404,33 +457,9 @@ function logout($url = '/')
     redirect($url);
 }
 
-// // Authorization
-// function auth(...$roles) {
-//     global $_user;
-//     if ($_user) {
-//         if ($roles) {
-//             if (in_array($_user->role, $roles)) {
-//                 return; // OK
-//             }
-//         }
-//         else {
-//             return; // OK
-//         }
-//     }
-
-//     redirect('/login.php');
-// }
-
 // ============================================================================
 // Email Functions
 // ============================================================================
-
-// Demo Accounts:
-// --------------
-// AACS3173@gmail.com           npsg gzfd pnio aylm
-// BAIT2173.email@gmail.com     ytwo bbon lrvw wclr
-// liaw.casual@gmail.com        wtpa kjxr dfcb xkhg
-// liawcv1@gmail.com            obyj shnv prpa kzvj
 
 // Initialize and return mail object
 function get_mail()

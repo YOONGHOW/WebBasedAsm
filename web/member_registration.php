@@ -7,10 +7,14 @@ require '../helperFile/helper.php';
 
 //validation part
 $_err = [];
-global $name, $ic, $birth_date, $gender, $confirm_password, $password, $contact_number, $state, $city;
- $id = generateID("U", "users", "user_id");
+global $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $address1, $address2, $postal, $photo;
+$id = generateID("U", "users", "user_id");
+$addressID = generateID("A", "address", "address_id");
+$state = req("state") ?? "none";
+
 if (is_post()) {
-   
+
+    $photo = get_file('photo');
     $createDate = date("d/m/Y");
     $name = req("name");
     $date = req("date");
@@ -23,41 +27,60 @@ if (is_post()) {
     $address1 = req("address1");
     $address2 = req("address2");
     $postal = req("postal");
-    $state = req("state");
+
     $city = req("city");
-    $photo = "login.jpg";
-    //req("photo");
 
     if (checkName($name) !== null) {
         $_err['name'] = checkName($name);
     }
 
-    if(checkIC($ic) !== null){
+    if (checkIC($ic) !== null) {
         $_err['ic'] = checkIC($ic);
     }
 
-    if(checkGmail($email) !== null){
+    if (checkGmail($email) !== null) {
         $_err['email'] = checkGmail($email);
     }
 
-    if(checkPassword($password) !== null){
+    if (checkPassword($password) !== null) {
         $_err['password'] = checkPassword($password);
     }
 
-    if(confirmPassword($password, $confirm) !== null){
+    if (confirmPassword($password, $confirm) !== null) {
         $_err['confirm'] = confirmPassword($password, $confirm);
     }
 
-    if(checkDateFormat($date) !== null){
+    if (checkDateFormat($date) !== null) {
         $_err['date'] = checkDateFormat($date);
     }
-    
-    
+
+    if (strcmp($gender, "none") == 0) {
+        $_err['gender'] = "Please select your gender.";
+    }
+
+    if (strcmp($state, "none") == 0) {
+        $_err['state'] = "Please select your state.";
+    }
+
+    if (strcmp($city, "none") == 0) {
+        $_err['city'] = "Please select your city.";
+    }
+
+    if (checkAddress($address1) != null) {
+        $_err['address1'] = checkAddress($address1);
+    }
+
+    if (checkAddress($address2) != null) {
+        $_err['address2'] = checkAddress($address2);
+    }
+
+
     // DB operation
     if (empty($_err)) {
+        $completeAddress = $address1 . ", " . $address2;
 
-        // (1) Save photo$_err['date'] = checkDateFormat($date);
-        //$photo = save_photo($f, '../photos');
+        //(1) Save photo
+        $photo = save_photo($photo, '../image');
 
         // (2) Insert user (member)
         $stm = $_db->prepare('
@@ -72,6 +95,14 @@ if (is_post()) {
         ');
         $stm->execute([$id, $email, $name, $ic, $contact, $date, $gender, $password, $createDate, $createDate, $photo]);
 
+        // (3) insert address record
+        $stm = $_db->prepare('
+        INSERT INTO Address (address_id, user_id, contact_name, contact_phone, complete_address, city, zipCode, state)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        ');
+
+        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $state]);
+
         temp('info', 'You are registered succesfully');
         redirect('login.php');
     }
@@ -82,11 +113,13 @@ if (is_post()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/member_registration.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../js/photo.js"></script>
     <title>Member Registration</title>
 
     <script>
-        function refreshPage() {
-            location.reload(); 
+        function submitForm() {
+            document.getElementById("state").submit();
         }
     </script>
 </head>
@@ -97,17 +130,19 @@ if (is_post()) {
     <div class="container">
         <div class="title">Registration</div>
         <div class="content">
-            <form action="" method="POST">
+            <form action="" method="POST" id="state" enctype="multipart/form-data">
                 <div class="user-details">
 
-                    <div class="input-box">
-                        <label class="details" for="id">Member ID</label>
-                        <?= $id ?>
-                    </div>
-                    <div class="input-box">
+
+                    <div class="input-address">
                         <label class="details" for="photo">Profile Photo</label>
-                        <?= $id ?>
+                        <label class="upload" tabindex="0">
+                            <?= generateFileField('photo', 'image/*', 'hidden') ?>
+                            <img src="/image/photo.jpg">
+                        </label>
+                        <?= err('photo') ?>
                     </div>
+
                     <div class="input-box">
                         <label class="details" for="name">Full Name</label>
                         <!-- <input id="name" name="name" type="text" placeholder="Enter your name" required> -->
@@ -163,14 +198,14 @@ if (is_post()) {
                         <?= err('confirm') ?>
                     </div>
 
-                    <div class="input-box">
+                    <div class="input-address">
                         <label class="details" for="address1">Address Line 1</label>
                         <!-- <input id="address1" name="address1" type="text" placeholder="Enter your password" required> -->
                         <?= generateTextField('address1') ?>
                         <?= err('address1') ?>
                     </div>
 
-                    <div class="input-box">
+                    <div class="input-address">
                         <label class="details" for="password">Address Line 2</label>
                         <!-- <input id="address2" name="address2" type="text" placeholder="Enter your add" required> -->
                         <?= generateTextField('address2') ?>
@@ -185,13 +220,13 @@ if (is_post()) {
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="state" onchange="refreshPage()">State</label>
+                        <label class="details" for="state">State</label>
                         <?= displayStateList() ?>
                         <?= err('state') ?>
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="city">Address Line 2</label>
+                        <label class="details" for="city">City</label>
                         <?= displayCitiesForEachState($state) ?>
                         <?= err('city') ?>
                     </div>
@@ -199,6 +234,8 @@ if (is_post()) {
 
                     <div class="button">
                         <input type="submit" value="Register">
+                    </div>
+                    <div class="button">
                         <a href="login.php">Cancel</a>
                     </div>
 
