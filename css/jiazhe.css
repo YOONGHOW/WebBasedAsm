@@ -1,0 +1,147 @@
+/* entire login form container */
+#login-container {
+    margin: auto;
+    margin-top: 5em;
+    width: 55em;
+    height: 22em;
+    display: flex;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
+    
+}
+
+.login-component {
+    width: 50em;
+    padding: 1em;
+    opacity: 0.9;
+
+}
+
+/* login left part */
+#com1 {
+    background-color: white;
+    border-radius:10px 0 0 10px;
+}
+
+/* login right part */
+#com2 {
+    text-align: center;
+    color: white;
+    padding-top: 5em;
+    background: linear-gradient(to bottom, #000 0%, #88898a 100%);
+    border-radius:0 10px 10px 0;
+    vertical-align: middle;
+}
+
+/* link button */
+.register-button {
+    text-decoration: none;
+    color: white;
+    border: 1px solid white;
+    padding: 0.5em;
+    border-radius: 12px 12px;
+    transition: 0.3s;
+}
+
+.register-button:hover {
+
+    color: black;
+    background-color: whitesmoke;
+}
+
+/* register table form */
+table#register-table-form,
+td {
+    border: 1px solid black;
+}
+
+/* login button */
+
+.login-submit {
+    background-color: white;
+    text-decoration: none;
+    color: rgb(75, 69, 69);
+    border: 2px solid black;
+    padding: 0.5em;
+    border-radius: 10px 10px;
+    transition: 0.3s;
+    float:right;
+    padding:3%;
+    width:25%;
+}
+
+.login-submit:hover {
+
+    color: white;
+    background-color: rgb(46, 47, 45);
+}
+
+/* input field */
+.input-box > input{
+    height: 1rem;
+    width: 20rem;
+    border: 2px solid black;
+    border-radius: 12px;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    transition: 0.3s;
+    padding:2%;
+}
+
+.input-box > input:focus{
+    outline: none;
+    border-color: blueviolet;
+    
+}
+
+/* forgetpassword hyperlink */
+.input-box > p > a{
+    text-decoration: none;
+}
+
+.input-box > p > a:hover{
+    color:#2881ce;
+    text-decoration:underline;
+}
+
+/* Flash Message ----------------------------------------------------------- */
+
+#info {
+    position: fixed;
+    color: #fff;
+    background: #666;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 10px 20px;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 999;
+
+    top: 100px;
+    opacity: 0;
+}
+
+#info:not(:empty) {
+    animation: fade 3s;
+}
+
+@keyframes fade {
+    0% {
+        top: -100px;
+        opacity: 0;
+    }
+
+    30% {
+        top: 50px;
+        opacity: 1;
+    }
+
+    70% {
+        top: 50px;
+        opacity: 1;
+    }
+
+    100% {
+        top: -100px;
+        opacity: 0;
+    }
+}
