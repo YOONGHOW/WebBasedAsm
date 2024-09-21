@@ -1,11 +1,11 @@
 <?php 
-include "header.php";
+include "web/header.php";
 ?>
 
 <main>
-    <h1><a href="web/login.php">Login</a></h1>
+    <h1>Welcome To Phaethon Electronic</h1>
 </main>
 
 <?php 
-include "footer.php";
+include "web/footer.php";
 ?>

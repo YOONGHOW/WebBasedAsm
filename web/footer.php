@@ -2,26 +2,36 @@
 
 <div class="social-media">
         <a href="https://facebook.com" target="_blank">
-            <img src="facebook-icon.png" alt="Facebook">
+            <div class="circle-icon">
+                <img src="image/facebook-icon.png" alt="Facebook">
+            </div>
         </a>
         <a href="https://twitter.com" target="_blank">
-            <img src="twitter-icon.png" alt="Twitter">
+            <div class="circle-icon">
+                <img src="image/twitter-icon.png" alt="Twitter">
+            </div>
         </a>
         <a href="https://youtube.com" target="_blank">
-            <img src="youtube-icon.png" alt="YouTube">
+            <div class="circle-icon">
+                <img src="image/youtube-icon.png" alt="YouTube">
+            </div>
         </a>
         <a href="https://instagram.com" target="_blank">
-            <img src="instagram-icon.png" alt="Instagram">
+            <div class="circle-icon">
+                <img src="image/instagram-icon.png" alt="Instagram">
+            </div>
         </a>
     </div>
-
     <div class="footer-links">
-        <a href="home.html">Home</a>
-        <a href="product.html">Product</a>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
+        <a href="home.php">Home</a>
+        <a href="product.php">Product</a>
+        <a href="about.php">About Us</a>
+        <a href="promotion.php">Promotion</a>
+        <a href="contact.php">Contact</a>
     </div>
-Copiright &copy2024; Designed by <b>Phaethon ELECTRONIC</b>
+    <br>
+<p style="color:white">Copiright &copy2024; Designed by <b>Phaethon ELECTRONIC</b></p>
+
 </footer>
 </body>
 </html>
