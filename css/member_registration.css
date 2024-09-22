@@ -272,3 +272,11 @@ label.upload img {
   object-fit: cover;
   cursor: pointer;
 }
+
+/* password validation */
+.valid {
+  color: green;
+}
+.invalid {
+  color: red;
+}

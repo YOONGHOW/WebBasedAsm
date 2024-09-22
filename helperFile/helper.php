@@ -299,8 +299,10 @@ function checkPassword($password)
         return 'Please enter your password.';
     } else if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
         return 'The format of the password is invalid';
-    } else if (strlen($password) > 15) {
-        return 'Length of password too long, should be shorter!';
+    } else if(strlen($password) < 8){
+        return 'Length of password too short, should be at least 8 characters long';
+    }else if (strlen($password) > 15) {
+        return 'Length of password too long, should be shorter.';
     }
 }
 

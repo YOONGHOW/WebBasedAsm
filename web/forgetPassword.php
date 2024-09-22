@@ -35,7 +35,7 @@ if (is_post()) {
         $m->Body = "$newOtp is your email verification code, $email";
         $m->send();
 
-        temp('info', 'Email sent');
+        temp('info', 'A verification email is send. Please check your email.');
     }
 } else if (is_get()) {
     $newOtp = req("newOtp");
