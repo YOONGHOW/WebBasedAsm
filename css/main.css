@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Times New Roman", Times, serif;
 }
 
 /* Header styles */
@@ -35,7 +35,7 @@ header {
 
 .logo-title p {
     color: white;
-    font-size: 17px; 
+    font-size: 18px; 
     margin: 0;
     font-weight: bold;
 }
@@ -58,6 +58,7 @@ header nav ul li a {
     text-decoration: none;
     color: white;
     font-weight: bold;
+    font-size: 18px;
 }
 
 header nav ul li a:hover {
@@ -107,7 +108,7 @@ img.homeImage {
 }
 
 .content p {
-    font-size: 19px;
+    font-size: 20px;
     margin-bottom: 20px;
 }
 
@@ -167,6 +168,7 @@ footer {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
+    font-size: 17px;
 }
 
 .footer-links a:hover {
@@ -175,7 +177,7 @@ footer {
 
 footer p {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 /* Flash Message ----------------------------------------------------------- */
@@ -221,3 +223,67 @@ footer p {
     }
 }
 
+/* About Us*/
+li.content1 {
+    display: flex;                     
+    align-items: flex-start;           
+    gap: 10px; 
+    width: 90%;                        
+}
+
+li.content1 img {
+    width: 20%;                       
+    height: auto;
+    margin-left: 8%;   
+    border: none;  
+    border-radius: 50%;                    
+}
+
+li.content1 p {
+    flex: 1; 
+    font-size: 18px;                          
+    margin-left: 6%;
+}
+
+li.content2 {
+    display: flex;                     
+    align-items: flex-start;           
+    gap: 10px; 
+    width: 90%;                        
+}
+
+li.content2 img {
+    width: 30%;                       
+    height: auto;
+    border: none;  
+    border-radius: 5%; 
+    margin-left: 8%;                      
+}
+
+li.content2 p {
+    flex: 1; 
+    font-size: 18px;                          
+    margin-left: 8%;
+}
+
+
+li.content3 {
+    display: flex;                     
+    align-items: flex-start;           
+    gap: 10px; 
+    width: 90%;                        
+}
+
+li.content3 img {
+    width: 25%;  
+    border: none;  
+    border-radius: 5%;                   
+    height: auto;
+    margin-left: 8%;                      
+}
+
+li.content3 p {
+    flex: 1; 
+    font-size: 18px;                          
+    margin-left: 4%;
+}
