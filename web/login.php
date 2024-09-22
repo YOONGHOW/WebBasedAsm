@@ -7,14 +7,7 @@ require "../helperFile/helper.php";
 $_err = [];
 global  $password, $email, $cookie_value, $id;
 
-$attempt_count = intval(@$_COOKIE["$id"] ?? 0);
-
-if (!isset($_COOKIE["$id"])) {
-    echo "Cookie named '" . "$id" . "' is not set!, " . $attempt_count;
-} else {
-    echo "Cookie '" . $id . "' is set!<br>";
-    echo "Value is: " . $_COOKIE[$id];
-}
+$attempt_count = intval(@$_COOKIE["$id"]);
 
 
 if (is_post()) {
@@ -47,22 +40,26 @@ if (is_post()) {
 
             if ($u) {
                 //then check the password is correct or not;
-                $stm = $_db->prepare('SELECT * FROM users WHERE email = ? , password = SHA1(?)');
-                if (strcmp($u->user_freeze, "N") == 0) {
-                    temp('info', "Login successfully, welcome $u->user_name");
-                    if (strcmp($u->user_rule, "admin") == 0) {
-                        login($u, "adminPage.php");
+                $stm = $_db->prepare('SELECT * FROM users WHERE email = ? AND user_password = SHA1(?)');
+                $stm->execute([$email, $password]);
+                $p = $stm->fetch();
+                if ($p) {
+                    if (strcmp($u->user_freeze, "N") == 0) {
+                        temp('info', "Login successfully, welcome $u->user_name");
+                        if (strcmp($u->user_rule, "admin") == 0) {
+                            login($u, "adminPage.php");
+                        } else {
+                            login($u, "../index.php");
+                        }
                     } else {
-                        login($u, "../index.php");
+                        echo "<script>alert('Your account has been block. Please contact the management to unblock your account.');</script>";
                     }
-                } else {
-                    echo "<script>alert('Your account has been block. Please contact the management to unblock your account.');</script>";
+                } else if (!$p && $attempt_count < 3) {
+                    $id = $u->user_id;
+                    setcookie("$id", $attempt_count + 1, time() + 600);
+                    temp('info', "You have left " . (3 - $attempt_count) . " chance(s).");
+                    $_err['password'] = 'Incorrect password or email';
                 }
-            } else if (!$u && $attempt_count < 3) {
-                $id = $u->user_id;
-                setcookie("$id", $attempt_count + 1, time() + 600);
-                temp('info', "You have left " . (3 - $attempt_count) . " chance(s).");
-                $_err['password'] = 'Incorrect password or email';
             }
         }
     } else {

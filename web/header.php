@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 // Connect to database
-require 'helperFile/helper.php';
+require '/helperFile/helper.php';
 global $_user;
 
 $_user = $_SESSION['user'] ?? null;
