@@ -3,7 +3,7 @@
     margin: auto;
     margin-top: 5em;
     width: 55em;
-    height: 22em;
+    height: 25em;
     display: flex;
     box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
 
@@ -37,7 +37,7 @@
     text-decoration: none;
     color: white;
     border: 1px solid white;
-    padding: 0.5em;
+    padding: 0.6em 2em;
     border-radius: 12px 12px;
     transition: 0.3s;
 }
@@ -73,6 +73,28 @@ td {
     color: white;
     background-color: rgb(46, 47, 45);
 }
+
+/* cancel button */
+.login-cancel {
+    text-align: center;
+    text-decoration: none;
+    color: rgb(75, 69, 69);
+    background-color: white;
+    border: 2px solid black;
+    padding: 0.5em;
+    border-radius: 10px 10px;
+    transition: 0.3s;
+    padding: 2.6% 7%;
+    float:right;
+    margin-left: 1em;
+}
+
+
+.login-cancel:hover {
+    color: white;
+    background-color: rgb(46, 47, 45);
+}
+
 
 /* input field */
 .input-box>input {
@@ -203,6 +225,8 @@ button#block:hover{
     color: black;
     background-color: rgb(242, 245, 239);
 }
+
+
 
 
 
