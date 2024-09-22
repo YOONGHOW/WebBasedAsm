@@ -6,9 +6,6 @@ require '../helperFile/ProductMaintenance_base.php';
 // Get product ID from URL
 $productId = $_GET['id'] ?? null;
 
-// Error array
-$_err = [];
-
 if ($productId) {
     // Retrieve product details
     $sql = 'SELECT * FROM product WHERE product_id = :productId';
@@ -33,67 +30,47 @@ if ($productId) {
 
 // Process form submission
 if (is_post()) {
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $stock = $_POST['stock'];
-    $description = $_POST['description'];
+    // Begin transaction
+    $_db->beginTransaction();
 
-    //validation
-    if (checkProductName($name) !== null) {
-        $_err['name'] = checkProductName($name);
-    }
+    try {
+        // Delete the product from the `product_img` table first
+        $sqlImage = 'DELETE FROM product_img WHERE product_id = :productId';
+        $stmtImage = $_db->prepare($sqlImage);
+        $stmtImage->execute(['productId' => $productId]);
 
-    if (checkProductPrice($price) !== null) {
-        $_err['price'] = checkProductPrice($price);
-    }
+        // Delete the product from the `product` table
+        $sqlProduct = 'DELETE FROM product WHERE product_id = :productId';
+        $stmtProduct = $_db->prepare($sqlProduct);
+        $stmtProduct->execute(['productId' => $productId]);
 
-    if (checkProductStock($stock) !== null) {
-        $_err['stock'] = checkProductStock($stock);
-    }
+        // Commit the transaction
+        $_db->commit();
 
-    if (checkDescription($description) !== null) {
-        $_err['description'] = checkDescription($description);
-    }
-
-
-    if (empty($_err)) {
-        // SQL query to update product details and image
-        $sql = 'UPDATE product 
-            SET product_name = :name, 
-            product_price = :price, 
-            product_stock = :stock, 
-            product_description = :description 
-            WHERE product_id = :productId';
-
-        $stmt = $_db->prepare($sql);
-        $stmt->execute([
-            'name' => $name,
-            'price' => $price,
-            'stock' => $stock,
-            'description' => $description,
-            'productId' => $productId
-        ]);
-
-        // Redirect back to product list after update
+        // Redirect back to product list after deletion
         header('Location: productAdmin_list.php');
         exit();
+    } catch (Exception $e) {
+        // Rollback in case of an error
+        $_db->rollBack();
+        echo 'Failed to delete product: ' . $e->getMessage();
     }
 }
 ?>
-
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/productAdmin_add.css">
-    <title>Update Product Information</title>
+    <title>Delete Product</title>
 </head>
 
 <body>
     <div class="container">
         <div class="header">
             <a href="productAdmin_list.php" class="back-arrow"><img src="../image/back-arrow.png" alt="Back"></a>
-            <div class="title">Update Product Information</div>
+            <script src="../js/productAdmint_jsscript.js"></script>
+            <div class="title">Delete Product</div>
         </div>
 
         <div class="content">
@@ -102,33 +79,29 @@ if (is_post()) {
 
                     <div class="input-box">
                         <label class="details" for="name">Product Name</label>
-                        <?= html_text('name', 'maxlength="100" required') ?>
-                        <?= err('name') ?>
+                        <?= html_text('name', 'maxlength="100" disabled="disabled"') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
-                        <?= html_number('price', 'min="0" step="0.01" required') ?>
-                        <?= err('price') ?>
+                        <?= html_number('price', 'min="0" step="0.01" disabled="disabled"') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="description">Description</label>
-                        <?= html_textArea('description', 'rows="5" cols="45" required') ?>
-                        <?= err('description') ?>
+                        <?= html_textArea('description', 'rows="5" cols="45" disabled="disabled"') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="stock">Product Stock</label>
-                        <?= html_number('stock', 'min="0" step="1" required') ?>
-                        <?= err('stock') ?>
+                        <?= html_number('stock', 'min="0" step="1" disabled="disabled"') ?>
                     </div>
-
+                    
                 </div>
 
                 <!-- Buttons -->
                 <div class="button">
-                    <input type="submit" name="submit" value="Update">
+                    <input type="submit" name="submit" value="Delete">
                 </div>
 
             </form>

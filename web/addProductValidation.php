@@ -2,6 +2,8 @@
 // Connect to the database
 require '../helperFile/ProductMaintenance_base.php';
 
+$_err = [];
+
 // Retrieve data from the form
 $name = $_POST['name'];
 $price = $_POST['price'];
@@ -12,7 +14,11 @@ $category_id = $_POST['category_id'];
 $current_date = $_POST['date_added'];
 $status = $_POST['status'];    
 
+if (checkProductName($name) !== null) {
+    $_err['name'] = checkProductName($name);
+}
 
+if(empty($_err)) {
 $sqlQuery = "INSERT INTO product (
     product_id, 
     category_id, 
@@ -107,5 +113,7 @@ try {
     // Redirect with error status if there was a database error
     header('Location: productAdmin_add.php?status=error');
     exit();
+}
+
 }
 ?>
