@@ -1,4 +1,4 @@
-h1{
+h1 {
   font-size: 30px;
   color: #fff;
   text-transform: uppercase;
@@ -7,28 +7,28 @@ h1{
   margin-bottom: 15px;
 }
 
-table{
+table {
   width: 100%;
   table-layout: fixed;
   font-family: "Lato-Regular", sans-serif;
-  border-collapse: collapse; 
+  border-collapse: collapse;
 }
 
-.tbl-header{
+.tbl-header {
   background-color: black;
   border-radius: 15px 15px 0 0;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
-.tbl-content{
+.tbl-content {
   height: 300px;
   overflow-x: auto;
   margin-top: 0px;
   background-color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-th{
+th {
   padding: 20px 15px;
   text-align: left;
   font-weight: 500;
@@ -37,14 +37,14 @@ th{
   text-transform: uppercase;
 }
 
-td{
+td {
   padding: 15px;
   text-align: left;
   vertical-align: middle;
   font-weight: 300;
   font-size: 15px;
   color: gray;
-  border-bottom: solid 1px rgba(255,255,255,0.1);
+  border-bottom: solid 1px rgba(255, 255, 255, 0.1);
 }
 
 .tbl-content tr:nth-child(odd) {
@@ -52,17 +52,46 @@ td{
 }
 
 .tbl-content tr:nth-child(even) {
-  background-color: rgba(248,246,255,1);
+  background-color: rgba(248, 246, 255, 1);
 }
+
+a {
+  text-decoration: none;
+  color: black;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: rgb(102, 102, 231);
+
+}
+
+a#member-list {
+  border: 1px solid white;
+  padding: 0.6em 2em;
+  border-radius: 12px 12px;
+  transition: 0.3s;
+  margin:2em;
+}
+
+a#member-list:hover {
+  text-decoration: none;
+  color: whitesmoke;
+  background-color: black;
+}
+
+
 
 /* Body style */
 
-body{
+body {
   background-color: #A9A9A9;
   font-family: 'Roboto', sans-serif;
 }
 
-section{
+section {
   margin: 50px;
 }
 
@@ -70,12 +99,37 @@ section{
 
 ::-webkit-scrollbar {
   width: 6px;
-} 
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-} 
-::-webkit-scrollbar-thumb {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 }
 
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
 
+::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+/* search bar */
+#name{
+  height: 0.5rem;
+  width: 15rem;
+  border: 2px solid black;
+  border-radius: 12px;
+  transition: 0.3s;
+  padding: 1.5em;
+}
+
+button{
+  border: 1px solid white;
+  padding: 0.5em 2em;
+  border-radius: 12px 12px;
+  transition: 0.3s;
+  margin:0 1em;
+  background-color: transparent;
+  font-size: 18px;
+}
+
+button:hover{
+  color: whitesmoke;
+  background-color: black;
+}

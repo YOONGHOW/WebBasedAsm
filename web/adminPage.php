@@ -12,6 +12,7 @@ require "../helperFile/helper.php";
 <body>
     <h1>Welcome to admin page -v-</h1>
     <a href="member_list.php">Member Listing</a><br />
+    <a href="productAdmin_list.php">Product listing</a><br />
     <a href="logout.php">Logout</a>
 </body>
 </html>
