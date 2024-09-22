@@ -23,14 +23,14 @@
         </a>
     </div>
     <div class="footer-links">
-        <a href="home.php">Home</a>
+        <a href="index.php">Home</a>
         <a href="product.php">Product</a>
         <a href="about.php">About Us</a>
         <a href="promotion.php">Promotion</a>
         <a href="contact.php">Contact</a>
     </div>
     <br>
-<p style="color:white">Copiright &copy2024; Designed by <b>Phaethon ELECTRONIC</b></p>
+<p style="color:white">Copiright &copy2024; Designed by <b>Phaethon Electronic</b></p>
 
 </footer>
 </body>

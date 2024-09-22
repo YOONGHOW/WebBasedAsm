@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 // Connect to database
-require 'helperFile/helper.php';
+require '../helperFile/helper.php';
 global $_user;
 
 $_user = $_SESSION['user'] ?? null;
@@ -28,9 +28,9 @@ $_user = $_SESSION['user'] ?? null;
             </div>
             <nav>
                 <ul>
-                    <li><a href="home.php">Home</a></li>
+                    <li><a href="index.php">Home</a></li>
                     <li><a href="product.php">Products</a></li>
-                    <li><a href="about.php">About Us</a></li>
+                    <li><a href="web/aboutUs.php">About Us</a></li>
                     <li><a href="contact.php">Contact</a></li>
                     <?php if ($_user == null) { ?>
                         <li><a href="web/login.php">Login</a></li>
