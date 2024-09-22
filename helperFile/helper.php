@@ -366,13 +366,13 @@ function checkImage($image){
 
     // Validate: photo (file)
     if ($image == null) {
-        $_err['photo'] = 'Required';
+        return 'Profile photo is required';
     }
     else if (!str_starts_with($image->type, 'image/')) { 
-        $_err['photo'] = 'Must be image';
+       return 'The file uploaded must be image.';
     }
     else if ($image->size > 1 * 1024 * 1024) { 
-        $_err['photo'] = 'Maximum 1MB';
+        return 'The maximum image size is 1MB.';
     }
 }
 
@@ -400,6 +400,14 @@ function save_photo($f, $folder, $width = 400, $height = 400) {
     return $photo;
 }
 
+// postal code validation
+function checkPostal($postal){
+    if ($postal == null) {
+        return 'Please enter your postal code.';
+    } else if (!preg_match('/^[0-9]{5}$/', $postal)) {
+        return 'The format of the postal code is invalid';
+    } 
+}
 
 // ============================================================================
 // Database Functions
