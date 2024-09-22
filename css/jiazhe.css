@@ -70,7 +70,6 @@ td {
 }
 
 .login-submit:hover {
-
     color: white;
     background-color: rgb(46, 47, 45);
 }
@@ -90,7 +89,6 @@ td {
 .input-box>input:focus {
     outline: none;
     border-color: blueviolet;
-
 }
 
 /* forgetpassword hyperlink */
@@ -185,6 +183,25 @@ td {
 #back-hyperlink:hover{
     color:white;
     text-decoration:overline;
+}
+
+/* block account button */
+button#block{
+    font-size: 15px;
+    width: 15rem;
+    border: 2px solid whitesmoke;
+    border-radius: 12px;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    transition: 0.3s;
+    padding: 2%;
+    color: white;
+    background-color: rgb(46, 47, 45);
+}
+
+button#block:hover{
+    color: black;
+    background-color: rgb(242, 245, 239);
 }
 
 

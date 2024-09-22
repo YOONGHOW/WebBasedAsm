@@ -15,6 +15,7 @@ $_user = $_SESSION['user'] ?? null;
     <link rel="shortcut icon" href="/image/bigLogo.png">
     <title>Phaethon ELECTRONIC</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -28,13 +29,16 @@ $_user = $_SESSION['user'] ?? null;
             </div>
             <nav>
                 <ul>
-                    <li><a href="home.php">Home</a></li>
-                    <li><a href="product.php">Products</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="contact.php">Contact</a></li>
+                    <li><a href="web/home.php">Home</a></li>
+                    <li><a href="web/product.php">Products</a></li>
+                    <li><a href="web/about.php">About Us</a></li>
+                    <li><a href="web/contact.php">Contact</a></li>
                     <?php if ($_user == null) { ?>
                         <li><a href="web/login.php">Login</a></li>
                     <?php } else { ?>
+                        <?php if ($_user): ?>
+                            <li><a href="web/profile.php">Profile</a></li>
+                        <?php endif ?>
                         <li><a href="web/logout.php">Logout</a></li>
                     <?php } ?>
                 </ul>

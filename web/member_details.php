@@ -5,7 +5,8 @@
 // Connect to the database
 require '../helperFile/helper.php';
 
-global $user;
+global $user, $block;
+
 
 // Get the user ID from the URL
 $userId = $_GET['id'] ?? null;
@@ -16,7 +17,27 @@ if ($userId) {
     $stmt = $_db->prepare($sql);
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
+
+    if (strcmp($user->user_freeze, "N") == 0) {
+        $block = "unblock";
+    } else {
+        $block = "block";
+    }
 }
+
+if(is_post()){
+    $block = req("block") ?? "";
+
+    $freeze = (strcmp($block, "block") == 0) ? "Y" : "N";
+
+    $sql = 'UPDATE users SET user_freeze = ? WHERE user_id = ?';
+    $stmt = $_db->prepare($sql);
+    $stmt->execute([$freeze, $userId]);
+
+    
+}
+
+
 ?>
 
 <head>
@@ -28,9 +49,23 @@ if ($userId) {
 
 <body>
 
-    
+
     <div class="login-container" id="com2" style="width:50em;margin:auto;padding-top:1em;">
-        <a href="member_list.php" id="back-hyperlink"><h2>Back To List</h2></a><br />
+        <a href="member_list.php" id="back-hyperlink">
+            <h2>Back To List</h2>
+        </a>
+        <form method="POST" action="">
+            <?php if (strcmp($block, "unblock") == 0) {
+                echo '<input type="hidden" name="block" value="block">';
+                echo '<button id="block" >Block The Account</button>';
+            } else {
+                echo '<input type="hidden" name="block"  value="unblock">';
+                echo '<button id="block">Unblock The Account</button>';
+            }
+            ?>
+            
+        
+        </form></br />
         <img src="../image/<?= $user->users_IMG_source ?>" id="image-content">
         <br />
         <h1><?= $user->user_name ?> </h1>
@@ -38,7 +73,7 @@ if ($userId) {
             <tr>
                 <td>
                     <h3>Email</h3>
-                        <p><?= $user->Email ?></p>
+                    <p><?= $user->Email ?></p>
                 </td>
                 <td>
                     <h3>Phone Number</h3>
@@ -46,7 +81,7 @@ if ($userId) {
                 </td>
                 <td>
                     <h3>Gender</h3>
-                    <p><?= (strcmp($user->user_gender, "F") ? "Female" : "Male" ) ?></p>
+                    <p><?= (strcmp($user->user_gender, "F") ? "Female" : "Male") ?></p>
                 </td>
             </tr>
             <tr>
@@ -58,7 +93,7 @@ if ($userId) {
                     <h3>Account Create Date</h3>
                     <p><?= $user->user_create_date ?></p>
                 </td>
-                
+
             </tr>
         </table>
     </div>

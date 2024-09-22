@@ -30,6 +30,10 @@ if (is_post()) {
 
     $city = req("city");
 
+    if(checkImage($photo)){
+        $_err['photo'] = checkImage($photo);
+    }
+
     if (checkName($name) !== null) {
         $_err['name'] = checkName($name);
     }
@@ -72,6 +76,10 @@ if (is_post()) {
 
     if (checkAddress($address2) != null) {
         $_err['address2'] = checkAddress($address2);
+    }
+
+    if (checkPostal($postal) != null) {
+        $_err['postal'] = checkPostal($postal);
     }
 
 
