@@ -53,8 +53,8 @@ if (is_post()) {
                 if ($p) {
                     // if the cookies is exist, remove it tp prevent the validation of next being corrupt
                     if (isset($_COOKIE[$id])) {
+                        setcookie("$id", '', time() - 360); // empty value and old timestamp
                         unset($_COOKIE[$id]);
-                        setcookie("$id", '', time() - 3600, '/'); // empty value and old timestamp
                     }
 
                     //check whether the account is being blocked or not
@@ -73,14 +73,18 @@ if (is_post()) {
                 } else if (!$p && $attempt_count < 3) { // if user have wrong password or email for three times, block for 2 minutes
 
                     setcookie("$id", $attempt_count + 1, time() + 120);
+                    setcookie("$id-remain", time() + 120, time() + 120);
                     temp('info', "You have left " . (3 - $attempt_count) . " chance(s).");
                     $_err['password'] = 'Incorrect password or email';
                 }
             } else {
+                $time = $_COOKIE["$id-remain"];
+                $remain_time =  $time- time();
+                $remain_time = gmdate("i:s", $remain_time);
                 //if the user already wrong more than three times and being block, display error message
-                echo "<script>alert('Your account has been block because of multiple times of error verification. You can try again after a while.');</script>";
+                echo "<script>alert('Your account has been block because of multiple times of error verification. You can try again after $remain_time.');</script>";
             }
-        }else{
+        } else {
             $_err['password'] = 'Incorrect password or email';
         }
     }
