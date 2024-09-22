@@ -191,9 +191,9 @@ if (is_post()) {
 
                     <div class="input-address">
                         <label class="details" for="photo">Profile Photo</label>
-                        <label class="upload" tabindex="0">
+                        <label class="upload" tabindex="0"  ondrop="upload_file(event)">
                             <?= generateFileField('photo', 'image/*', 'hidden') ?>
-                            <img src="/image/photo.jpg">
+                            <img src="/image/photo.jpg" id="drag">
                         </label>
                         <?= err('photo') ?>
                     </div>
