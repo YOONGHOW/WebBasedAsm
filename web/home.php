@@ -11,7 +11,7 @@ include "header.php";
         
         <p>Register as a member and purchase it to get more details and discount</p>
         <br>
-        <a href="register.html" class="register-button">Register Now</a>
+        <a href="member_registration.php" class="register-button">Register Now</a>
     </div>
 </div>
      

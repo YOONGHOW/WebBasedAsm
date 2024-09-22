@@ -5,65 +5,88 @@ require "../helperFile/helper.php";
 
 
 $_err = [];
-global  $password, $email, $cookie_value, $id;
+global  $password, $email, $cookie_value, $id, $attempt_count;
 
-$attempt_count = intval(@$_COOKIE["$id"]);
+$attempt_count = intval(@$_COOKIE[$id]);
+
 
 
 if (is_post()) {
-    if ($attempt_count != 3) {
-        $email = req('email');
-        $password = req("password");
 
-        // Validate: email
-        if ($email == '') {
-            $_err['email'] = 'Please enter the email';
-        } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
-            $_err['email'] = 'Invalid email format';
-        }
+    $email = req('email');
+    $password = req("password");
 
-        // Validate: password
-        if ($password == '') {
-            $_err['password'] = 'Please enter your password.';
-        }
+    // Validate: email
+    if ($email == '') {
+        $_err['email'] = 'Please enter the email';
+    } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
+        $_err['email'] = 'Invalid email format';
+    }
+
+    // Validate: password
+    if ($password == '') {
+        $_err['password'] = 'Please enter your password.';
+    }
 
 
-        // Login user
-        if (!$_err) {
-            //check the email is exist or not
-            $stm = $_db->prepare('
+    // Login user
+    if (!$_err) {
+        //check the email is exist or not
+        $stm = $_db->prepare('
             SELECT * FROM users
             WHERE email = ?
         ');
-            $stm->execute([$email]);
-            $u = $stm->fetch();
+        $stm->execute([$email]);
+        $u = $stm->fetch();
 
-            if ($u) {
+        if ($u) {
+            //retrieve id for checking purpose
+            $id = $u->user_id;
+            $attempt_count = intval(@$_COOKIE[$id]);
+            echo $attempt_count . " with " . $id;
+
+            if ($attempt_count != 3) {
                 //then check the password is correct or not;
                 $stm = $_db->prepare('SELECT * FROM users WHERE email = ? AND user_password = SHA1(?)');
                 $stm->execute([$email, $password]);
                 $p = $stm->fetch();
                 if ($p) {
+                    // if the cookies is exist, remove it tp prevent the validation of next being corrupt
+                    if (isset($_COOKIE[$id])) {
+                        setcookie("$id", '', time() - 360); // empty value and old timestamp
+                        unset($_COOKIE[$id]);
+                    }
+
+                    //check whether the account is being blocked or not
                     if (strcmp($u->user_freeze, "N") == 0) {
                         temp('info', "Login successfully, welcome $u->user_name");
                         if (strcmp($u->user_rule, "admin") == 0) {
+                            //redirect to admin page if the user is an admin
                             login($u, "adminPage.php");
                         } else {
+                            //redirect to user page if the user is an member
                             login($u, "../index.php");
                         }
                     } else {
                         echo "<script>alert('Your account has been block. Please contact the management to unblock your account.');</script>";
                     }
-                } else if (!$p && $attempt_count < 3) {
-                    $id = $u->user_id;
-                    setcookie("$id", $attempt_count + 1, time() + 600);
+                } else if (!$p && $attempt_count < 3) { // if user have wrong password or email for three times, block for 2 minutes
+
+                    setcookie("$id", $attempt_count + 1, time() + 120);
+                    setcookie("$id-remain", time() + 120, time() + 120);
                     temp('info', "You have left " . (3 - $attempt_count) . " chance(s).");
                     $_err['password'] = 'Incorrect password or email';
                 }
+            } else {
+                $time = $_COOKIE["$id-remain"];
+                $remain_time =  $time- time();
+                $remain_time = gmdate("i:s", $remain_time);
+                //if the user already wrong more than three times and being block, display error message
+                echo "<script>alert('Your account has been block because of multiple times of error verification. You can try again after $remain_time.');</script>";
             }
+        } else {
+            $_err['password'] = 'Incorrect password or email';
         }
-    } else {
-        echo "<script>alert('Your account has been block because of multiple times of error verification. You can try again after a while.');</script>";
     }
 }
 ?>
@@ -112,7 +135,9 @@ if (is_post()) {
                     <p>Forget password? <a href="forgetPassword.php">Click here</a></p>
                 </div>
 
+                <a href="home.php" class="login-cancel">Cancel</a>
                 <input type="submit" class="login-submit" value="LOGIN">
+
             </form>
 
         </div>
@@ -120,7 +145,8 @@ if (is_post()) {
         <!-- the right part of the login form -->
         <div class="login-component" id="com2">
             <!-- The title and link for register part -->
-            <h1>Welcome to Resort World</h1>
+            <br />
+            <h1>Welcome to Phaethon Electronic</h1>
             <p>Didn't register as member yet?</p><br />
             <a href="member_registration.php" class="register-button">Register</a>
         </div>

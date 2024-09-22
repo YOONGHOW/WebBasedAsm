@@ -15,6 +15,11 @@ body{
   background-color: gray;
 }
 
+.err{
+  color: red;
+  font-size: 12px;
+}
+
 .container{
   max-width: 700px;
   width: 100%;
@@ -31,7 +36,7 @@ body{
   }
   
   .back-arrow img {
-    width: 30px; /* Adjust the size as needed */
+    width: 30px; 
     height: auto;
     margin-right: 10px;
     margin-top:7px;
