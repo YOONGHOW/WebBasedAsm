@@ -36,11 +36,11 @@ if (is_post()) {
         $u = $stm->fetch();
 
         if ($u) {
-            temp('info', 'Login successfully');
+            temp('info', "Login successfully, welcome $u->user_name");
             if(strcmp($u->user_rule, "admin")==0){
                 login($u, "adminPage.php");
             }else{
-                login($u, "homepage.php");
+                login($u, "../index.php");
             }
             
         } else {
