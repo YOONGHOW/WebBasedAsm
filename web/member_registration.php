@@ -30,7 +30,7 @@ if (is_post()) {
 
     $city = req("city");
 
-    if(checkImage($photo)){
+    if (checkImage($photo)) {
         $_err['photo'] = checkImage($photo);
     }
 
@@ -86,6 +86,7 @@ if (is_post()) {
     // DB operation
     if (empty($_err)) {
         $completeAddress = $address1 . ", " . $address2;
+        $stateName = convertState($state);
 
         //(1) Save photo
         $photo = save_photo($photo, '../image');
@@ -109,7 +110,7 @@ if (is_post()) {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         ');
 
-        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $state]);
+        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $stateName]);
 
         temp('info', 'You are registered succesfully');
         redirect('login.php');
@@ -130,6 +131,52 @@ if (is_post()) {
             document.getElementById("state").submit();
         }
     </script>
+
+    <!-- password real time validate -->
+    <script>
+         window.onload = function() {
+            validatePassword();
+        };
+
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "validate_password.php", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Parse the JSON response
+                    var response = JSON.parse(xhr.responseText);
+
+                    // Update each criterion based on server response
+                    updateCriteria("uppercase", response.uppercase);
+                    updateCriteria("lowercase", response.lowercase);
+                    updateCriteria("number", response.number);
+                    updateCriteria("special", response.special);
+                    updateCriteria("length", response.length);
+                }
+            };
+
+            // Send the password to the server
+            xhr.send("password=" + encodeURIComponent(password));
+        }
+
+        // Function to update the criteria colour in the UI
+        function updateCriteria(elementId, isValid) {
+            var element = document.getElementById(elementId);
+            if (isValid) {
+                element.classList.remove("invalid");
+                element.classList.add("valid");
+                element.innerHTML = element.innerHTML.replace("❌", "✅");
+            } else {
+                element.classList.remove("valid");
+                element.classList.add("invalid");
+                element.innerHTML = element.innerHTML.replace("✅", "❌");
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -144,9 +191,9 @@ if (is_post()) {
 
                     <div class="input-address">
                         <label class="details" for="photo">Profile Photo</label>
-                        <label class="upload" tabindex="0">
+                        <label class="upload" tabindex="0"  ondrop="upload_file(event)">
                             <?= generateFileField('photo', 'image/*', 'hidden') ?>
-                            <img src="/image/photo.jpg">
+                            <img src="/image/photo.jpg" id="drag">
                         </label>
                         <?= err('photo') ?>
                     </div>
@@ -195,8 +242,17 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="password">Password</label>
                         <!-- <input id="password" name="password" type="text" placeholder="Enter your password" required> -->
-                        <?= generatePassword('password', 'placeholder="Enter your password" required') ?>
+                        <?= generatePassword('password', 'placeholder="Enter your password"  oninput="validatePassword()" required') ?>
                         <?= err('password'); ?>
+                        <div id="validationMessage">
+                            <ul style="font-size:13px;width:27em;list-style-type: none;padding-left:0;">
+                                <li id="uppercase" class="invalid">❌ At least one uppercase letter (A-Z)</li>
+                                <li id="lowercase" class="invalid">❌ At least one lowercase letter (a-z)</li>
+                                <li id="number" class="invalid">❌ At least one number (0-9)</li>
+                                <li id="special" class="invalid">❌ At least one special character (!@#$%^&*)</li>
+                                <li id="length" class="invalid">❌ At least 8 characters long</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="input-box">

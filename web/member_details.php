@@ -5,7 +5,7 @@
 // Connect to the database
 require '../helperFile/helper.php';
 
-global $user, $block;
+global $user, $block, $completeAddress;
 
 
 // Get the user ID from the URL
@@ -23,9 +23,20 @@ if ($userId) {
     } else {
         $block = "block";
     }
+
+    $sql = 'SELECT * FROM address WHERE user_id = ?';
+    $stmt = $_db->prepare($sql);
+    $stmt->execute([$userId]);
+    $address = $stmt->fetch();
+
+    if($address){
+        $completeAddress = $address->complete_address .", ". $address->zipCode ." ".  $address->state .", ".  $address->city;
+    }else{
+        $completeAddress = "none";
+    }
 }
 
-if(is_post()){
+if (is_post()) {
     $block = req("block") ?? "";
 
     $freeze = (strcmp($block, "block") == 0) ? "Y" : "N";
@@ -33,8 +44,6 @@ if(is_post()){
     $sql = 'UPDATE users SET user_freeze = ? WHERE user_id = ?';
     $stmt = $_db->prepare($sql);
     $stmt->execute([$freeze, $userId]);
-
-    
 }
 
 
@@ -45,6 +54,12 @@ if(is_post()){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/jiazhe.css">
     <title>Update Member Information</title>
+
+    <style>
+        body {
+            background-color: #A9A9A9;
+        }
+    </style>
 </head>
 
 <body>
@@ -55,16 +70,19 @@ if(is_post()){
             <h2>Back To List</h2>
         </a>
         <form method="POST" action="">
-            <?php if (strcmp($block, "unblock") == 0) {
-                echo '<input type="hidden" name="block" value="block">';
-                echo '<button id="block" >Block The Account</button>';
-            } else {
-                echo '<input type="hidden" name="block"  value="unblock">';
-                echo '<button id="block">Unblock The Account</button>';
+            <?php
+            if (strcmp($user->user_rule, "admin") != 0) {
+                if (strcmp($block, "unblock") == 0) {
+                    echo '<input type="hidden" name="block" value="block">';
+                    echo '<button id="block" >Block The Account</button>';
+                } else {
+                    echo '<input type="hidden" name="block"  value="unblock">';
+                    echo '<button id="block">Unblock The Account</button>';
+                }
             }
             ?>
-            
-        
+
+
         </form></br />
         <img src="../image/<?= $user->users_IMG_source ?>" id="image-content">
         <br />
@@ -92,6 +110,10 @@ if(is_post()){
                 <td>
                     <h3>Account Create Date</h3>
                     <p><?= $user->user_create_date ?></p>
+                </td>
+                <td>
+                    <h3>Address</h3>
+                    <p><?= $completeAddress ?></p>
                 </td>
 
             </tr>

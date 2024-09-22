@@ -31,7 +31,8 @@ $arr = $stmt->fetchAll();
 </head>
 
 <body>
-  <a href="adminPage.php">Back</a>
+  <br />
+  <a href="adminPage.php" id="member-list">Back To List</a>
   <section>
     <h1>Member List</h1>
 

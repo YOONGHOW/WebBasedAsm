@@ -35,7 +35,7 @@ if (is_post()) {
         $m->Body = "$newOtp is your email verification code, $email";
         $m->send();
 
-        temp('info', 'Email sent');
+        temp('info', 'A verification email is send. Please check your email.');
     }
 } else if (is_get()) {
     $newOtp = req("newOtp");
@@ -69,11 +69,16 @@ if (is_post()) {
             -webkit-appearance: none;
             margin: 0;
         }
+
+        body {
+            background-color: #A9A9A9;
+        }
     </style>
 </head>
 
 <body>
-    <a href="login.php">back to login</a>
+    <br />
+    <a href="login.php" id="member-list">Back To Login</a>
     <!-- Flash message -->
     <div id="info"><?= temp('info') ?></div>
     <!-- the entire container for the email form -->

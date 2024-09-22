@@ -209,8 +209,6 @@ function displayCitiesForEachState()
     echo "</select>";
 }
 
-
-
 //generate Searching method
 function searching($key, $attr = '')
 {
@@ -219,6 +217,16 @@ function searching($key, $attr = '')
 
     //generate a input element for search 
     echo "<input type='search' id='$key' name='$key' value='$value' $attr placeholder='Gavin Perkins'>";
+}
+
+//convert shorcut to fullname for state
+function convertState($state){
+    global $states;
+    foreach ($states as $id => $name) {
+        if (strcmp($state, $id) == 0) {
+            return $name;
+        } 
+    }
 }
 
 
@@ -299,8 +307,10 @@ function checkPassword($password)
         return 'Please enter your password.';
     } else if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
         return 'The format of the password is invalid';
-    } else if (strlen($password) > 15) {
-        return 'Length of password too long, should be shorter!';
+    } else if(strlen($password) < 8){
+        return 'Length of password too short, should be at least 8 characters long';
+    }else if (strlen($password) > 15) {
+        return 'Length of password too long, should be shorter.';
     }
 }
 
@@ -327,8 +337,7 @@ function checkDateFormat($date)
     if (validateDate(retrieveDatefromIC())) {
         $icDate = new DateTime(retrieveDatefromIC());
         if ($icDate != $date2) {
-            $date11 = date_format($icDate, "d-m-Y");
-            return "Your birth date is not match with your ic birth date." . $date11;
+            return "Your birth date is not match with your ic birth date.";
         }
     }
 }

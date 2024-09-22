@@ -29,7 +29,7 @@ $arr = $stmt->fetchAll();
 </head>
 
 <body>
-  <a href="../index.php">Back</a>
+  <a href="adminPage.php">Back</a>
   <section>
     <h1>Product List</h1>
 
