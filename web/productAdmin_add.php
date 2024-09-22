@@ -3,7 +3,7 @@
 
 <?php
 // Connect to the database
-require '../ProductMaintenance_base.php';
+require '../helperFile/ProductMaintenance_base.php';
 
 // Generate unique product_id
 $product_id = getNextId($_db, 'P', 'product_id', 'product');
@@ -20,7 +20,7 @@ $status = "Y";
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/product_add.css">
+    <link rel="stylesheet" href="../css/productAdmin_add.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
 </head>

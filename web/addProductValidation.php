@@ -1,6 +1,6 @@
 <?php
 // Connect to the database
-require '../ProductMaintenance_base.php';
+require '../helperFile/ProductMaintenance_base.php';
 
 // Retrieve data from the form
 $name = $_POST['name'];

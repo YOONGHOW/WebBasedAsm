@@ -2,7 +2,7 @@
 <html lang="en">
 
 <?php
-require '../ProductMaintenance_base.php';
+require '../helperFile/ProductMaintenance_base.php';
 
 //sql select all query
 $sql = 'SELECT * FROM product';
@@ -18,7 +18,7 @@ $arr = $stmt->fetchAll();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/product_list.css">
+  <link rel="stylesheet" href="../css/productAdmin_list.css">
   <title>Product Listing</title>
 </head>
 
