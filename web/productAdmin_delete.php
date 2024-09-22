@@ -62,6 +62,7 @@ if (is_post()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/productAdmin_add.css">
+    <script src="../js/productAdmin_jsscript.js"></script>
     <title>Delete Product</title>
 </head>
 
@@ -69,7 +70,6 @@ if (is_post()) {
     <div class="container">
         <div class="header">
             <a href="productAdmin_list.php" class="back-arrow"><img src="../image/back-arrow.png" alt="Back"></a>
-            <script src="../js/productAdmint_jsscript.js"></script>
             <div class="title">Delete Product</div>
         </div>
 
@@ -101,7 +101,7 @@ if (is_post()) {
 
                 <!-- Buttons -->
                 <div class="button">
-                    <input type="submit" name="submit" value="Delete">
+                    <input type="submit" id="deleteButton" name="submit" value="Delete">
                 </div>
 
             </form>

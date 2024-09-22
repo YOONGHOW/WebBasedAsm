@@ -86,6 +86,7 @@ if (is_post()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/productAdmin_add.css">
+    <script src="../js/productAdmin_jsscript.js"></script>
     <title>Update Product Information</title>
 </head>
 
@@ -128,7 +129,7 @@ if (is_post()) {
 
                 <!-- Buttons -->
                 <div class="button">
-                    <input type="submit" name="submit" value="Update">
+                    <input type="submit" id="updateButton" name="submit" value="Update">
                 </div>
 
             </form>
