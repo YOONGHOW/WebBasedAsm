@@ -29,7 +29,7 @@ if (is_post()) {
 
         $stm = $_db->prepare('UPDATE users SET user_password = SHA1(?), user_password_update_date = ? WHERE email = ?');
 
-        $stm->execute([$password,$updateDate, $email]);
+        $stm->execute([$password, $updateDate, $email]);
         $u = $stm->fetch();
 
 
@@ -44,12 +44,19 @@ if (is_post()) {
     <meta charset="UTF-8">
     <title>Reset Password</title>
     <link href="../css/jiazhe.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        body {
+            background-color: #A9A9A9;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Flash message -->
     <div id="info"><?= temp('info') ?></div>
-    <a href="login.php">back to login</a>
+    <br />
+    <a href="login.php"  id="member-list">Back To Login</a>
     <?php if ($email == null) { ?>
         <h1>Please validate your email first.</h1>
     <?php } else { ?>

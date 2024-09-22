@@ -192,8 +192,10 @@ td {
 }
 
 #detail-table>tbody>tr>td {
+    vertical-align: top;
     padding:0 2em 0 2em;
     border: 0;
+    width:20em;
 }
 
 #back-hyperlink {
@@ -224,6 +226,34 @@ button#block:hover{
     color: black;
     background-color: rgb(242, 245, 239);
 }
+
+/* change password back button */
+a {
+    text-decoration: none;
+    color: black;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: rgb(102, 102, 231);
+  
+  }
+  
+  a#member-list {
+    border: 1px solid white;
+    padding: 0.6em 2em;
+    border-radius: 12px 12px;
+    transition: 0.3s;
+    margin:2em;
+  }
+  
+  a#member-list:hover {
+    text-decoration: none;
+    color: whitesmoke;
+    background-color: black;
+  }
 
 
 

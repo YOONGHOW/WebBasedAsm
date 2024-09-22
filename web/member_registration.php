@@ -86,6 +86,7 @@ if (is_post()) {
     // DB operation
     if (empty($_err)) {
         $completeAddress = $address1 . ", " . $address2;
+        $stateName = convertState($state);
 
         //(1) Save photo
         $photo = save_photo($photo, '../image');
@@ -109,7 +110,7 @@ if (is_post()) {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         ');
 
-        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $state]);
+        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $stateName]);
 
         temp('info', 'You are registered succesfully');
         redirect('login.php');
