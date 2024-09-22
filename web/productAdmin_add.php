@@ -2,10 +2,9 @@
 <html lang="en">
 
 <?php
-// Connect to the database
 require '../helperFile/ProductMaintenance_base.php';
 
-// Initialize IDs
+// generate id
 $product_id = getNextId($_db, 'P', 'product_id', 'product');
 $category_id = getNextId($_db, 'C', 'category_id', 'category');
 
@@ -25,10 +24,6 @@ if (is_post()) {
     $price = $_POST['price'] ?? 0;
     $description = $_POST['description'] ?? '';
     $stock = $_POST['stock'] ?? 0;
-    $product_id = $_POST['product_id'] ?? $product_id;
-    $category_id = $_POST['category_id'] ?? $category_id;
-    $current_date = $_POST['date_added'] ?? $current_date; // Set to current date if not provided
-    $status = $_POST['status'] ?? $status; // Set to default status if not provided
 
     //validation
     if (checkProductName($name) !== null) {
@@ -47,6 +42,13 @@ if (is_post()) {
         $_err['description'] = checkDescription($description);
     }
 
+    // Image upload validation
+    $imageResult = checkImageFile('product_images');
+    if (isset($imageResult['error'])) {
+        $_err['product_images'] = $imageResult['error'];
+    }
+
+    // Save product details to the database if no errors
     if (empty($_err)) {
         $sqlQuery = "INSERT INTO product (
             product_id, 
@@ -67,10 +69,9 @@ if (is_post()) {
             :current_date,
             :status
         )";
-
+    
         try {
             $stmt = $_db->prepare($sqlQuery);
-
             $stmt->bindParam(':product_id', $product_id);
             $stmt->bindParam(':category_id', $category_id);
             $stmt->bindParam(':name', $name);
@@ -79,55 +80,41 @@ if (is_post()) {
             $stmt->bindParam(':stock', $stock);
             $stmt->bindParam(':current_date', $current_date);
             $stmt->bindParam(':status', $status);
-
+    
             if ($stmt->execute()) {
-                // Check if there are any uploaded images
-                if (!empty($_FILES['product_images']['name'][0])) {
-                    foreach ($_FILES['product_images']['name'] as $index => $image_name) {
-                        $image_tmp_name = $_FILES['product_images']['tmp_name'][$index];
-                        $image_error = $_FILES['product_images']['error'][$index];
-
-                        if ($image_error === 0) {
-                            $image_name_new = uniqid('IMG_', true) . '.' . pathinfo($image_name, PATHINFO_EXTENSION);
-                            $image_destination = '../image/' . $image_name_new;
-
-                            if (move_uploaded_file($image_tmp_name, $image_destination)) {
-                                $image_id = getNextId($_db, 'IMG', 'product_IMG_id', 'product_img');
-
-                                $sqlImage = "INSERT INTO product_img (
-                                    product_IMG_id, 
-                                    product_id, 
-                                    product_IMG_name, 
-                                    product_IMG_source
-                                ) VALUES (
-                                    :image_id, 
-                                    :product_id, 
-                                    :image_name, 
-                                    :image_destination
-                                )";
-
-                                $stmt_img = $_db->prepare($sqlImage);
-                                $stmt_img->bindParam(':image_id', $image_id);
-                                $stmt_img->bindParam(':product_id', $product_id);
-                                $stmt_img->bindParam(':image_name', $image_name_new);
-                                $stmt_img->bindParam(':image_destination', $image_destination);
-
-                                $stmt_img->execute();
-                            }
-                        }
+                // If images were uploaded, save them to the database
+                if (!isset($imageResult['error'])) {
+                    foreach ($imageResult as $imageData) {
+                        $image_id = getNextId($_db, 'IMG', 'product_IMG_id', 'product_img');
+    
+                        $sqlImage = "INSERT INTO product_img (
+                            product_IMG_id, 
+                            product_id, 
+                            product_IMG_name, 
+                            product_IMG_source
+                        ) VALUES (
+                            :image_id, 
+                            :product_id, 
+                            :image_name, 
+                            :image_destination
+                        )";
+    
+                        $stmt_img = $_db->prepare($sqlImage);
+                        $stmt_img->bindParam(':image_id', $image_id);
+                        $stmt_img->bindParam(':product_id', $product_id);
+                        $stmt_img->bindParam(':image_name', $imageData['image_name']);
+                        $stmt_img->bindParam(':image_destination', $imageData['image_destination']);
+                        $stmt_img->execute();
                     }
                 }
-
-                // Redirect with success status
+    
                 header('Location: productAdmin_add.php?status=success');
                 exit();
             } else {
-                // Redirect with error status if product insertion failed
                 header('Location: productAdmin_add.php?status=error');
                 exit();
             }
         } catch (PDOException $e) {
-            // Redirect with error status if there was a database error
             header('Location: productAdmin_add.php?status=error');
             exit();
         }
@@ -187,12 +174,13 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="product_images">Product Images</label>
                         <?= html_file('product_images') ?>
+                        <?= err('product_images') ?>
                     </div>
 
                 </div>
 
                 <div class="button">
-                    <input type="submit" id="addButton" name="submit" value="Add">
+                    <input type="submit" id="addButton" name="submit" value="ADD PRODUCT">
                 </div>
             </form>
         </div>

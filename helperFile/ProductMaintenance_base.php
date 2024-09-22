@@ -1,4 +1,6 @@
 <?php
+require_once '../lib/SimpleImage.php';
+
 // Global PDO object
 $_db = new PDO('mysql:dbname=webassignment;host=localhost', 'root', '', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
@@ -120,7 +122,54 @@ function checkProductStock($stock)
 
 function checkDescription($description)
 {
-    if (strlen($description) > 20) {
+    if (strlen($description) > 100) {
         return "Description cannot exceed 100 characters";
     }
+}
+
+function checkImageFile($fileKey, $uploadDir = '../image/') {
+    $f = $_FILES[$fileKey];
+    $allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    $maxSize = 1 * 1024 * 1024; // 1MB
+    $image = new SimpleImage();
+    $uploadedImages = []; // Array to hold all successfully uploaded images
+
+    // Check if there's an error in the first file upload
+    if ($f['error'][0] !== UPLOAD_ERR_OK) {
+        return ['error' => 'Error uploading the image.'];
+    }
+
+    // Loop through all uploaded files
+    foreach ($f['name'] as $index => $image_name) {
+        if (!in_array($f['type'][$index], $allowedFileTypes)) {
+            return ['error' => 'Invalid file type. Only images are allowed.'];
+        }
+
+        if ($f['size'][$index] > $maxSize) {
+            return ['error' => 'File size exceeds the 1MB limit.'];
+        }
+
+        // Crop and resize the image to 200x200 pixels
+        try {
+            $image_name_new = uniqid('IMG_', true) . '.jpg';
+            $image_tmp_name = $f['tmp_name'][$index];
+            $image_destination = $uploadDir . $image_name_new;
+
+            // Load, resize, and save the image
+            $image->fromFile($image_tmp_name) // Load the image
+                ->thumbnail(200, 200) // Crop and resize the image
+                ->toFile($image_destination, 'image/jpeg'); // Save the image
+
+            // Store each image's name and destination in the array
+            $uploadedImages[] = [
+                'image_name' => $image_name_new,
+                'image_destination' => $image_destination
+            ];
+        } catch (Exception $e) {
+            return ['error' => 'Failed to process the image.'];
+        }
+    }
+
+    // Return all successfully uploaded images
+    return $uploadedImages;
 }

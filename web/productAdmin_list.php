@@ -58,7 +58,7 @@ $arr = $stmt->fetchAll();
             <tr>
               <td><?= $s->product_id ?></td>
               <td>
-                <a href="productAdmin_image.php"><img src="<?= $s->product_IMG_source ?>" alt="photo" class="product-img">
+                <a href="productAdmin_image.php?id=<?= $s->product_id ?>"><img src="<?= $s->product_IMG_source ?>" alt="photo" class="product-img">
                   <br />Click to change</a>
               </td>
               <td><?= $s->category_id ?></td>
