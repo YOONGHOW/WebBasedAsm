@@ -2,13 +2,40 @@
 <html lang="en">
 
 <?php
+include "AdminHeader.php";
 require '../helperFile/ProductMaintenance_base.php';
 
-//SQL query to get only the first image for each product
+// Get search information and price range from the user
+$search = isset($_POST['search']) ? $_POST['search'] : '';
+$minPrice = isset($_POST['minPrice']) ? $_POST['minPrice'] : '';
+$maxPrice = isset($_POST['maxPrice']) ? $_POST['maxPrice'] : '';
+
+// SQL query to get only the first image for each product
 $sql = 'SELECT p.*, (SELECT pi.product_IMG_source FROM product_img pi WHERE pi.product_id = p.product_id LIMIT 1) as product_IMG_source 
-        FROM product p';
+        FROM product p WHERE 1=1';
+
+if ($search) {
+  $sql .= ' AND p.product_name LIKE :search';
+}
+if ($minPrice !== '') {
+  $sql .= ' AND p.product_price >= :minPrice';
+}
+if ($maxPrice !== '') {
+  $sql .= ' AND p.product_price <= :maxPrice';
+}
 
 $stmt = $_db->prepare($sql);
+
+if ($search) {
+  $stmt->bindValue(':search', '%' . trim($search) . '%');
+}
+if ($minPrice !== '') {
+  $stmt->bindValue(':minPrice', $minPrice);
+}
+if ($maxPrice !== '') {
+  $stmt->bindValue(':maxPrice', $maxPrice);
+}
+
 $stmt->execute();
 $arr = $stmt->fetchAll();
 ?>
@@ -31,7 +58,16 @@ $arr = $stmt->fetchAll();
 <body>
   <a href="adminPage.php">Back</a>
   <section>
+  <div class="header-container">
+    <form action="" method="post" class="search-form">
+      <div class='searching'>
+        <?=html_text('search','maxlength="100" placeholder="Enter the product name to search"')?>
+        <button><img src="../image/search_icon.png"></button>
+      </div>
+    </form>
     <h1>Product List</h1>
+  </div>
+
 
     <div class="tbl-header">
       <table cellpadding="0" cellspacing="0" border="0">
@@ -76,6 +112,15 @@ $arr = $stmt->fetchAll();
         </tbody>
       </table>
     </div>
+
+    <div>
+      <form action="" method="post">
+      <?=html_number('minPrice', 'min="0" step="0.01" placeholder="Min Price" value="'.$minPrice.'"')?>
+      <?=html_number('maxPrice', 'min="0" step="0.01" placeholder="Max Price" value="'.$maxPrice.'"')?>
+      <button>submit</button>
+      </form>
+    </div>
+
   </section>
 
 </body>
