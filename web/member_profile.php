@@ -2,15 +2,40 @@
 <html lang="en">
 
 <?php
-// Connect to database
+
 require '../helperFile/helper.php';
 
 //validation part
 $_err = [];
-global $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $address1, $address2, $postal, $photo;
-$id = generateID("U", "users", "user_id");
-$addressID = generateID("A", "address", "address_id");
-$state = req("state") ?? "none";
+global $_user, $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $completeAddress, $postal, $photo;
+
+$_user = $_SESSION['user'] ?? null;
+
+
+if ($_user) {
+    //sql to retrieve user address
+    $sql = 'SELECT * FROM address WHERE user_id = :user_id';
+    $stmt = $_db->prepare($sql);
+    $stmt->execute(['user_id' => $_user->user_id]);
+    $address = $stmt->fetch();
+
+    if ($address) {
+        $completeAddress = $address->complete_address;
+        $postal = $address->zipCode;
+        $state = $address->state;
+        $city = $address->city;
+    } else {
+        $completeAddress = "none";
+    }
+
+    $name = $_user->user_name;
+    $email = $_user->Email;
+    $ic = $_user->user_IC;
+    $contact = $_user->user_phoneNumber;
+    $gender = $_user->user_gender;
+    $photo = $_user->users_IMG_source;
+
+}
 
 if (is_post()) {
 
@@ -18,16 +43,11 @@ if (is_post()) {
     $createDate = date("d/m/Y");
     $name = req("name");
     $date = req("date");
-    $ic = req("ic");
-    $email = req('email');
     $gender = req('gender');
     $contact = req("contact");
-    $password = req("password");
-    $confirm = req("confirm");
-    $address1 = req("address1");
-    $address2 = req("address2");
+    $address1 = req("completeAddress");
     $postal = req("postal");
-
+    $state = req('state');
     $city = req("city");
 
     if (checkImage($photo)) {
@@ -38,25 +58,25 @@ if (is_post()) {
         $_err['name'] = checkName($name);
     }
 
-    if (checkIC($ic) !== null) {
-        $_err['ic'] = checkIC($ic);
-    }
+    // if (checkIC($ic) !== null) {
+    //     $_err['ic'] = checkIC($ic);
+    // }
 
-    if (checkGmail($email) !== null) {
-        $_err['email'] = checkGmail($email);
-    }
+    // if (checkGmail($email) !== null) {
+    //     $_err['email'] = checkGmail($email);
+    // }
 
-    if (checkPassword($password) !== null) {
-        $_err['password'] = checkPassword($password);
-    }
+    // if (checkPassword($password) !== null) {
+    //     $_err['password'] = checkPassword($password);
+    // }
 
-    if (confirmPassword($password, $confirm) !== null) {
-        $_err['confirm'] = confirmPassword($password, $confirm);
-    }
+    // if (confirmPassword($password, $confirm) !== null) {
+    //     $_err['confirm'] = confirmPassword($password, $confirm);
+    // }
 
-    if (checkDateFormat($date) !== null) {
-        $_err['date'] = checkDateFormat($date);
-    }
+    // if (checkDateFormat($date) !== null) {
+    //     $_err['date'] = checkDateFormat($date);
+    // }
 
     if (strcmp($gender, "none") == 0) {
         $_err['gender'] = "Please select your gender.";
@@ -70,51 +90,43 @@ if (is_post()) {
         $_err['city'] = "Please select your city.";
     }
 
-    if (checkAddress($address1) != null) {
-        $_err['address1'] = checkAddress($address1);
-    }
-
-    if (checkAddress($address2) != null) {
-        $_err['address2'] = checkAddress($address2);
+    if (checkAddress($completeAddress) != null) {
+        $_err['completeAddress'] = checkAddress($completeAddress);
     }
 
     if (checkPostal($postal) != null) {
         $_err['postal'] = checkPostal($postal);
     }
 
+if(empty($_err)){
 
-    // DB operation
-    if (empty($_err)) {
-        $completeAddress = $address1 . ", " . $address2;
-        $stateName = convertState($state);
+        $sql = 'UPDATE users 
+            SET user_name = :name,
+            user_phoneNumber = :contact, 
+            user_gender = :price, 
+            product_stock = :stock, 
+            product_description = :description 
+            WHERE product_id = :productId';
 
-        //(1) Save photo
-        $photo = save_photo($photo, '../image');
+        $stmt = $_db->prepare($sql);
+        $stmt->execute([
+            'name' => $name,
+            'category' => $category,
+            'price' => $price,
+            'stock' => $stock,
+            'description' => $description,
+            'productId' => $productId
+        ]);
 
-        // (2) Insert user (member)
-        $stm = $_db->prepare('
-            INSERT INTO users 
-            (
-            user_id, Email, user_name, user_IC, user_phoneNumber, user_birthday, 
-            user_gender, user_rule, user_password, user_create_date, user_password_update_date,
-            user_freeze, admin_position, admin_department, users_IMG_source
-            )
-            
-            VALUES (?, ?, ?, ?, ?, ?, ?, "user", SHA1(?), ?, ?, "N", "none", "none", ?)
-        ');
-        $stm->execute([$id, $email, $name, $ic, $contact, $date, $gender, $password, $createDate, $createDate, $photo]);
 
-        // (3) insert address record
-        $stm = $_db->prepare('
-        INSERT INTO Address (address_id, user_id, contact_name, contact_phone, complete_address, city, zipCode, state)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-        ');
+    temp('info', 'You are Update succesfully');
+    redirect('home.php');
+}
 
-        $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $stateName]);
 
-        temp('info', 'You are registered succesfully');
-        redirect('login.php');
-    }
+
+
+    
 }
 ?>
 
@@ -124,7 +136,7 @@ if (is_post()) {
     <link rel="stylesheet" href="../css/member_registration.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="../js/photo.js"></script>
-    <title>Member Registration</title>
+    <title>Member Profile</title>
 
     <script>
         function submitForm() {
@@ -132,69 +144,22 @@ if (is_post()) {
         }
     </script>
 
-    <!-- password real time validate -->
-    <script>
-         window.onload = function() {
-            validatePassword();
-        };
-
-        function validatePassword() {
-            var password = document.getElementById("password").value;
-            var xhr = new XMLHttpRequest();
-
-            xhr.open("POST", "validate_password.php", true);
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Parse the JSON response
-                    var response = JSON.parse(xhr.responseText);
-
-                    // Update each criterion based on server response
-                    updateCriteria("uppercase", response.uppercase);
-                    updateCriteria("lowercase", response.lowercase);
-                    updateCriteria("number", response.number);
-                    updateCriteria("special", response.special);
-                    updateCriteria("length", response.length);
-                }
-            };
-
-            // Send the password to the server
-            xhr.send("password=" + encodeURIComponent(password));
-        }
-
-        // Function to update the criteria colour in the UI
-        function updateCriteria(elementId, isValid) {
-            var element = document.getElementById(elementId);
-            if (isValid) {
-                element.classList.remove("invalid");
-                element.classList.add("valid");
-                element.innerHTML = element.innerHTML.replace("❌", "✅");
-            } else {
-                element.classList.remove("valid");
-                element.classList.add("invalid");
-                element.innerHTML = element.innerHTML.replace("✅", "❌");
-            }
-        }
-    </script>
 </head>
 
 <body>
-<!-- Flash message -->
-<div id="info"><?= temp('info') ?></div>
+
 
     <div class="container">
-        <div class="title">Registration</div>
+        <div class="title">Profile</div>
         <div class="content">
             <form action="" method="POST" id="state" enctype="multipart/form-data">
                 <div class="user-details">
 
-
                     <div class="input-address">
                         <label class="details" for="photo">Profile Photo</label>
-                        <label class="upload" tabindex="0"  ondrop="upload_file(event)">
+                        <label class="upload" tabindex="0" ondrop="upload_file(event)">
                             <?= generateFileField('photo', 'image/*', 'hidden') ?>
-                            <img src="/image/photo.jpg" id="drag">
+                            <img src="/image/<?=$photo ?>" id="drag">
                         </label>
                         <?= err('photo') ?>
                     </div>
@@ -208,14 +173,14 @@ if (is_post()) {
 
                     <div class="input-box">
                         <label class="details" for="email">Email</label>
-                        <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" required') ?>
+                        <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" disabled="disabled"') ?>
                         <?= err('email') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="ic">IC Number</label>
                         <!-- <input id="ic" name="ic" type="text" placeholder="010203020321" required> -->
-                        <?= generateTextField('ic', 'maxlength="12" placeholder="e.g. 010203020321" required') ?>
+                        <?= generateTextField('ic', 'maxlength="12" placeholder="e.g. 010203020321" disabled="disabled"') ?>
                         <?= err('ic') ?>
                     </div>
 
@@ -227,54 +192,16 @@ if (is_post()) {
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="date">Birthday</label>
-                        <!-- <input id="BirthDate" name="BirthDate" type="text" placeholder="1992-04-21" required> -->
-                        <?= generateDateField('date') ?>
-                        <?= err('date') ?>
-                    </div>
-
-                    <div class="input-box">
                         <label class="details" for="gender">Gender</label>
                         <?= displayGenderList() ?>
                         <?= err('gender') ?>
                     </div>
 
-
-                    <div class="input-box">
-                        <label class="details" for="password">Password</label>
-                        <!-- <input id="password" name="password" type="text" placeholder="Enter your password" required> -->
-                        <?= generatePassword('password', 'placeholder="Enter your password"  oninput="validatePassword()" required') ?>
-                        <?= err('password'); ?>
-                        <div id="validationMessage">
-                            <ul style="font-size:13px;width:27em;list-style-type: none;padding-left:0;">
-                                <li id="uppercase" class="invalid">❌ At least one uppercase letter (A-Z)</li>
-                                <li id="lowercase" class="invalid">❌ At least one lowercase letter (a-z)</li>
-                                <li id="number" class="invalid">❌ At least one number (0-9)</li>
-                                <li id="special" class="invalid">❌ At least one special character (!@#$%^&*)</li>
-                                <li id="length" class="invalid">❌ At least 8 characters long</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="input-box">
-                        <label class="details" for="password">Confirm Password</label>
-                        <!-- <input id="confirm" name="confirm" type="text" placeholder="Enter your password" required> -->
-                        <?= generatePassword('confirm', 'placeholder="Enter again your password" required') ?>
-                        <?= err('confirm') ?>
-                    </div>
-
                     <div class="input-address">
-                        <label class="details" for="address1">Address Line 1</label>
+                        <label class="details" for="address1">Address</label>
                         <!-- <input id="address1" name="address1" type="text" placeholder="Enter your password" required> -->
-                        <?= generateTextField('address1') ?>
-                        <?= err('address1') ?>
-                    </div>
-
-                    <div class="input-address">
-                        <label class="details" for="password">Address Line 2</label>
-                        <!-- <input id="address2" name="address2" type="text" placeholder="Enter your add" required> -->
-                        <?= generateTextField('address2') ?>
-                        <?= err('address2') ?>
+                        <?= generateTextField('completeAddress') ?>
+                        <?= err('completeAddress') ?>
                     </div>
 
                     <div class="input-box">
@@ -298,10 +225,10 @@ if (is_post()) {
 
 
                     <div class="button">
-                        <input type="submit" value="Register">
+                        <input type="submit" value="Update">
                     </div>
                     <div class="button">
-                        <a href="login.php">Cancel</a>
+                        <a href="home.php">Cancel</a>
                     </div>
 
                 </div>

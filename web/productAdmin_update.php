@@ -111,7 +111,7 @@ if (is_post()) {
                         <?= err('name') ?>
                     </div>
 
-                    
+
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
@@ -135,7 +135,7 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="category">Category</label>
                         <?= displayCategoryList() ?>
-</div>                    
+                    </div>
 
                 </div>
 
