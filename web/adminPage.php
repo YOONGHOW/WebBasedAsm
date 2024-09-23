@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <?php
-require "../helperFile/helper.php";
+
 include "AdminHeader.php";
 ?>
 <head>

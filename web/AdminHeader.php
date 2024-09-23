@@ -1,6 +1,6 @@
 <?php
 global $_user;
-require '../helperFile/helper.php';
+session_start();
 $_user = $_SESSION['user'] ?? null;
 
 ?>

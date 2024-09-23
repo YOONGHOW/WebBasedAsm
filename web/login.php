@@ -4,6 +4,7 @@
 require "../helperFile/helper.php";
 
 
+
 $_err = [];
 global  $password, $email, $cookie_value, $id, $attempt_count;
 
