@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+*{
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body{
+  background: rgb(233, 233, 233);
+}
+.container{
+  display: flex;
+  width: 1200px;
+  margin: auto;
+}
+nav{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  height: 110vh;
+  background: #fff;
+}
+.navbar{
+  width: 80%;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.logo{
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 3rem;
+  display: flex;
+  align-items: center;
+}
+.logo img{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+.logo h1{
+  margin-left: 1rem;
+  text-transform: uppercase;
+}
+
+ul{
+  margin: 0 auto;
+}
+li{
+  padding-bottom: 2rem;
+}
+li a{
+  font-size: 16px;
+  color: rgb(85, 83, 83);
+}
+
+.navbar ul li a:hover {
+  background-color: #e0f7fa;
+}
+
+nav i{
+  width: 50px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.logout{
+  position: fixed;
+  bottom: 20px;
+}
+
+/* Main Section */
+.main{
+  position: fixed;
+  width: calc(100% - 280px);
+  margin-left: 100px;
+}
+.main-top{
+  width: 120%;
+  background: #fff;
+  padding: 10px;
+  padding-right: 200pt;
+  text-align: center;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgb(43, 43, 43);
+}
+.main-body{
+  padding: 10px 10px 10px 20px;
+}
+h1{
+  margin: 20px 15px;
+}
+.search_bar{
+  display: flex;
+  padding: 10px;
+  padding-left: 15px;
+  justify-content: space-between;
+}
+.search_bar input{
+  width: 50%;
+  padding: 10px;
+  border: 1px solid rgb(190, 190, 190);
+}
+.search_bar input:focus{
+  border: 1px solid blueviolet;
+}
+.search_bar select{
+  border: 1px solid rgb(190, 190, 190);
+  padding: 10px;
+  margin-left: 2rem;
+}
+.search_bar .filter{
+  width: 300px;
+}
+
+
+.row{
+  display: flex;
+  padding: 10px;
+  padding-left:20px;
+  margin-top: 1.3rem;
+  justify-content: space-between;
+}
+.row p{
+  color: rgb(54, 54, 54);
+  font-size: 15px;
+}
+.row p span{
+  color: blueviolet;
+}
+    
+.btn{
+    color:#000;
+    width: auto;
+    height: auto;
+    padding: 5px 5px;
+    margin-left: 15px;
+    font-size: 18px;
+    background-color: #fff;
+    outline-color: #0dcaf0;
+    border-radius: 5px;
+}    
+    
+.btn:hover {
+    color: #000;
+    background-color: #e0f7fa;
+    border-color: #0dcaf0;
+}    
+    
+  

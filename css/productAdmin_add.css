@@ -184,3 +184,30 @@ form .product-details .input-box{
     flex-direction: column;
   }
 }
+
+/* Hide sidebar by default */
+nav.collapsed {
+  width: 0;
+  transition: width 0.3s;
+  overflow: hidden;
+}
+
+nav.collapsed .navbar {
+  display: none; /* Hide contents when collapsed */
+}
+
+.main.collapsed {
+  margin-left: 0; /* Adjust main content when sidebar is collapsed */
+  width: 100%;
+  transition: margin-left 0.3s;
+}
+
+#toggle-btn {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}

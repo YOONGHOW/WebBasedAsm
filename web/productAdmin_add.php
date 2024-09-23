@@ -6,7 +6,6 @@ require '../helperFile/ProductMaintenance_base.php';
 
 // generate id
 $product_id = getNextId($_db, 'P', 'product_id', 'product');
-$category_id = getNextId($_db, 'C', 'category_id', 'category');
 
 // Get the current date
 $current_date = date('Y-m-d');
@@ -24,6 +23,7 @@ if (is_post()) {
     $price = $_POST['price'] ?? 0;
     $description = $_POST['description'] ?? '';
     $stock = $_POST['stock'] ?? 0;
+    $category_id = $_POST['category'] ?? '';
 
     //validation
     if (checkProductName($name) !== null) {
@@ -142,7 +142,6 @@ if (is_post()) {
         <div class="content">
             <form method="POST" action="" enctype="multipart/form-data">
                 <?= html_hidden('product_id', $product_id) ?>
-                <?= html_hidden('category_id', $category_id) ?>
                 <?= html_hidden('date_added', $current_date) ?>
                 <?= html_hidden('status', $status) ?>
 
@@ -152,6 +151,11 @@ if (is_post()) {
                         <?= html_text('name', 'maxlength="100" required') ?>
                         <?= err('name') ?>
                     </div>
+
+                    <div class="input-box">
+                        <label class="details" for="category">Product Name</label>
+                        <?= displayCategoryList() ?>
+                    </div>                    
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
