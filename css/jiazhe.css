@@ -255,6 +255,14 @@ a {
     background-color: black;
   }
 
+  /* password validation */
+.valid {
+    color: green;
+  }
+  .invalid {
+    color: red;
+  }
+
 
 
 
