@@ -14,8 +14,8 @@ if (is_post()) {
 
 
     // Validate: password
-    if ($password == '') {
-        $_err['password'] = 'Please enter your password.';
+    if (checkPassword($password) != null) {
+        $_err['password'] = checkPassword($password);
     }
 
     // Validate: confirm password
@@ -50,6 +50,52 @@ if (is_post()) {
             background-color: #A9A9A9;
         }
     </style>
+
+    <!-- password real time validate -->
+    <script>
+         window.onload = function() {
+            validatePassword();
+        };
+
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "validate_password.php", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Parse the JSON response
+                    var response = JSON.parse(xhr.responseText);
+
+                    // Update each criterion based on server response
+                    updateCriteria("uppercase", response.uppercase);
+                    updateCriteria("lowercase", response.lowercase);
+                    updateCriteria("number", response.number);
+                    updateCriteria("special", response.special);
+                    updateCriteria("length", response.length);
+                }
+            };
+
+            // Send the password to the server
+            xhr.send("password=" + encodeURIComponent(password));
+        }
+
+        // Function to update the criteria colour in the UI
+        function updateCriteria(elementId, isValid) {
+            var element = document.getElementById(elementId);
+            if (isValid) {
+                element.classList.remove("invalid");
+                element.classList.add("valid");
+                element.innerHTML = element.innerHTML.replace("❌", "✅");
+            } else {
+                element.classList.remove("valid");
+                element.classList.add("invalid");
+                element.innerHTML = element.innerHTML.replace("✅", "❌");
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -78,8 +124,17 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="password" style="float:left;margin-left:10%;">Password</label><br />
                         <!-- <input id="password" name="password" type="text" placeholder="Enter your password" required> -->
-                        <?= generatePassword('password', 'placeholder="Enter your password" required') ?><br />
+                        <?= generatePassword('password', 'placeholder="Enter your password"  oninput="validatePassword()" required') ?><br />
                         <?= err('password'); ?>
+                        <div id="validationMessage">
+                            <ul style="font-size:13px;width:27em;list-style-type: none;text-align:left;">
+                                <li id="uppercase" class="invalid">❌ At least one uppercase letter (A-Z)</li>
+                                <li id="lowercase" class="invalid">❌ At least one lowercase letter (a-z)</li>
+                                <li id="number" class="invalid">❌ At least one number (0-9)</li>
+                                <li id="special" class="invalid">❌ At least one special character (!@#$%^&*)</li>
+                                <li id="length" class="invalid">❌ At least 8 characters long</li>
+                            </ul>
+                        </div>
                     </div>
                     <br />
                     <div class="input-box">

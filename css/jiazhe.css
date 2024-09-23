@@ -236,7 +236,6 @@ a {
   }
   
   a:hover {
-    text-decoration: underline;
     color: rgb(102, 102, 231);
   
   }
@@ -253,6 +252,14 @@ a {
     text-decoration: none;
     color: whitesmoke;
     background-color: black;
+  }
+
+  /* password validation */
+.valid {
+    color: green;
+  }
+  .invalid {
+    color: red;
   }
 
 

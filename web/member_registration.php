@@ -16,18 +16,17 @@ if (is_post()) {
 
     $photo = get_file('photo');
     $createDate = date("d/m/Y");
-    $name = req("name");
+    $name = trim(req("name"));
     $date = req("date");
     $ic = req("ic");
-    $email = req('email');
+    $email = trim(req('email'));
     $gender = req('gender');
-    $contact = req("contact");
-    $password = req("password");
-    $confirm = req("confirm");
-    $address1 = req("address1");
-    $address2 = req("address2");
+    $contact = trim(req("contact"));
+    $password = trim(req("password"));
+    $confirm = trim(req("confirm"));
+    $address1 = trim(req("address1"));
+    $address2 = trim(req("address2"));
     $postal = req("postal");
-
     $city = req("city");
 
     if (checkImage($photo)) {
@@ -91,6 +90,7 @@ if (is_post()) {
         //(1) Save photo
         $photo = save_photo($photo, '../image');
 
+        $_db->beginTransaction();
         // (2) Insert user (member)
         $stm = $_db->prepare('
             INSERT INTO users 
@@ -112,6 +112,7 @@ if (is_post()) {
 
         $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $stateName]);
 
+        $_db->commit();
         temp('info', 'You are registered succesfully');
         redirect('login.php');
     }
