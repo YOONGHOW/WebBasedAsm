@@ -5,29 +5,54 @@ $_user = $_SESSION['user'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
     $userID = $_user->user_id;  
-
     $productID = $_POST['product_id'];
     $quantity = $_POST['quantity'];
     
-    $newCartID = generateID('CART', 'cart', 'cart_id');
-    
-    $sql = "INSERT INTO cart (cart_id, user_id, product_id, quantity)
-            VALUES (:cart_id, :user_id, :product_id, :quantity)";
-    
-    $stmt = $_db->prepare($sql);
-    $stmt->bindParam(':cart_id', $newCartID);
-    $stmt->bindParam(':user_id', $userID);
-    $stmt->bindParam(':product_id', $productID);
-    $stmt->bindParam(':quantity', $quantity);
-    
-    if ($stmt->execute()) {
-        echo '<script>
-        alert("Item added to cart");
-        window.location.href = "product_list.php";        
-        </script>';
+    $checkSql = "SELECT quantity FROM cart WHERE user_id = :user_id AND product_id = :product_id";
+    $checkStmt = $_db->prepare($checkSql);
+    $checkStmt->bindParam(':user_id', $userID);
+    $checkStmt->bindParam(':product_id', $productID);
+    $checkStmt->execute();
+
+    if ($checkStmt->rowCount() > 0) {
+        $existingQuantity = $checkStmt->fetchColumn();
+        $newQuantity = $existingQuantity + $quantity;
+
+        $updateSql = "UPDATE cart SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id";
+        $updateStmt = $_db->prepare($updateSql);
+        $updateStmt->bindParam(':quantity', $newQuantity);
+        $updateStmt->bindParam(':user_id', $userID);
+        $updateStmt->bindParam(':product_id', $productID);
         
+        if ($updateStmt->execute()) {
+            echo '<script>
+            alert("Quantity updated in cart");
+            window.location.href = "product_list.php";        
+            </script>';
+        } else {
+            echo "<script>alert('Error: Could not update quantity in cart.')</script>";
+        }
+
     } else {
-        echo "<script>alert('Error: Could not add item to cart.')</script>";
+        $newCartID = generateID('CART', 'cart', 'cart_id');
+        
+        $sql = "INSERT INTO cart (cart_id, user_id, product_id, quantity)
+                VALUES (:cart_id, :user_id, :product_id, :quantity)";
+        
+        $stmt = $_db->prepare($sql);
+        $stmt->bindParam(':cart_id', $newCartID);
+        $stmt->bindParam(':user_id', $userID);
+        $stmt->bindParam(':product_id', $productID);
+        $stmt->bindParam(':quantity', $quantity);
+        
+        if ($stmt->execute()) {
+            echo '<script>
+            alert("Item added to cart");
+            window.location.href = "product_list.php";        
+            </script>';
+        } else {
+            echo "<script>alert('Error: Could not add item to cart.')</script>";
+        }
     }
 }
 
@@ -72,8 +97,9 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_name" value="<?= $product->product_name ?>">
                 <input type="hidden" name="product_price" value="<?= $product->product_price ?>">
                 <input type="submit" id="addCartBtn" name="addCart" value="Add to Cart"/><br>
-                </form>
                 <input type="button" id="wishBtn" name="wishList" value="Save To wishlish"/>
+                </form>
+                
         </div>
 
 <?php
