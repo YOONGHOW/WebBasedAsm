@@ -162,3 +162,32 @@ input#quantity{
 border:1px solid #8d8d8d;
 padding: 5px;
 }
+
+/*Cart page*/
+.cart_container {
+    display: flex;
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px; 
+    width: 70%;
+    margin-left: 5%;
+}
+
+.cart_image_box {
+    flex: 1; 
+    margin-right:10px; 
+}
+
+.cart_image_box img {
+    width: 40%; 
+    height: auto;
+}
+
+.cart_details_box {
+    flex: 2; 
+}
+
+.cart_total {
+    text-align: right; 
+    margin-top: 20px; 
+}
