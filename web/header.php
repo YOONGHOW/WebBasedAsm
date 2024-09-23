@@ -5,8 +5,23 @@ require '../helperFile/helper.php';
 global $_user;
 
 $_user = $_SESSION['user'] ?? null;
-?>
 
+$total_item = 0;
+if ($_user) {
+    try {
+        $userID = $_user->user_id;
+        $stmt = $_db->prepare("SELECT quantity FROM cart WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userID);
+        $stmt->execute();
+        $carts = $stmt->fetchAll(PDO::FETCH_OBJ);
+        foreach ($carts as $cart) {
+            $total_item += $cart->quantity;
+        }
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+    }
+}
+?>
 <html lang="en">
 
 <head>
@@ -16,6 +31,7 @@ $_user = $_SESSION['user'] ?? null;
     <title>Phaethon ELECTRONIC</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/product_list.css">
+    <script src="cart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
@@ -32,14 +48,17 @@ $_user = $_SESSION['user'] ?? null;
                 <ul>
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
-                    <li><a href="cart.php">Cart</a></li>
+                    <li><a href="promotion_list.php">Promotion</a></li>
                     <li><a href="aboutUs.php">About Us</a></li>
                     <li><a href="contact.php">Contact</a></li>
+                    <li><a href="cart.php">Cart 
+                        <span style="background-color:red; border:none; border-radius:50%; padding:3px;font-size:10px;"><?= $total_item ?></span>
+                    </a></li>
                     <?php if ($_user == null) { ?>
                         <li><a href="login.php">Login</a></li>
                     <?php } else { ?>
                         <?php if ($_user): ?>
-                            <li><a href="profile.php">Profile</a></li>
+                            <li><a href="member_profile.php">Profile</a></li>
                         <?php endif ?>
                         <li><a href="logout.php">Logout</a></li>
                     <?php } ?>

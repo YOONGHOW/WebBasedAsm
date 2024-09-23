@@ -2,9 +2,8 @@
 <html lang="en">
 
 <?php
+require "../helperFile/Member_base.php";
 include "AdminHeader.php";
-// Connect to database
-require '../helperFile/helper.php';
 
 // Check if a search term is provided
 $searchTerm = $_GET['name'] ?? '';
@@ -29,68 +28,74 @@ $arr = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/member_list.css">
   <title>Member Listing</title>
+
+  <style>
+    .list-container {
+      width: 1200px;
+      padding-left: 100px;
+    }
+  </style>
+
 </head>
 
 <body>
-  <br />
-  <a href="adminPage.php" id="member-list">Back To List</a>
-  <section>
-    <h1>Member List</h1>
+  <div class="list-container">
+    <section>
+      <h1 id="title-header">Member List</h1>
 
-    <form method="GET">
-      <?= searching('name') ?>
-      <button type="submit">Search</button>
-    </form>
-    <br />
+      <form method="GET">
+        <?= searching('name') ?>
+        <button type="submit">Search</button>
+      </form>
+      <br />
 
-    <div class="tbl-header">
-      <table cellpadding="0" cellspacing="0">
-        <thead style="text-transform:uppercase;">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>IC number</th>
-            <th>Phone Number</th>
-            <th>Gender</th>
-            <th>Birth Date</th>
-            <th></th>
-          </tr>
-        </thead>
-      </table>
-    </div>
-
-    <div class="tbl-content">
-      <table>
-        <tbody>
-          <?php foreach ($arr as $s): ?>
+      <div class="tbl-header">
+        <table cellpadding="0" cellspacing="0">
+          <thead style="text-transform:uppercase;">
             <tr>
-              <td><?= $s->user_id ?></td>
-              <td><?= $s->user_name ?></td>
-              <td><?= $s->Email ?></td>
-              <td><?= $s->user_IC ?></td>
-              <td><?= $s->user_phoneNumber ?></td>
-              <?php
-              if ($s->user_gender == "F") {
-                $gender = "Female";
-              } else if ($s->user_gender == "M") {
-                $gender = "Male";
-              }
-              ?>
-
-              <td><?= $gender ?></td>
-              <td><?= $s->user_birthday ?></td>
-              <td>
-                <a href="member_update.php?id=<?= $s->user_id ?>">Update</a>
-                <a href="member_details.php?id=<?= $s->user_id ?>">Details</a>
-            </td>
-
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>IC number</th>
+              <th>Phone Number</th>
+              <th>Gender</th>
+              <th>Birth Date</th>
+              <th></th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+          </thead>
+        </table>
+      </div>
 
-    </div>
+      <div class="tbl-content">
+        <table>
+          <tbody>
+            <?php foreach ($arr as $s): ?>
+              <tr>
+                <td><?= $s->user_id ?></td>
+                <td><?= $s->user_name ?></td>
+                <td><?= $s->Email ?></td>
+                <td><?= $s->user_IC ?></td>
+                <td><?= $s->user_phoneNumber ?></td>
+                <?php
+                if ($s->user_gender == "F") {
+                  $gender = "Female";
+                } else if ($s->user_gender == "M") {
+                  $gender = "Male";
+                }
+                ?>
+
+                <td><?= $gender ?></td>
+                <td><?= $s->user_birthday ?></td>
+                <td>
+                  <a href="member_details.php?id=<?= $s->user_id ?>">Details</a>
+                </td>
+
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+  </div>
   </section>
 
 </body>

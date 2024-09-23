@@ -353,7 +353,10 @@ function checkPhoneNumber($phoneNumber){
 //address validation
 function checkAddress($address)
 {
-    if (preg_match('/^\d{1,5}[\w\s,.\'-]+$/', $address)) {
+    if($address == null){
+        return "Please enter your address";
+    }
+    else if (!preg_match('/^[ 0-9\w\s,.\'-]+$/', $address)) {
         return "The address format is invalid";
     }
 }

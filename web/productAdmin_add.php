@@ -153,7 +153,7 @@ if (is_post()) {
                     </div>
 
                     <div class="input-box">
-                        <label class="details" for="category">Product Name</label>
+                        <label class="details" for="category">Category</label>
                         <?= displayCategoryList() ?>
                     </div>                    
 

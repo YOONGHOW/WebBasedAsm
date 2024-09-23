@@ -1,21 +1,24 @@
-
 <?php include "header.php"; ?>
 
 <main>
-    <h2 style="text-align:center; background-color:grey;">Find Your Product At Here</h2>
+    <p class="introduction">A comprehensive range from electronic devices
+         to home appliances are available at here !</p>
 <section>
   <nav class="prod_side">
-    <select name="category" id="category">
-  <option value="category">All</option>
-  <option value="study">Study Room</option>
-  <option value="bedroom">Bedroom</option>
-  <option value="kitchen">Kitchen</option>
-  <option value="bathroom">Bathroom</option>
-  <option value="games">Games Room</option>
-  <option value="living">Living Room</option>
-  <option value="dining">Dining Room</option>
-  <option value="garage">Garage</option>
+    <form method="POST" action="product_list.php">
+    <input type="search" name="search_prod" id="search_prod" placeholder="Search..."/>
+  <select name="category" id="category">
+        <option value="category">All</option>
+        <option value="study">Study Room</option>
+        <option value="bedroom">Bedroom</option>
+        <option value="kitchen">Kitchen</option>
+        <option value="bathroom">Bathroom</option>
+        <option value="games">Games Room</option>
+        <option value="living">Living Room</option>
+        <option value="dining">Dining Room</option>
+        <option value="garage">Garage</option>
 </select>
+</form>
   </nav>
   
   <div class="productList">
@@ -34,12 +37,15 @@
     
         foreach ($products as $product) {
             $product_img = "../image/" . $product->product_IMG_name;
+    ?>
+            <div class="product-item" onclick="window.location.href='product_details.php?product_id=<?= $product->product_id ?>'">         
+            <input type="hidden" value="<?=$product->product_id?>"/>
+            <img src="<?=$product_img ?>" alt="<?=$product->product_name ?>'" class="product-image">
+            <h3 class="product-name"><?=$product->product_name ?></h3>
+            <p class="product-cost">RM<?=$product->product_price?></p>
+            </div>
 
-            echo '<div class="product-item" onclick="window.location.href=\'product_details.php?product_id=' . $product->product_id . '\'">';            echo '<input type="hidden" value="' . $product->product_id . '" />';
-            echo '<img src="' . $product_img . '" alt="' . $product->product_name . '" class="product-image">';
-            echo '<h3 class="product-name">' . $product->product_name . '</h3>';
-            echo '<p class="product-cost">RM' . $product->product_price . '</p>';
-            echo '</div>';
+    <?php       
         }
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();

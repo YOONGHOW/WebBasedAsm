@@ -19,6 +19,7 @@ if ($productId) {
     // Check if the product exists
     if ($product) {
         $GLOBALS['name'] = $product->product_name;
+        $GLOBALS['category'] = $product->category_id;
         $GLOBALS['price'] = $product->product_price;
         $GLOBALS['stock'] = $product->product_stock;
         $GLOBALS['description'] = $product->product_description;
@@ -34,6 +35,7 @@ if ($productId) {
 // Process form submission
 if (is_post()) {
     $name = $_POST['name'];
+    $category = $_POST['category'];
     $price = $_POST['price'];
     $stock = $_POST['stock'];
     $description = $_POST['description'];
@@ -59,7 +61,8 @@ if (is_post()) {
     if (empty($_err)) {
         // SQL query to update product details and image
         $sql = 'UPDATE product 
-            SET product_name = :name, 
+            SET product_name = :name,
+            category_id = :category, 
             product_price = :price, 
             product_stock = :stock, 
             product_description = :description 
@@ -68,6 +71,7 @@ if (is_post()) {
         $stmt = $_db->prepare($sql);
         $stmt->execute([
             'name' => $name,
+            'category' => $category,
             'price' => $price,
             'stock' => $stock,
             'description' => $description,
@@ -107,6 +111,8 @@ if (is_post()) {
                         <?= err('name') ?>
                     </div>
 
+                    
+
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
                         <?= html_number('price', 'min="0" step="0.01" required') ?>
@@ -119,11 +125,17 @@ if (is_post()) {
                         <?= err('description') ?>
                     </div>
 
+
                     <div class="input-box">
                         <label class="details" for="stock">Product Stock</label>
                         <?= html_number('stock', 'min="0" step="1" required') ?>
                         <?= err('stock') ?>
                     </div>
+
+                    <div class="input-box">
+                        <label class="details" for="category">Category</label>
+                        <?= displayCategoryList() ?>
+</div>                    
 
                 </div>
 

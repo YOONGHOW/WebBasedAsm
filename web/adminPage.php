@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <?php
-require "../helperFile/helper.php";
+
+include "AdminHeader.php";
 ?>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
