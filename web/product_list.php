@@ -2,7 +2,7 @@
 <?php include "header.php"; ?>
 
 <main>
-    <h2 style="text-align:center; background-color:grey;">Find Your Product At Here</h2>
+    <p style="text-align:center; background-color:grey; font-size:18px;">Find Your Product At Here</p>
 <section>
   <nav class="prod_side">
     <select name="category" id="category">
@@ -41,7 +41,7 @@
             <h3 class="product-name"><?=$product->product_name ?></h3>
             <p class="product-cost">RM<?=$product->product_price?></p>
             </div>
-                
+
     <?php       
         }
     } catch (PDOException $e) {

@@ -21,8 +21,6 @@ try {
     echo 'Error: ' . $e->getMessage();
 }
     ?>
-?>
-
 <html lang="en">
 
 <head>
