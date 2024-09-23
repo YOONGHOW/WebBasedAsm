@@ -44,7 +44,6 @@ if (is_post()) {
     <meta charset="UTF-8">
     <title>Reset Password</title>
     <link href="../css/jiazhe.css" rel="stylesheet" type="text/css" />
-    <script src="../js/photo.js"></script>
 
     <style>
         body {

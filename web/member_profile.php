@@ -180,7 +180,8 @@ if (is_post()) {
 </head>
 
 <body>
-
+<!-- Flash message -->
+<div id="info"><?= temp('info') ?></div>
 
     <div class="container">
         <div class="title">Registration</div>
