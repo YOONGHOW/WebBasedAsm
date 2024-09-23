@@ -5,47 +5,61 @@
 
 require '../helperFile/helper.php';
 
-//validation part
+// Validation part
 $_err = [];
 global $_user, $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $completeAddress, $postal, $photo;
 
 $_user = $_SESSION['user'] ?? null;
 
+$id = $_user->user_id ?? null; // Make sure the user is set and has an ID
+if ($_user && $id) {
 
-if ($_user) {
-    //sql to retrieve user address
+    // Retrieve data from users 
+    $sqlUsers = 'SELECT * FROM users WHERE user_id = :user_id'; // Add the table name here
+    $stmtUsers = $_db->prepare($sqlUsers);
+    $stmtUsers->execute([':user_id' => $id]); // Use associative array for binding
+    $users = $stmtUsers->fetch();
+
+    if ($users) {
+        $GLOBALS['name'] = $users->user_name;
+        $GLOBALS['email'] = $users->Email;
+        $GLOBALS['ic'] = $users->user_IC;
+        $GLOBALS['contact'] = $users->user_phoneNumber;
+        $GLOBALS['gender'] = $users->user_gender;
+        $GLOBALS['photo'] = $users->users_IMG_source;
+    } else {
+        echo 'User not found';
+        exit();
+    }
+
+    // SQL to retrieve user address
     $sql = 'SELECT * FROM address WHERE user_id = :user_id';
     $stmt = $_db->prepare($sql);
-    $stmt->execute(['user_id' => $_user->user_id]);
+    $stmt->execute([':user_id' => $id]); // Correct binding
     $address = $stmt->fetch();
 
     if ($address) {
-        $completeAddress = $address->complete_address;
-        $postal = $address->zipCode;
-        $state = $address->state;
-        $city = $address->city;
+        $GLOBALS['completeAddress'] = $address->complete_address;
+        $GLOBALS['postal'] = $address->zipCode;
+        $GLOBALS['state'] = $address->state;
+        $GLOBALS['city'] = $address->city;
+
+        // $completeAddress = $address->complete_address;
+        // $postal = $address->zipCode;
+        // $state = $address->state;
+        // $city = $address->city;
     } else {
         $completeAddress = "none";
     }
-
-    $name = $_user->user_name;
-    $email = $_user->Email;
-    $ic = $_user->user_IC;
-    $contact = $_user->user_phoneNumber;
-    $gender = $_user->user_gender;
-    $photo = $_user->users_IMG_source;
-
 }
 
 if (is_post()) {
-
     $photo = get_file('photo');
     $createDate = date("d/m/Y");
     $name = req("name");
-    $date = req("date");
     $gender = req('gender');
     $contact = req("contact");
-    $address1 = req("completeAddress");
+    $completeAddress = req("completeAddress");
     $postal = req("postal");
     $state = req('state');
     $city = req("city");
@@ -57,26 +71,6 @@ if (is_post()) {
     if (checkName($name) !== null) {
         $_err['name'] = checkName($name);
     }
-
-    // if (checkIC($ic) !== null) {
-    //     $_err['ic'] = checkIC($ic);
-    // }
-
-    // if (checkGmail($email) !== null) {
-    //     $_err['email'] = checkGmail($email);
-    // }
-
-    // if (checkPassword($password) !== null) {
-    //     $_err['password'] = checkPassword($password);
-    // }
-
-    // if (confirmPassword($password, $confirm) !== null) {
-    //     $_err['confirm'] = confirmPassword($password, $confirm);
-    // }
-
-    // if (checkDateFormat($date) !== null) {
-    //     $_err['date'] = checkDateFormat($date);
-    // }
 
     if (strcmp($gender, "none") == 0) {
         $_err['gender'] = "Please select your gender.";
@@ -98,35 +92,42 @@ if (is_post()) {
         $_err['postal'] = checkPostal($postal);
     }
 
-if(empty($_err)){
-
+    if (empty($_err)) {
+        // Update users table
         $sql = 'UPDATE users 
-            SET user_name = :name,
-            user_phoneNumber = :contact, 
-            user_gender = :price, 
-            product_stock = :stock, 
-            product_description = :description 
-            WHERE product_id = :productId';
+                SET user_name = :name, 
+                    user_phoneNumber = :contact, 
+                    user_gender = :gender 
+                WHERE user_id = :user_id';
 
         $stmt = $_db->prepare($sql);
         $stmt->execute([
-            'name' => $name,
-            'category' => $category,
-            'price' => $price,
-            'stock' => $stock,
-            'description' => $description,
-            'productId' => $productId
+            ':name' => $name,
+            ':contact' => $contact,
+            ':gender' => $gender,
+            ':user_id' => $id
         ]);
 
+        // Update address table
+        $sqlAddress = 'UPDATE address 
+                SET complete_address = :completeAddress, 
+                    city = :city, 
+                    zipCode = :postal, 
+                    state = :state 
+                WHERE user_id = :user_id';
 
-    temp('info', 'You are Update succesfully');
-    redirect('home.php');
-}
+        $stmtAddress = $_db->prepare($sqlAddress);
+        $stmtAddress->execute([
+            ':completeAddress' => $completeAddress,
+            ':city' => $city,
+            ':postal' => $postal,
+            ':state' => $state,
+            ':user_id' => $id
+        ]);
 
-
-
-
-    
+        temp('info', 'Profile updated successfully');
+        redirect('home.php');
+    }
 }
 ?>
 
@@ -148,7 +149,6 @@ if(empty($_err)){
 
 <body>
 
-
     <div class="container">
         <div class="title">Profile</div>
         <div class="content">
@@ -159,7 +159,7 @@ if(empty($_err)){
                         <label class="details" for="photo">Profile Photo</label>
                         <label class="upload" tabindex="0" ondrop="upload_file(event)">
                             <?= generateFileField('photo', 'image/*', 'hidden') ?>
-                            <img src="/image/<?=$photo ?>" id="drag">
+                            <img src="/image/<?= $photo ?>" id="drag">
                         </label>
                         <?= err('photo') ?>
                     </div>
