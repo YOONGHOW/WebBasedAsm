@@ -8,7 +8,7 @@ global $email, $validCheck, $newOtp;
 $validCheck = false;
 
 if (is_post()) {
-    $email = req('email');
+    $email = trim(req('email'));
 
     // Validate: email
     if ($email == '') {
