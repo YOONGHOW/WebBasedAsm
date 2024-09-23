@@ -34,9 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
 ?>
 
 
-
-
-<main>
+<main style="min-height: 500px;">
 <?php
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
