@@ -39,6 +39,7 @@ $arr = $stmt->fetchAll();
       height: 60px;
       border-radius: 100%;
     }
+
   </style>
 </head>
 
