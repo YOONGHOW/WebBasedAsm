@@ -31,41 +31,73 @@ try {
   <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
   <h1 style="margin: 0;">My Cart</h1>
 </span><br>
+<section class="cart_section">
+<nav class="cart_side">
+    <ul>
+
 
     <?php
         $total_price = 0;
+        $ship_fee = 4.9;
+        $discount = 0;
+
         foreach ($carts as $cart) {
         $product_img = "../image/" . $cart->product_IMG_name;
     ?>
-    <section>
-    
+
     <div class="cart_container">
-        <div class="cart_image_box">
+        <div class="cart_image_box" >
             <img src="../image/<?=$product_img ?>" alt="<?= $cart->product_name ?>">
         </div>
         <div class="cart_details_box">
-            <h1><?= $cart->product_name ?></h1>
-            <p>Price: RM<?= number_format($cart->product_price, 2) ?></p>
-            <p>Quantity: <?= $cart->quantity ?></p>
-            <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p>
+            <h1><?= $cart->product_name ?></h1><br>
+            <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
+            <p>Quantity: <?= $cart->quantity ?></p><br>
+            <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
         </div>
     </div>
 
-
     <?php
 
-    $total_price +=  $cart->product_price;
+    $total_price +=  $cart->product_price * $cart->quantity;
+    $total_payment = $total_price + $ship_fee + $discount;
         }
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }
 ?>
+      </ul>
+      </nav>
 
-<div class="cart_total">
-    <p>Total :RM <?= $total_price ?></p>
+   <div class="cart_total_container">
+
+        <div class="payment-details">
+        <p class="label">Total:</p>
+        <p>RM <?= number_format($total_price, 2) ?></p>
+    </div>
+
+    <div class="payment-details">
+        <p class="label">Shipping Fee:</p>
+        <p>RM <?= number_format($ship_fee, 2) ?></p>
+    </div>
+
+    <div class="payment-details">
+        <p class="label">Voucher Discount:</p>
+        <p>RM <?= number_format($discount, 2) ?></p>
+    </div>
+<br>
+    <div class="payment-details">
+        <p class="label">Total Payment:</p>
+        <p>RM <?= number_format($total_payment, 2) ?></p>
+    </div>
+
+    <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order"/>
+    </div>
+
+
 </div>
-    </section><br>
-
+</section>
+<br>
 
 
 
