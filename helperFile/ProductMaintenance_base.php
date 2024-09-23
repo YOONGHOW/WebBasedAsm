@@ -50,6 +50,29 @@ function html_file($key, $attr = '')
     echo "<input type='file' id='$key' name='{$key}[]' $attr multiple>";
 }
 
+// function html_
+function displayCategoryList(){
+    $categoryID = encode($GLOBALS["category"] ?? '');
+    global $_db;
+    $stm = $_db->prepare("SELECT * FROM category");
+    $stm->execute();
+
+    $categories = $stm->fetchAll();
+
+    echo '<select name="category" id="category">';
+    echo '<option value="none">--select one category--</option>';
+
+    foreach ($categories as $category) {
+        if (strcmp($category->category_id, $categoryID) == 0) {
+            echo "<option value = '$category->category_id' selected>$category->category_name</option>";
+        } else {
+            echo "<option value = '$category->category_id'>$category->category_name</option>";
+        }
+    }
+
+    echo "</select>";
+}
+
 //get hidden number for every id
 function html_hidden($key, $value)
 {

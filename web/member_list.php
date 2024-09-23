@@ -2,6 +2,7 @@
 <html lang="en">
 
 <?php
+include "AdminHeader.php";
 // Connect to database
 require '../helperFile/helper.php';
 
