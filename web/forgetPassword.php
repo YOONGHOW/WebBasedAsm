@@ -51,7 +51,7 @@ if (is_post()) {
     if (!$_err) {
 
         temp('info', 'Verification successfully');
-        redirect("changePassword.php");
+        redirect("resetPassword.php");
     }
 }
 ?>
