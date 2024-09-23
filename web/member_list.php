@@ -3,8 +3,7 @@
 
 <?php
 include "AdminHeader.php";
-// Connect to database
-require '../helperFile/helper.php';
+
 
 // Check if a search term is provided
 $searchTerm = $_GET['name'] ?? '';
