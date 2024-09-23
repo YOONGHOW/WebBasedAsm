@@ -30,6 +30,7 @@ try {
     <title>Phaethon ELECTRONIC</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/product_list.css">
+    <script src="cart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
@@ -46,9 +47,12 @@ try {
                 <ul>
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
-                    <li><a href="cart.php">Cart(<?= $total_item ?>)</a></li>
+                    <li><a href="promotion_list.php">Promotion</a></li>
                     <li><a href="aboutUs.php">About Us</a></li>
                     <li><a href="contact.php">Contact</a></li>
+                    <li><a href="cart.php">Cart 
+                        <span style="background-color:red; border:none; border-radius:50%; padding:3px;font-size:10px;"><?= $total_item ?></span>
+                    </a></li>
                     <?php if ($_user == null) { ?>
                         <li><a href="login.php">Login</a></li>
                     <?php } else { ?>

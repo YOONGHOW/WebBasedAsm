@@ -1,21 +1,24 @@
-
 <?php include "header.php"; ?>
 
 <main>
-    <p style="text-align:center; background-color:grey; font-size:18px;">Find Your Product At Here</p>
+    <p class="introduction">A comprehensive range from electronic devices
+         to home appliances are available at here !</p>
 <section>
   <nav class="prod_side">
-    <select name="category" id="category">
-  <option value="category">All</option>
-  <option value="study">Study Room</option>
-  <option value="bedroom">Bedroom</option>
-  <option value="kitchen">Kitchen</option>
-  <option value="bathroom">Bathroom</option>
-  <option value="games">Games Room</option>
-  <option value="living">Living Room</option>
-  <option value="dining">Dining Room</option>
-  <option value="garage">Garage</option>
+    <form method="POST" action="product_list.php">
+    <input type="search" name="search_prod" id="search_prod" placeholder="Search..."/>
+  <select name="category" id="category">
+        <option value="category">All</option>
+        <option value="study">Study Room</option>
+        <option value="bedroom">Bedroom</option>
+        <option value="kitchen">Kitchen</option>
+        <option value="bathroom">Bathroom</option>
+        <option value="games">Games Room</option>
+        <option value="living">Living Room</option>
+        <option value="dining">Dining Room</option>
+        <option value="garage">Garage</option>
 </select>
+</form>
   </nav>
   
   <div class="productList">
