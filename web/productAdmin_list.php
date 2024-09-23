@@ -52,6 +52,8 @@ $arr = $stmt->fetchAll();
       height: 60px;
       border-radius: 100%;
     }
+
+
   </style>
 </head>
 
@@ -68,18 +70,15 @@ $arr = $stmt->fetchAll();
     <h1>Product List</h1>
   </div>
 
-
+<div class="list-container">
     <div class="tbl-header">
       <table cellpadding="0" cellspacing="0" border="0">
         <thead style="text-transform:uppercase;">
           <tr>
             <th>Product ID</th>
-            <th>product photo</th>
             <th>Category ID</th>
             <th>Product Name</th>
             <th>Product Price</th>
-            <th>Stock</th>
-            <th>Create Date</th>
             <th>Status</th>
             <th></th>
           </tr>
@@ -93,17 +92,13 @@ $arr = $stmt->fetchAll();
           <?php foreach ($arr as $s): ?>
             <tr>
               <td><?= $s->product_id ?></td>
-              <td>
-                <a href="productAdmin_image.php?id=<?= $s->product_id ?>"><img src="<?= $s->product_IMG_source ?>" alt="photo" class="product-img">
-                  <br />Click to change</a>
-              </td>
+
               <td><?= $s->category_id ?></td>
               <td><?= $s->product_name ?></td>
               <td><?= $s->product_price ?></td>
-              <td><?= $s->product_stock ?></td>
-              <td><?= $s->product_create_date ?></td>
               <td><?= $s->product_status ?></td>
               <td>
+                <a href="">Details  </a>
                 <span style="margin-right: 10px;"><a href="productAdmin_update.php?id=<?= $s->product_id ?>">Update</a>
                 </span><a href="productAdmin_delete.php?id=<?= $s->product_id ?>">Delete</a>
               </td>
@@ -120,7 +115,7 @@ $arr = $stmt->fetchAll();
       <button>submit</button>
       </form>
     </div>
-
+</div>
   </section>
 
 </body>

@@ -29,11 +29,18 @@ $arr = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/member_list.css">
   <title>Member Listing</title>
+
+  <style>
+    .list-container{
+      width: 1200px;
+      padding-left: 100px;
+    }
+  </style>
+
 </head>
 
 <body>
-  <br />
-  <a href="adminPage.php" id="member-list">Back To List</a>
+<div class="list-container">
   <section>
     <h1>Member List</h1>
 
@@ -89,7 +96,7 @@ $arr = $stmt->fetchAll();
           <?php endforeach; ?>
         </tbody>
       </table>
-
+    </div>
     </div>
   </section>
 

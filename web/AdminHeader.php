@@ -14,7 +14,6 @@
           <img src="" alt="photo">
           <h1></h1>
         </div>
-        
           
         <ul>
           <li><a href="AdminHome.php">

@@ -1,0 +1,301 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.paymentContainer {
+    position: relative;
+    display: flex;
+    top: 5%;
+    border-radius: 10px;
+    margin: auto;
+    width: 70%;
+    height: 87%;
+    background-color: antiquewhite;
+}
+
+.Infocontainer {
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+
+.paymentMethod {
+    float: right;
+    width: 50%;
+    height: 100%;
+    background-color: aliceblue;
+}
+
+.user_image {
+    position: absolute;
+    display: flex;
+    align-self: center;
+    top: 2%;
+    left: 5%;
+}
+
+.user_image img {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+}
+
+.user_image input {
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 5px;
+    font-size: 15px;
+    width: 200px;
+    height: 10px;
+    background-color: antiquewhite;
+    border: none
+}
+
+.productDetail {
+    position: absolute;
+    top: 8%;
+    left: 5%;
+}
+
+.product_Name {
+    display: flex;
+}
+
+.product_Name input {
+    font-size: 18px;
+    width: 200px;
+    background-color: antiquewhite;
+    border: none;
+    margin-bottom: 5px;
+}
+
+.product_Name input:nth-child(2) {
+    font-size: 18px;
+    width: 200px;
+    float: right;
+    text-align: right;
+    background-color: antiquewhite;
+    border: none;
+    margin-bottom: 5px;
+}
+
+.productDetail img {
+    width: 400px;
+    height: 250px;
+    border-radius: 10px;
+}
+
+.checkOurList {
+    position: absolute;
+    top: 55%;
+    left: 5%;
+    width: 420px;
+    height: 230px;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+
+.orderContainer {
+    width: 380px;
+    height: 70px;
+    background-color: rgb(147, 144, 138);
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.orderContainer input {
+    border: none;
+    background-color: antiquewhite;
+    align-items: center;
+}
+
+.orderContainer input:nth-child(1) {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.orderContainer input:nth-child(2) {
+    float: right;
+    width: 120px;
+    margin-right: 5px;
+    text-align: right;
+    font-size: 15px;
+}
+
+.orderContainer input:nth-child(3) {
+    display: inline;
+    width: 50px;
+    text-align: right;
+    font-size: 15px;
+    margin-top: 15px;
+}
+
+.orderContainer input:nth-child(4) {
+    display: inline;
+    width: 120px;
+    text-align: left;
+    font-size: 15px;
+}
+
+.paymentWord {
+    position: absolute;
+    border: none;
+    padding-left: 5%;
+}
+
+.paymentWord p {
+    height: 0px;
+}
+
+.paymentWord p:nth-child(1) {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.paymentWord p:nth-child(2) {
+    font-size: 15px;
+}
+.paymentDetail{
+    position: absolute;
+    border: none;
+    top:12%;
+    padding-left: 5%;
+}
+.paymentMethod label{
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.paymentMethod input{
+    width: 350px;
+    height: 28px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    padding-left: 5px;
+}
+
+.paymentMethod select{
+    width: 100px;
+    height: 28px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+.carddetail {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    background-color: aqua;
+    border-radius: 5px;
+}
+.carddetail img{
+    width: 35px;
+    margin-right: 5px;
+    margin-left: 5px;
+    border: none;
+}
+.carddetail input{
+    width: 195px;
+    border: none;
+    border-radius: 0;
+}
+.carddetail input:focus{
+    outline: none;
+}
+.carddetail input:nth-child(3),input:nth-child(4){
+    width: 50px;
+}
+
+.changeaddress{
+    position: absolute;
+    right: 12%;
+    border: none;
+    top :85%;
+    padding-left: 5%;
+    cursor: pointer;
+}
+.changeaddress:hover{
+    color: rgb(69, 39, 0);
+}
+.paymentCalculation{
+    position: absolute;
+    border: none;
+    top:56%;
+    padding-left: 5%;
+    width: 33.5%;
+}
+
+.paymentCalculation input{
+    width: 50px;
+    height: 15px;
+    border: none;
+}
+
+.paymentCalculation label{
+    font-size: 15px;
+}
+
+.discount input{  
+    width: 350px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: 28px;
+    border: 1px solid gray;
+}
+.subtotal{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 25px;
+}
+.discountcal{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 25px;
+
+}
+.total{
+    display: flex;
+    justify-content: space-between;
+    height: 25px;
+    align-items: center;
+}
+.total label{
+    font-weight: bold;
+}
+.total input{
+    font-weight: bold;
+}
+.paybutton{
+    position: absolute;
+    border: none;
+    top:90%;
+    padding-left: 5%;
+}
+.paybutton button{
+    height: 48px;
+    width: 360px;
+    border-radius: 5px;
+    border: none;
+}
+
+.paybutton button:hover{
+    background-color: aqua;
+    cursor: pointer;
+}
+.paymentDetail p{
+    position: absolute;
+    font-size: small;
+    color: red;
+    height: 10px;
+    width: 300px;
+    margin: 0;
+    padding-left: 50px;
+    text-align: right;
+}
