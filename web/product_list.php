@@ -34,12 +34,15 @@
     
         foreach ($products as $product) {
             $product_img = "../image/" . $product->product_IMG_name;
-
-            echo '<div class="product-item" onclick="window.location.href=\'product_details.php?product_id=' . $product->product_id . '\'">';            echo '<input type="hidden" value="' . $product->product_id . '" />';
-            echo '<img src="' . $product_img . '" alt="' . $product->product_name . '" class="product-image">';
-            echo '<h3 class="product-name">' . $product->product_name . '</h3>';
-            echo '<p class="product-cost">RM' . $product->product_price . '</p>';
-            echo '</div>';
+    ?>
+            <div class="product-item" onclick="window.location.href='product_details.php?product_id=<?= $product->product_id ?>'">         
+            <input type="hidden" value="<?=$product->product_id?>"/>
+            <img src="<?=$product_img ?>" alt="<?=$product->product_name ?>'" class="product-image">
+            <h3 class="product-name"><?=$product->product_name ?></h3>
+            <p class="product-cost">RM<?=$product->product_price?></p>
+            </div>
+                
+    <?php       
         }
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();

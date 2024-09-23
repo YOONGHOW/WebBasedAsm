@@ -30,7 +30,7 @@ try {
 <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
   <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
   <h1 style="margin: 0;">My Cart</h1>
-</span><br>
+</span>
 <section class="cart_section">
 <nav class="cart_side">
     <ul>
@@ -52,7 +52,7 @@ try {
         <div class="cart_details_box">
             <h1><?= $cart->product_name ?></h1><br>
             <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-            <p>Quantity: <?= $cart->quantity ?></p><br>
+            <p>Quantity: <input type="number" value="<?= $cart->quantity ?>" min="1" max="<?= $cart->product_stock ?>" style="width:25%;"/></p> <br>
             <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
         </div>
     </div>
@@ -62,9 +62,9 @@ try {
     $total_price +=  $cart->product_price * $cart->quantity;
     $total_payment = $total_price + $ship_fee + $discount;
         }
-    } catch (PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-    }
+        } catch (PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
 ?>
       </ul>
       </nav>

@@ -100,7 +100,7 @@ if (isset($_GET['product_id'])) {
                 <input type="button" id="wishBtn" name="wishList" value="Save To wishlish"/>
                 </form>
                 
-        </div>
+        </div>  
 
 <?php
     } else {

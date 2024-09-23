@@ -220,6 +220,7 @@ div.cart_details_box p{
     width: 30%;
     background-color: #f1f1f1;
     height: 300px; 
+    font-size: 17px;
 }
 
 .payment-details {

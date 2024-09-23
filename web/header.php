@@ -5,6 +5,22 @@ require '../helperFile/helper.php';
 global $_user;
 
 $_user = $_SESSION['user'] ?? null;
+
+$total_item = 0;
+try {
+    $userID = $_user->user_id;
+    $stmt = $_db->prepare("SELECT quantity FROM cart WHERE user_id = :user_id");
+    $stmt->bindParam(':user_id', $userID);
+    $stmt->execute();
+    $carts = $stmt->fetchAll(PDO::FETCH_OBJ); 
+    foreach ($carts as $cart) {
+    $total_item += $cart->quantity; 
+}
+
+} catch (PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+}
+    ?>
 ?>
 
 <html lang="en">
@@ -32,7 +48,7 @@ $_user = $_SESSION['user'] ?? null;
                 <ul>
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
-                    <li><a href="cart.php">Cart</a></li>
+                    <li><a href="cart.php">Cart(<?= $total_item ?>)</a></li>
                     <li><a href="aboutUs.php">About Us</a></li>
                     <li><a href="contact.php">Contact</a></li>
                     <?php if ($_user == null) { ?>
