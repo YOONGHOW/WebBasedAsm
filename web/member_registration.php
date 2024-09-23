@@ -16,18 +16,17 @@ if (is_post()) {
 
     $photo = get_file('photo');
     $createDate = date("d/m/Y");
-    $name = req("name");
+    $name = trim(req("name"));
     $date = req("date");
     $ic = req("ic");
-    $email = req('email');
+    $email = trim(req('email'));
     $gender = req('gender');
-    $contact = req("contact");
-    $password = req("password");
-    $confirm = req("confirm");
-    $address1 = req("address1");
-    $address2 = req("address2");
+    $contact = trim(req("contact"));
+    $password = trim(req("password"));
+    $confirm = trim(req("confirm"));
+    $address1 = trim(req("address1"));
+    $address2 = trim(req("address2"));
     $postal = req("postal");
-
     $city = req("city");
 
     if (checkImage($photo)) {
