@@ -27,11 +27,13 @@
 
 <?php
     try {
-    $stmt = $_db->prepare("
-        SELECT p.*, pi.product_IMG_name
-            FROM product p
-            LEFT JOIN product_img pi ON p.product_id = pi.product_id
+        $stmt = $_db->prepare("
+        SELECT p.*, pi.product_IMG_name, c.category_name
+        FROM product p
+        LEFT JOIN product_img pi ON p.product_id = pi.product_id
+        LEFT JOIN category c ON p.category_id = c.category_id
     ");
+    
     $stmt->execute();
     $products = $stmt->fetchAll();
     
