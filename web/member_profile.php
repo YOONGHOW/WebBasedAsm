@@ -91,7 +91,6 @@ if (is_post()) {
         //(1) Save photo
         $photo = save_photo($photo, '../image');
 
-        $_db->beginTransaction();
         // (2) Insert user (member)
         $stm = $_db->prepare('
             INSERT INTO users 
@@ -113,7 +112,6 @@ if (is_post()) {
 
         $stm->execute([$addressID, $id, $name,  $contact, $completeAddress, $city, $postal, $stateName]);
 
-        $_db->commit();
         temp('info', 'You are registered succesfully');
         redirect('login.php');
     }
@@ -182,7 +180,8 @@ if (is_post()) {
 </head>
 
 <body>
-
+<!-- Flash message -->
+<div id="info"><?= temp('info') ?></div>
 
     <div class="container">
         <div class="title">Registration</div>

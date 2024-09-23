@@ -1,4 +1,5 @@
 <?php
+
 require_once '../lib/SimpleImage.php';
 
 // Global PDO object
@@ -54,8 +55,7 @@ function html_file($key, $attr = '')
 function displayCategoryList(){
     $categoryID = encode($GLOBALS["category"] ?? '');
     global $_db;
-    $stm = $_db->prepare("SELECT * FROM category");
-    $stm->execute();
+    $stm = $_db->query("SELECT * FROM category");
 
     $categories = $stm->fetchAll();
 

@@ -4,6 +4,7 @@
 require "../helperFile/helper.php";
 
 
+
 $_err = [];
 global  $password, $email, $cookie_value, $id, $attempt_count;
 
@@ -43,7 +44,6 @@ if (is_post()) {
             //retrieve id for checking purpose
             $id = $u->user_id;
             $attempt_count = intval(@$_COOKIE[$id]);
-            echo $attempt_count . " with " . $id;
 
             if ($attempt_count != 3) {
                 //then check the password is correct or not;
