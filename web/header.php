@@ -54,7 +54,7 @@ if ($_user) {
                         <li><a href="login.php">Login</a></li>
                     <?php } else { ?>
                         <?php if ($_user): ?>
-                            <li><a href="profile.php">Profile</a></li>
+                            <li><a href="member_profile.php">Profile</a></li>
                         <?php endif ?>
                         <li><a href="logout.php">Logout</a></li>
                     <?php } ?>
