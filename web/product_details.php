@@ -1,4 +1,41 @@
 <?php include "header.php"; ?>
+<?php 
+global $_user;
+$_user = $_SESSION['user'] ?? null;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
+    $userID = $_user->user_id;  
+
+    $productID = $_POST['product_id'];
+    $quantity = $_POST['quantity'];
+    
+    $newCartID = generateID('CART', 'cart', 'cart_id');
+    
+    $sql = "INSERT INTO cart (cart_id, user_id, product_id, quantity)
+            VALUES (:cart_id, :user_id, :product_id, :quantity)";
+    
+    $stmt = $_db->prepare($sql);
+    $stmt->bindParam(':cart_id', $newCartID);
+    $stmt->bindParam(':user_id', $userID);
+    $stmt->bindParam(':product_id', $productID);
+    $stmt->bindParam(':quantity', $quantity);
+    
+    if ($stmt->execute()) {
+        echo '<script>
+        alert("Item added to cart");
+        window.location.href = "product_list.php";        
+        </script>';
+        
+    } else {
+        echo "<script>alert('Error: Could not add item to cart.')</script>";
+    }
+}
+
+?>
+
+
+
+
 <main>
 <?php
 if (isset($_GET['product_id'])) {
@@ -32,10 +69,13 @@ if (isset($_GET['product_id'])) {
                 <form method="POST" action="product_details.php">
                 <br>
                 <label for="quantity" class="qty">Quantity :</label>
-                <input type="number" id="quantity" name="quantity" placeholder="1" min="1" max="<?= $product->product_stock ?>"><br>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="<?= $product->product_stock ?>"><br>
+                <input type="hidden" name="product_id" value="<?= $product->product_id ?>">
+                <input type="hidden" name="product_name" value="<?= $product->product_name ?>">
+                <input type="hidden" name="product_price" value="<?= $product->product_price ?>">
                 <input type="submit" id="addCartBtn" name="addCart" value="Add to Cart"/><br>
-                <input type="button" id="wishBtn" name="wishList" value="Save To wishlish"/>
                 </form>
+                <input type="button" id="wishBtn" name="wishList" value="Save To wishlish"/>
         </div>
 
 <?php

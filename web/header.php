@@ -32,6 +32,7 @@ $_user = $_SESSION['user'] ?? null;
                 <ul>
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
+                    <li><a href="cart.php">Cart</a></li>
                     <li><a href="aboutUs.php">About Us</a></li>
                     <li><a href="contact.php">Contact</a></li>
                     <?php if ($_user == null) { ?>
