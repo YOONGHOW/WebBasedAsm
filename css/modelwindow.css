@@ -1,0 +1,117 @@
+.modelwindows {
+    position: fixed;
+    display: none;
+    top: 15%;
+    left: 38%;
+    border-radius: 10px;
+    width: auto;
+    height: 65%;
+    background-color: rgb(240, 153, 39);
+    z-index: 1;
+}
+
+.modelherder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 50px;
+}
+
+.modelherder::after {
+    position: absolute;
+    display: inline;
+    top: 50px;
+    left: 0;
+    content: "";
+    background-color: black;
+    height: 1px;
+    width: 100%;
+}
+
+.modelherder p {
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.modelherder img {
+    float: right;
+    width: 20px;
+    cursor: pointer;
+    padding-right: 10px;
+    padding-bottom: 5px;
+}
+
+.addressConainer {
+    padding-left: 60px;
+    padding-top: 10px;
+}
+
+.addressConainer label {
+    display: block;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.addressConainer input {
+    font-size: 15px;
+    width: 80%;
+    height: 28px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 5px;
+}
+
+.addressConainer select {
+    width: 82%;
+    height: 28px;
+    font-size: 15px;
+    border-radius: 5px;
+
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; 
+    width: 82%;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-between;   
+    width: 72%;  
+    margin-bottom: 5px; 
+}
+.receiver{
+    display: flex;
+    justify-content: space-between;   
+    width: 85%;  
+    margin-bottom: 5px; 
+}
+.inputs {
+    display: flex;
+    justify-content: space-between; 
+
+}
+.receiverInput{
+    width: 99.5%;
+}
+.inputs input {
+    width: 46%;
+}
+
+.modelbutton{
+    display: flex;
+    float: right;
+    width: 100%;
+    margin-top: 20px;
+}
+.modelbutton button{
+    margin-left: 5px;
+    width: 40%;
+    height: 40px;
+    border-radius: 10px;
+    border:none;
+}
