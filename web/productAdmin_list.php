@@ -7,8 +7,7 @@ require '../helperFile/ProductMaintenance_base.php';
 
 // Get search information and price range from the user
 $search = isset($_POST['search']) ? $_POST['search'] : '';
-$minPrice = isset($_POST['minPrice']) ? $_POST['minPrice'] : '';
-$maxPrice = isset($_POST['maxPrice']) ? $_POST['maxPrice'] : '';
+
 
 // SQL query to get only the first image for each product
 $sql = 'SELECT p.*, (SELECT pi.product_IMG_source FROM product_img pi WHERE pi.product_id = p.product_id LIMIT 1) as product_IMG_source 
@@ -17,23 +16,11 @@ $sql = 'SELECT p.*, (SELECT pi.product_IMG_source FROM product_img pi WHERE pi.p
 if ($search) {
   $sql .= ' AND p.product_name LIKE :search';
 }
-if ($minPrice !== '') {
-  $sql .= ' AND p.product_price >= :minPrice';
-}
-if ($maxPrice !== '') {
-  $sql .= ' AND p.product_price <= :maxPrice';
-}
 
 $stmt = $_db->prepare($sql);
 
 if ($search) {
   $stmt->bindValue(':search', '%' . trim($search) . '%');
-}
-if ($minPrice !== '') {
-  $stmt->bindValue(':minPrice', $minPrice);
-}
-if ($maxPrice !== '') {
-  $stmt->bindValue(':maxPrice', $maxPrice);
 }
 
 $stmt->execute();
@@ -52,8 +39,6 @@ $arr = $stmt->fetchAll();
       height: 60px;
       border-radius: 100%;
     }
-
-
   </style>
 </head>
 
@@ -76,9 +61,12 @@ $arr = $stmt->fetchAll();
         <thead style="text-transform:uppercase;">
           <tr>
             <th>Product ID</th>
+            <th>product photo</th>
             <th>Category ID</th>
             <th>Product Name</th>
             <th>Product Price</th>
+            <th>Stock</th>
+            <th>Create Date</th>
             <th>Status</th>
             <th></th>
           </tr>
@@ -92,13 +80,17 @@ $arr = $stmt->fetchAll();
           <?php foreach ($arr as $s): ?>
             <tr>
               <td><?= $s->product_id ?></td>
-
+              <td>
+                <a href="productAdmin_image.php?id=<?= $s->product_id ?>"><img src="<?= $s->product_IMG_source ?>" alt="photo" class="product-img">
+                  <br />Click to change</a>
+              </td>
               <td><?= $s->category_id ?></td>
               <td><?= $s->product_name ?></td>
               <td><?= $s->product_price ?></td>
+              <td><?= $s->product_stock ?></td>
+              <td><?= $s->product_create_date ?></td>
               <td><?= $s->product_status ?></td>
               <td>
-                <a href="">Details  </a>
                 <span style="margin-right: 10px;"><a href="productAdmin_update.php?id=<?= $s->product_id ?>">Update</a>
                 </span><a href="productAdmin_delete.php?id=<?= $s->product_id ?>">Delete</a>
               </td>
@@ -106,14 +98,6 @@ $arr = $stmt->fetchAll();
           <?php endforeach; ?>
         </tbody>
       </table>
-    </div>
-
-    <div>
-      <form action="" method="post">
-      <?=html_number('minPrice', 'min="0" step="0.01" placeholder="Min Price" value="'.$minPrice.'"')?>
-      <?=html_number('maxPrice', 'min="0" step="0.01" placeholder="Max Price" value="'.$maxPrice.'"')?>
-      <button>submit</button>
-      </form>
     </div>
 </div>
   </section>
