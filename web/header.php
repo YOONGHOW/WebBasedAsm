@@ -20,6 +20,9 @@ if ($_user) {
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }
+
+
+
 }
 ?>
 <html lang="en">
@@ -49,10 +52,11 @@ if ($_user) {
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
                     <li><a href="promotion_list.php">Promotion</a></li>
-                    <li><a href="aboutUs.php">About Us</a></li>
-                    <li><a href="contact.php">Contact</a></li>
+                    <li><a href="wish_list.php">Wish
+                    <span style="background-color:red; border:none; border-radius:50%; padding:4px;font-size:10px;"><?= $total_item ?></span>
+                    </a></li>
                     <li><a href="cart.php">Cart 
-                        <span style="background-color:red; border:none; border-radius:50%; padding:3px;font-size:10px;"><?= $total_item ?></span>
+                        <span style="background-color:red; border:none; border-radius:50%; padding:4px;font-size:10px;"><?= $total_item ?></span>
                     </a></li>
                     <?php if ($_user == null) { ?>
                         <li><a href="login.php">Login</a></li>

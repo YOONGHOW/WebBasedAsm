@@ -79,9 +79,8 @@ try {
 
 <section class="cart_section">
 <nav class="cart_side">
+
     <ul>
-
-
     <?php
         foreach ($carts as $cart) {
         $product_img = "../image/" . $cart->product_IMG_name;
@@ -98,11 +97,14 @@ try {
     <div class="cart_details_box">
         <h1><?= $cart->product_name ?></h1><br>
         <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-        <p>Quantity: <input type="number" name="quantity" value="<?= $cart->quantity ?>" 
+        <p>Quantity: <?= $cart->quantity ?></p>
+            
+        <input type="hidden" name="quantity" value="<?= $cart->quantity ?>" 
                              min="1" max="<?= $cart->product_stock ?>" 
                              class="quantityInput" 
                              data-price="<?= $cart->product_price ?>" 
-                             oninput="updateTotal()" style="width:25%;"/></p> <br>
+                             oninput="updateTotal()" style="width:25%;"/> <br>
+
         <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
     </div>
 </div>

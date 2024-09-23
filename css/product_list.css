@@ -54,7 +54,7 @@ select#category{
 
 input#search_prod{
     padding:8px;
-    
+    border: 1px solid black;
 }
 
 /*Product list page */

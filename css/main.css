@@ -65,6 +65,14 @@ header nav ul li a:hover {
     color: rgb(141, 141, 141);
 }
 
+img.header_img{
+    width: 10%;
+    height: auto;
+    border: none;
+    border-radius: 50%;
+}
+
+
 /*home page*/
 .image-container {
     position: relative;
