@@ -52,6 +52,10 @@ h1 {
   width: 20px;
   height: 20px;
 }
+
+.list-container{
+  width: 1200px;
+}
   
   table{
     width: 100%;
@@ -110,7 +114,7 @@ h1 {
   }
   
   section{
-    margin: 50px;
+    margin: 100px;
   }
   
   /* Custom scrollbar for webkit browsers */
