@@ -14,7 +14,6 @@ $state = req("state") ?? "none";
 $validate = false;
 $_SESSION['verify'] = $validate;
 
-echo $validate . "hello";
 if (is_post()) {
     $validate = $_SESSION['verify'];
     $photo = get_file('photo');
@@ -168,16 +167,12 @@ if (is_post()) {
             xhr.send("password=" + encodeURIComponent(password));
         }
 
-        //function to validate email
-        function validateEmail(){
-            alert("Hello World");
-            updateCriteria($validate);
-        }
-
-        //function to update the verufed status
-        function updateStatus(elementID, isValidate){
+        // Function to update the criteria colour in the UI
+        function updateCriteria(elementId, isValid) {
             var element = document.getElementById(elementId);
             if (isValid) {
+                element.classList.remove("invalid");
+                element.classList.add("valid");
                 element.innerHTML = element.innerHTML.replace("❌", "✅");
             } else {
                 element.classList.remove("valid");
@@ -186,8 +181,14 @@ if (is_post()) {
             }
         }
 
-        // Function to update the criteria colour in the UI
-        function updateCriteria(isValid) {
+        function validateEmail(){
+            const input = document.getElementById("email");
+            
+        }
+
+        
+        //function to update the verifed status
+        function updateStatus(isValid) {
             if (!isValid) {
                 $('#verify').css('color', '90EE90');
             } else {
@@ -226,7 +227,7 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="email">Email</label>
                         <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" required') ?>
-                        <span id="verify" class="fa">&#xf00c;Verified</span><a href="#" onclick="validateEmail()">Verify Email</a><br />
+                        <span id="verify" class="fa">&#xf00c;Verified</span><a href="sendVerifyEmail.php">Verify Email</a><br />
                         <?= err('email') ?>
                     </div>
 
