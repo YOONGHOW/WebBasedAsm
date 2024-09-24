@@ -143,7 +143,7 @@ $arr = $stmt->fetchAll();
       const products = <?= json_encode($arr); ?>;
     </script>
 
-    <script src="../js/productAdmin_jsscript.js"></script>
+    <script src="../js/low-stock.js"></script>
   </section>
 </body>
 
