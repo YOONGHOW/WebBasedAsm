@@ -62,7 +62,7 @@ if (is_post()) {
                         temp('info', "Login successfully, welcome $u->user_name");
                         if (strcmp($u->user_rule, "admin") == 0) {
                             //redirect to admin page if the user is an admin
-                            login($u, "adminPage.php");
+                            login($u, "member_list.php");
                         } else {
                             //redirect to user page if the user is an member
                             login($u, "../index.php");

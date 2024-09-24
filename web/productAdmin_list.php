@@ -2,7 +2,7 @@
 <html lang="en">
 
 <?php
-include "AdminHeader.php";
+include "sidebar.php";
 require '../helperFile/ProductMaintenance_base.php';
 
 // Get search information and price range from the user

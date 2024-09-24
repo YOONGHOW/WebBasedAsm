@@ -2,7 +2,7 @@
 <html>
 <?php
 
-include "AdminHeader.php";
+include "sidebar.php";
 ?>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

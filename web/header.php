@@ -8,6 +8,11 @@ $_user = $_SESSION['user'] ?? null;
 
 $total_item = 0;
 if ($_user) {
+
+    if (strcmp($_user->user_rule, "user") != 0) {
+        temp("info", "Your permission is denied.");
+        redirect("member_list.php");
+      }
     try {
         $userID = $_user->user_id;
         $stmt = $_db->prepare("SELECT quantity FROM cart WHERE user_id = :user_id");
