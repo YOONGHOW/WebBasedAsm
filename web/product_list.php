@@ -1,7 +1,11 @@
 <?php include "header.php"; ?>
 
 <?php 
-
+if($_user == null){
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
+}
 $stmt = $_db->prepare("
         SELECT * FROM category;");
     $stmt->execute();

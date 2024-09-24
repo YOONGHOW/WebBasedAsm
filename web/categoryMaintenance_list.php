@@ -112,7 +112,7 @@ $categories = $stmt->fetchAll();
         </div>
 
         <div class="addButton">
-            <button id="button" onclick="window.location.href='categoryMaintenance_add.php'">ADD New Category</button>
+            <button id="button" onclick="window.location.href='categoryMaintenance_add.php'">ADD Category +</button>
         </div>
     </section>
 </body>
