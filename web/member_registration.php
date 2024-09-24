@@ -134,7 +134,8 @@ if (is_post()) {
         //get the email to verify
         $(document).ready(function() {
             // When the button is clicked
-            $('#verify').on('click', function() {
+            $('#verification').on('click', function() {
+                event.preventDefault();
                 // Get the value of the input field
                 var email = $('#email').val();
 
@@ -246,7 +247,7 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="email">Email</label>
                         <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" required') ?>
-                        <span id="verify" class="fa">&#xf00c;Verified</span><a href="sendVerifyEmail.php">Verify Email</a><br />
+                        <span id="verify"  class="fa">&#xf00c;Verified</span><a id="verification"  href="#">Verify Email</a><br />
                         <?= err('email') ?>
                     </div>
 
