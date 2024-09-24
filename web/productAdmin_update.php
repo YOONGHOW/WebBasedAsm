@@ -107,11 +107,11 @@ if (is_post()) {
 
                     <div class="input-box">
                         <label class="details" for="name">Product Name</label>
-                        <?= html_text('name', 'maxlength="100" required') ?>
+                        <?= html_text('name', 'minlength="5" maxlength="100" required') ?>
                         <?= err('name') ?>
                     </div>
 
-                    
+
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
@@ -135,7 +135,7 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="category">Category</label>
                         <?= displayCategoryList() ?>
-</div>                    
+                    </div>
 
                 </div>
 

@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
     $productID = $_POST['product_id'];
     $quantity = $_POST['quantity'];
     
+    //if user have product at cart
     $checkSql = "SELECT quantity FROM cart WHERE user_id = :user_id AND product_id = :product_id";
     $checkStmt = $_db->prepare($checkSql);
     $checkStmt->bindParam(':user_id', $userID);
@@ -56,6 +57,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
     }
 }
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addWish'])) {
+    $userID = $_user->user_id;  
+    $productID = $_POST['product_id'];
+    $wishID = $_POST['wish_id'];
+
+    $newCartID = generateID('W', 'wish', 'wish_id');
+        
+        $sql = "INSERT INTO wish (wish_id, user_id, product_id)
+                VALUES (:wish_id, :user_id, :product_id)";
+        
+        $stmt = $_db->prepare($sql);
+        $stmt->bindParam(':wish_id', $newCartID);
+        $stmt->bindParam(':user_id', $userID);
+        $stmt->bindParam(':product_id', $productID);
+        
+        if ($stmt->execute()) {
+            echo '<script>
+            alert("Add Wish Successfully");
+            window.location.href = "product_list.php";        
+            </script>';
+        } else {
+            echo "<script>alert('Error: Could not add item to cart.')</script>";
+        }
+}
+
 ?>
 
 
@@ -82,7 +109,7 @@ if (isset($_GET['product_id'])) {
         </nav>
         <div class="details_side">
                 <?php
-                 echo '<h1>'. $product->product_name .'</h1><br>';
+                 echo '<h1>'. $product->product_name .'</h1>';
                  echo '<p style="font-size:22px;"><b>RM' . number_format($product->product_price, 2) . 
                  ' | <span style="font-size:17px;">Stock: ' .$product->product_stock .'</span>
                  </p></b><br>';
@@ -97,7 +124,7 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_name" value="<?= $product->product_name ?>">
                 <input type="hidden" name="product_price" value="<?= $product->product_price ?>">
                 <input type="submit" id="addCartBtn" name="addCart" value="Add to Cart"/><br>
-                <input type="button" id="wishBtn" name="wishList" value="Save To wishlish"/>
+                <input type="submit" id="wishBtn" name="addWish" value="Save To wishlish"/>
                 </form>
                 
         </div>  

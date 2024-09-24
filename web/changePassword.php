@@ -8,9 +8,9 @@ global  $password, $email;
 $_user = $_SESSION["user"] ?? null;
 
 if (is_post()) {
-    $oldpassword = req("oldpassword");
-    $password = req("password");
-    $confirm = req("confirm");
+    $oldpassword = trim(req("oldpassword"));
+    $password = trim(req("password"));
+    $confirm = trim(req("confirm"));
     $updateDate = date("d/m/Y");
 
     $stm = $_db->prepare('SELECT * FROM users WHERE email = ? AND user_password = SHA1(?)');

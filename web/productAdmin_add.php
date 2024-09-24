@@ -69,7 +69,7 @@ if (is_post()) {
             :current_date,
             :status
         )";
-    
+
         try {
             $stmt = $_db->prepare($sqlQuery);
             $stmt->bindParam(':product_id', $product_id);
@@ -80,13 +80,13 @@ if (is_post()) {
             $stmt->bindParam(':stock', $stock);
             $stmt->bindParam(':current_date', $current_date);
             $stmt->bindParam(':status', $status);
-    
+
             if ($stmt->execute()) {
                 // If images were uploaded, save them to the database
                 if (!isset($imageResult['error'])) {
                     foreach ($imageResult as $imageData) {
                         $image_id = getNextId($_db, 'IMG', 'product_IMG_id', 'product_img');
-    
+
                         $sqlImage = "INSERT INTO product_img (
                             product_IMG_id, 
                             product_id, 
@@ -98,7 +98,7 @@ if (is_post()) {
                             :image_name, 
                             :image_destination
                         )";
-    
+
                         $stmt_img = $_db->prepare($sqlImage);
                         $stmt_img->bindParam(':image_id', $image_id);
                         $stmt_img->bindParam(':product_id', $product_id);
@@ -107,16 +107,13 @@ if (is_post()) {
                         $stmt_img->execute();
                     }
                 }
-    
-                header('Location: productAdmin_add.php?status=success');
-                exit();
+
+                header('Location: productAdmin_add.php');
             } else {
-                header('Location: productAdmin_add.php?status=error');
-                exit();
+                header('Location: productAdmin_add.php');
             }
         } catch (PDOException $e) {
-            header('Location: productAdmin_add.php?status=error');
-            exit();
+            header('Location: productAdmin_add.php');
         }
     }
 }
@@ -148,30 +145,30 @@ if (is_post()) {
                 <div class="product-details">
                     <div class="input-box">
                         <label class="details" for="name">Product Name</label>
-                        <?= html_text('name', 'maxlength="100" required') ?>
+                        <?= html_text('name', 'minlength="5" maxlength="20" placeholder="Enter product name"  required') ?>
                         <?= err('name') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="category">Category</label>
                         <?= displayCategoryList() ?>
-                    </div>                    
+                    </div>
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>
-                        <?= html_number('price', 'min="0" step="0.01" required') ?>
+                        <?= html_number('price', 'min="0" step="0.01" placeholder="50" required') ?>
                         <?= err('price') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="description">Description</label>
-                        <?= html_textArea('description', 'rows="5" cols="45" required') ?>
+                        <?= html_textArea('description', 'rows="5" cols="45" placeholder="Enter some product description" required') ?>
                         <?= err('description') ?>
                     </div>
 
                     <div class="input-box">
                         <label class="details" for="stock">Product Stock</label>
-                        <?= html_number('stock', 'min="0" step="1" required') ?>
+                        <?= html_number('stock', 'min="0" step="1" placeholder="50" required') ?>
                         <?= err('stock') ?>
                     </div>
 

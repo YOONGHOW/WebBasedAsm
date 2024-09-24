@@ -3,7 +3,7 @@
 
 <?php
 require "../helperFile/Member_base.php";
-include "AdminHeader.php";
+include "sidebar.php";
 
 // Check if a search term is provided
 $searchTerm = $_GET['name'] ?? '';
