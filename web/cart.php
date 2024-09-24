@@ -36,12 +36,28 @@ $total_price = 0;
 $total_payment = 0;
 
 try {
+    if (isset($_POST['deleteBtn'])) {
+            $product_id = $_POST["productID"];
+
+            $stmt = $_db->prepare("
+            DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
+            ");
+
+            $stmt->bindParam(':user_id', $userID);
+            $stmt->bindParam(':product_id', $product_id);
+            $stmt->execute();
+            $carts = $stmt->fetchAll();
+            header("Location: cart.php");
+            exit;
+        
+    }
+
     $stmt = $_db->prepare("
-    SELECT cart.cart_id, cart.product_id, cart.quantity, product.*, product_img.*
-    FROM cart
-    JOIN product ON cart.product_id = product.product_id
-    LEFT JOIN product_img ON product.product_id = product_img.product_id
-    WHERE cart.user_id = :user_id
+        SELECT cart.cart_id, cart.product_id, cart.quantity, product.*, product_img.*
+        FROM cart
+        JOIN product ON cart.product_id = product.product_id
+        LEFT JOIN product_img ON product.product_id = product_img.product_id
+        WHERE cart.user_id = :user_id
     ");
 
     $stmt->bindParam(':user_id', $userID);
