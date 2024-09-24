@@ -48,7 +48,7 @@ if (isset($_SESSION['selectedItems'])) {
         product_id IN ($placeholders)
 ');
 $idString=implode(",",$ids);
-        $stm->execute($idString);
+        $stm->execute();
 
         $stm->execute();
 
