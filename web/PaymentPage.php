@@ -31,11 +31,9 @@ if (isset($_SESSION['selectedItems'])) {
         $ids[] = $item['id'];
     }
     $itemOrder = $_SESSION['selectedItems'];
-    print_r(implode(',', array_fill(0, count($ids), '?')));
+    print_r($itemOrder);
     // Create a string of placeholders for the SQL statement
     if (count($ids) > 0) {
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-
         $stm = $_db->prepare('
      SELECT 
         product.*,
@@ -44,10 +42,7 @@ if (isset($_SESSION['selectedItems'])) {
         product
     LEFT JOIN 
         product_img ON product.product_id = product_img.product_id
-    WHERE 
-        product_id IN ($placeholders)
 ');
-$idString=implode(",",$ids);
         $stm->execute();
 
         $stm->execute();
@@ -166,6 +161,7 @@ if (is_post()) {
 
 <body>
     <div class="paymentContainer" id="paymentContainer">
+
         <div class="Infocontainer">
 
             <div class="user_image">
@@ -182,16 +178,31 @@ if (is_post()) {
                     <img src="https://picsum.photos/200/300" alt="productImage">
                 </div>
             </div>
-
             <div class="checkOurList">
-                <div class="orderContainer">
-                    <input type="text" placeholder="productName">
-                    <input type="text" placeholder="productPrice">
-                    <input type="text" placeholder="orderQuantity">
-                    <input type="text" placeholder="subTotal">
-                </div>
-            </div>
+                <?php
+                $countNum = 0;
+                foreach ($itemOrder as $orderDetails) {
+                    foreach ($result as $product) {
+                        if ($product['product_id'] == $orderDetails['id']) {
+                            $subtotal = $product['product_price'] * $orderDetails['quantity'];
+                ?>
 
+                            <div class="orderContainer container<?= $countNum ?>" id="orderContainer"
+                                data-product-name="<?= $product['product_name'] ?>"
+                                data-product-price="<?= number_format($product['product_price'], 2) ?>"
+                                onclick="handleClick(this)">
+                                <input type="text" value="<?= $product['product_name'] ?>" placeholder="productName" readonly>
+                                <input type="text" value="RM <?= number_format($product['product_price'], 2) ?>" placeholder="productPrice" readonly>
+                                <input type="text" value="<?= $orderDetails['quantity'] ?>x" placeholder="orderQuantity" readonly>
+                                <input type="text" value="RM <?= number_format($subtotal, 2) ?>" placeholder="subTotal" readonly>
+                            </div>
+
+                <?php
+                        }
+                    }
+                    $countNum++;
+                } ?>
+            </div>
         </div>
         <form method="POST" action="">
             <div class="paymentMethod">
@@ -362,6 +373,24 @@ if (is_post()) {
             modal.style.display = "none";
         }
     });
+
+    function handleClick(element) {
+        // Get the product name and price from the data attributes
+        var productName = element.getAttribute('data-product-name');
+        var productPrice = element.getAttribute('data-product-price');
+        // Display the product name and price
+        alert("Product Name: " + productName + "\nProduct Price: RM " + productPrice);
+        
+        element.style.border = "2px solid black";
+    }
+
+    // Simulate a click on the first orderContainer on page load
+    window.onload = function() {
+        var firstContainer = document.querySelector('.orderContainer');
+        if (firstContainer) {
+            firstContainer.click(); // Trigger the click event
+        }
+    }
 </script>
 
 </html>
