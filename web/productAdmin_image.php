@@ -72,27 +72,20 @@ if (is_post()) {
         .image-container {
             display: flex;
             flex-wrap: wrap;
-            /* Allow wrapping to the next line */
             gap: 10px;
-            /* Space between images */
             justify-content: flex-start;
-            /* Align items to the start */
         }
 
         .image-item {
             position: relative;
-            /* Make this the positioning context for the button */
             width: calc(25% - 10px);
-            /* Set width for each image */
         }
 
         .image-item img {
             display: block;
             width: 100%;
-            /* Ensure the image takes up the full container width */
             height: auto;
             object-fit: cover;
-            /* Ensure the images maintain aspect ratio */
         }
 
         .image-item button {
@@ -137,6 +130,7 @@ if (is_post()) {
             </div>
 
             <br />
+            <!-- upload photo feature -->
             <form action="" method="post" enctype="multipart/form-data">
                 <div class="product-details">
                     <div class="input-box">

@@ -104,14 +104,12 @@ if (is_post()) {
         <div class="content">
             <form method="post" action="">
                 <div class="product-details">
-
+                    <!-- input field  -->
                     <div class="input-box">
                         <label class="details" for="name">Product Name</label>
                         <?= html_text('name', 'minlength="5" maxlength="100" required') ?>
                         <?= err('name') ?>
                     </div>
-
-
 
                     <div class="input-box">
                         <label class="details" for="price">Price</label>

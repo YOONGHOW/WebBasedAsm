@@ -11,6 +11,7 @@ $category_id = getNextId($_db, 'C', 'category_id', 'category');
 
 if(is_post()){
 
+    //store the data post by user
     $name = $_POST['name'];
     $description = $_POST['description'];
 
@@ -23,6 +24,7 @@ if(is_post()){
     }
 
     if(empty($_err)){
+        //insert data into category table
         $sql = "INSERT INTO category(category_id,category_name,category_description) VALUES(:category_id,:category_name,:category_description)";
         $stmt = $_db->prepare($sql);
         $stmt->bindParam('category_id',$category_id);
