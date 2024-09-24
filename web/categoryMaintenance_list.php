@@ -8,7 +8,7 @@ require '../helperFile/ProductMaintenance_base.php';
 // Get search information from the user
 $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-// SQL query to fetch categories with search functionality
+// fetch all category data 
 $sql = "SELECT * FROM CATEGORY WHERE 1=1";
 if ($search) {
     $sql .= ' AND category_name LIKE :search';
