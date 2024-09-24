@@ -217,7 +217,7 @@ try {
                                         <br><p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
                                 </div>
                             </div>
-                            </form>
+                            
 
                     <?php
                         }
@@ -248,12 +248,11 @@ try {
                         <p class="label">Total Payment:</p>
                         <p id="totalPayment">RM <?= number_format($total_payment, 2) ?></p>
                     </div>
-                    <form method="POST" action="cart.php">
+
                     <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
-                </form>
                 </div>
 
-
+                </form>
                 </div>
             </section>
             <br>

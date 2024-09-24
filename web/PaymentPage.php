@@ -45,7 +45,8 @@ $paymentMethods = [
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
-    $paymentid, $shippingfee, $payementStatus, $ref_payment, $paymentAmount;
+    $paymentid, $shippingfee, $payementStatus, $ref_payment, $paymentAmount, $sub_payment;
+$orderInserSucess = "";
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $payment_date = date('Y-m-d'); // Current date
 $payment_time = date('H:i:s'); // Current time
@@ -105,37 +106,36 @@ if (is_post()) {
     } else if (strlen($cardholder) >= 200) {
         $_err['holder'] =  "Card Holder Name is limit in 200 words";
     }
-    //  if (empty($_err)) {
-
-    $stm = $_db->prepare('SELECT payment_id FROM payment');
-
-    $stm->execute();
-
-    $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-    if (count($result) > 0) {
-        $lastPaymentId = $result[count($result) - 1]['payment_id'];
-        $paymentidDB = substr($lastPaymentId, 1);
-    }
-
-    $paymentidDB++;
-    if ($paymentidDB <= 0) {
-        $paymentid = "P001";
-    } else {
-        if ($paymentidDB < 10) {
-            $paymentid = "P00" . $paymentidDB;
-        } else if ($paymentidDB < 100) {
-            $paymentid = "P0" . $paymentidDB;
-        } else if ($paymentidDB < 1000) {
-            $paymentid = "P" . $paymentidDB;
-        }
-    }
-
     if (empty($_err)) {
+
+        $stm = $_db->prepare('SELECT payment_id FROM payment ORDER BY payment_id');
+
+        $stm->execute();
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($result) > 0) {
+            $lastPaymentId = $result[count($result) - 1]['payment_id'];
+            $paymentidDB = substr($lastPaymentId, 1);
+        }
+
+        if ($paymentidDB <= 0) {
+            $paymentid = "P001";
+        } else {
+            $paymentidDB++;
+            if ($paymentidDB < 10) {
+                $paymentid = "P00" . $paymentidDB;
+            } else if ($paymentidDB < 100) {
+                $paymentid = "P0" . $paymentidDB;
+            } else if ($paymentidDB < 1000) {
+                $paymentid = "P" . $paymentidDB;
+            }
+        }
+
         //get id
 
         $orderQuery = $_db->prepare('
-            SELECT order_id from orders');
+            SELECT order_id from orders Order By order_id');
         $orderQuery->execute();
         $orderID = $orderQuery->fetchAll(PDO::FETCH_ASSOC);
 
@@ -145,10 +145,10 @@ if (is_post()) {
             $orderDB = substr($lastOrderId, 1);
         }
 
-        $orderDB++;
         if ($orderDB <= 0) {
             $orderid = "O001";
         } else {
+            $orderDB++;
             if ($orderDB < 10) {
                 $orderid = "O00" . $orderDB;
             } else if ($orderDB < 100) {
@@ -185,7 +185,9 @@ if (is_post()) {
 
         $orderInseret->execute();
         if ($orderInseret->rowCount() > 0) {
+
             $itemOrder = $_SESSION['selectedItems'];
+
             foreach ($itemOrder as $product) {
                 $orderbridge = $_db->prepare('
             Insert INTO orders_detail (order_id,product_id,product_quantity)
@@ -197,10 +199,55 @@ if (is_post()) {
                 $orderbridge->bindParam(3, $product['quantity']);
                 $orderbridge->execute();
             }
+            $orderInserSucess = "True";
         }
+
+        //insert bank card
+        if ($paymentMethod == "C") {
+            $bankCardInseret = $_db->prepare('
+        Insert INTO bank_card (cardNumber, user_id, Card_vcc, Card_date, Card_holder)
+        value(?,?,?,?,?)
+        ');
+
+            $bankCardInseret->bindParam(1, $cardNumber);
+            $bankCardInseret->bindParam(2, $userID);
+            $bankCardInseret->bindParam(3, $cvv);
+            $bankCardInseret->bindParam(4, $currentYear);
+            $bankCardInseret->bindParam(5, $cardholder);
+
+            $bankCardInseret->execute();
+        }
+
+
+        //insert Payment
+        $paymentInseret = $_db->prepare('
+        Insert INTO payment (payment_id, order_id, tax_id, cardNumber, payment_date, payment_time,
+        payment_amount,payment_shipping_fee,payment_method,payment_status)
+        value(?,?,?,?,?,?,?,?,?,?)
+        ');
+
+        $paymentInseret->bindParam(1, $paymentid);
+        $paymentInseret->bindParam(2, $orderid);
+        $paymentInseret->bindValue(3, "T001");
+        $paymentInseret->bindParam(4, $cardNumber);
+        $paymentInseret->bindParam(5, $payment_date);
+        $paymentInseret->bindParam(6, $payment_time);
+        $paymentInseret->bindParam(7, $paymentAmount);
+        $paymentInseret->bindParam(8, $shippingfee);
+        $paymentInseret->bindParam(9, $paymentMethod);
+        $paymentInseret->bindValue(10, "S");
+        $paymentInseret->execute();
+
+        $alertMessage = "Successful make payment !"; // Customize your alert message
+        $redirectUrl = "home.php";
+        unset($_SESSION['selectedItems']);
+        echo '<script type="text/javascript">';
+        echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
+        echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
+        echo '</script>';
+        exit();
     }
 }
-
 global $itemOrder;
 $ids = [];
 $itemOrder = [];
@@ -230,6 +277,10 @@ if (isset($_SESSION['selectedItems'])) {
 ?>
 
 <body>
+    <div class="loadpage">
+        <img src="../image/loading.gif" alt="loading">
+        <p>Connection...</p>
+    </div>
     <div class="paymentContainer" id="paymentContainer">
 
         <div class="Infocontainer">
@@ -254,6 +305,7 @@ if (isset($_SESSION['selectedItems'])) {
                     foreach ($result as $product) {
                         if ($product['product_id'] == $orderDetails['id']) {
                             $subtotal = $product['product_price'] * $orderDetails['quantity'];
+                            $sub_payment += $subtotal;
                 ?>
 
                             <div class="orderContainer container<?= $countNum ?>" id="orderContainer"
@@ -275,6 +327,7 @@ if (isset($_SESSION['selectedItems'])) {
                 } ?>
             </div>
         </div>
+        <input type="hidden" id="recordIn" value="<?= $orderInserSucess ?>">
         <form method="POST" action="PaymentPage.php">
             <div class="paymentMethod">
                 <div class="paymentWord">
@@ -331,13 +384,13 @@ if (isset($_SESSION['selectedItems'])) {
                         <label for="subtotalcal">
                             Subtotal
                         </label>
-                        <input type="text" id="subtotalcal" name="subtotalcal">
+                        <input type="text" id="subtotalcal" name="subtotalcal" value="RM <?= $sub_payment ?>">
                     </div>
                     <div class="subtotal">
                         <label for="shiping">
                             Shipping Fee
                         </label>
-                        <input type="text" id="shiping" name="shiping">
+                        RM<input type="text" id="shiping" name="shiping" value="4.90">
                     </div>
                     <div class="discountcal">
                         <label for="discountcal">
@@ -349,14 +402,14 @@ if (isset($_SESSION['selectedItems'])) {
                         <label for="totalcal">
                             Total
                         </label>
-                        <input type="text" id="totalcal" name="totalcal">
+                        <input type="text" id="totalcal" name="totalcal" value="<?= $sub_payment + 4.9 ?>">
                     </div>
                 </div>
                 <div class="changeaddress">
                     <a id="openmodal">Change Deliver Address</a>
                 </div>
                 <div class="paybutton">
-                    <button class="paymentbtn" type="submit">Pay RM123</button>
+                    <button class="paymentbtn" id="paymentbtn" type="submit">Pay RM<?= $subtotal  + 4.9 ?></button>
                 </div>
             </div>
         </form>
@@ -472,6 +525,27 @@ if (isset($_SESSION['selectedItems'])) {
             firstContainer.click(); // Trigger the click event
         }
     }
+
+    function checkOrderInput() {
+
+        const orderInput = document.getElementById("orderIn");
+        const myDiv = document.getElementById("loadpage");
+        alert(orderInput.value.trim());
+        // Check if the input field has a value
+        if (orderInput.value.trim() !== "") {
+            myDiv.style.display = "flex"; // Show the loading div
+
+            // Hide it again after 5 seconds
+            setTimeout(function() {
+                myDiv.style.display = "none"; // Hide the loading div again
+            }, 5000); // 5000 milliseconds = 5 seconds
+        } else {
+            alert("Please enter a valid order number."); // Alert if the input is empty
+        }
+    }
+
+    // Directly check when the page loads
+    window.onload = checkOrderInput;
 </script>
 
 </html>
