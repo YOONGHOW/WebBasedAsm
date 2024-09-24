@@ -107,7 +107,6 @@ try {
             <h1 style="margin: 0;">My Cart</h1>
         </span>
 
-        <form method="POST" action="cart.php">
             <span style="display: flex;align-items: center;">
                 <input type="checkbox" name="selectAll" id="selectAll" onclick="toggle(this)" /> &nbsp;&nbsp;All</span><br>
 
@@ -116,24 +115,35 @@ try {
 
                     <ul>
                         <?php
+                         if($carts == null){
+                            echo "<p style='font-size:20px; margin-top:100px;'>No record found(s). Go to find your suitable product and add it to cart😁</p>";
+                        }
                         foreach ($carts as $cart) {
+                           
                             $product_img = "../image/" . $cart->product_IMG_name;
-                        ?>
 
+                        ?>
+                            <form method="POST" action="cart.php">
                             <div class="cart_container">
+                            <div class="cart-feature">
+                            
                                 <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
                                     data-price="<?= $cart->product_price ?>"
                                     data-quantity="<?= $cart->quantity ?>"
                                     value="<?= $cart->product_id ?>,<?= $cart->quantity ?>"
                                     onchange="updateTotal()" />
+                                    <input type="hidden" name="productID" value="<?= $cart->product_id ?>">
+                                    <button type="submit" name="deleteBtn" id="dlt_btn"><img src="../image/delete.png" class="cart_btn_img"></button>
+                                 <button name="editBtn" id="edit_btn"><img src="../image/pencil.png" class="cart_btn_img2"></button>
+                                 </div>
+
                                 <div class="cart_image_box">
                                     <img src="../image/<?= $product_img ?>" alt="<?= $cart->product_name ?>">
                                 </div>
                                 <div class="cart_details_box">
                                     <h1><?= $cart->product_name ?></h1><br>
                                     <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-                                    <p>Quantity: <?= $cart->quantity ?></p>
-
+                                    <p>Quantity: <span id="quantity_display"><?= $cart->quantity ?></span>
                                     <input type="hidden" name="quantity" value="<?= $cart->quantity ?>"
                                         min="1" max="<?= $cart->product_stock ?>"
                                         class="quantityInput"
@@ -143,6 +153,7 @@ try {
                                     <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
                                 </div>
                             </div>
+                            </form>
 
                     <?php
                         }
@@ -181,7 +192,6 @@ try {
                 </div>
             </section>
             <br>
-        </form>
 
 
     </main>
