@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteButtonImage = document.querySelector('#deleteButtonImage'); // Delete image button
     const updateButton = document.querySelector('#updateButton'); // update button
     const uploadImageButton = document.querySelector('#uploadImageButton'); // update image button
+    const updateCategoryButton = document.querySelector('#updateCategoryButton'); // update category button
+    const DeleteCategoryButton = document.querySelector('#DeleteCategoryButton'); // delete category button
+    const addCategoryButton = document.querySelector('#addCategoryButton'); // add category button
 
     form.addEventListener('submit', function(event) {
         let confirmationMessage = '';
@@ -20,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmationMessage = 'Are you sure you want to delete this Image?';
         } else if(event.submitter === uploadImageButton){
             confirmationMessage = 'Are you sure you want to update this Image?';
+        }else if(event.submitter === updateCategoryButton){
+            confirmationMessage = 'Are you sure you want to update this Category?';
+        }else if(event.submitter === DeleteCategoryButton){
+            confirmationMessage = 'Are you sure you want to delete this Category?';
+        }else if(event.submitter === addCategoryButton){
+            confirmationMessage = 'Are you sure you want to add this Category?';
         }
 
         const confirmation = confirm(confirmationMessage);

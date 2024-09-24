@@ -39,6 +39,37 @@ $arr = $stmt->fetchAll();
       height: 60px;
       border-radius: 100%;
     }
+
+    .addButton {
+    margin-top: 10px;
+    float: right;
+}
+
+  .addButton #button {
+      border-radius: 20px; 
+      border: none;
+      background-color: #6495ED;
+      font-weight: bold; 
+      height: 40px; 
+      width: 160px; 
+      cursor: pointer; 
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+  }
+
+  .addButton #button:hover {
+      background-color: #4169E1; 
+      box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
+      transform: translateY(-2px); 
+      opacity: 0.9;
+  }
+
+  .addButton #button:active {
+      background-color: #1E3A8A; 
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
+      transform: translateY(1px); 
+  }   
+
   </style>
 </head>
 
@@ -100,6 +131,11 @@ $arr = $stmt->fetchAll();
         </table>
       </div>
     </div>
+
+    <div class="addButton">
+    <button id="button" onclick="window.location.href='productAdmin_add.php'">ADD Category +</button>
+     </div>
+
   </section>
 
 </body>
