@@ -283,7 +283,7 @@ $returnStatus = [
                             <textarea rows="1"><?= $product['product_name'] ?></textarea>
                         </div>
                         <div class="quantity">
-                            <input type="text" value="<?= $product['product_quantity'] ?>" placeholder="quantity">
+                            <input type="text" value="x <?= $product['product_quantity'] ?>" placeholder="quantity">
                         </div>
                         <div class="productPrice">
                             <input type="text" value="RM <?= $product['product_price'] ?>" placeholder="price">

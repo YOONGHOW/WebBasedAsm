@@ -101,7 +101,7 @@ body {
 .orderContainer {
     width: 380px;
     height: 70px;
-    background-color: rgb(147, 144, 138);
+    background-color: rgb(192, 162, 104);
     border-radius: 10px;
     padding-left: 10px;
     padding-right: 10px;
@@ -113,7 +113,7 @@ body {
 
 .orderContainer input {
     border: none;
-    background-color: antiquewhite;
+    background-color:  rgb(192, 162, 104);
     align-items: center;
 }
 
@@ -192,7 +192,8 @@ body {
     display: flex;
     justify-items: center;
     align-items: center;
-    background-color: aqua;
+    background-color: white;
+    border: 1px solid gray;
     border-radius: 5px;
 }
 .carddetail img{
@@ -205,6 +206,8 @@ body {
     width: 195px;
     border: none;
     border-radius: 0;
+    background-color: white;
+
 }
 .carddetail input:focus{
     outline: none;
@@ -248,12 +251,19 @@ body {
     margin-bottom: 10px;
     height: 28px;
     border: 1px solid gray;
+    
 }
 .subtotal{
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 25px;
+}
+.subtotal input{
+   background-color: antiquewhite;
+    
+   text-align: right;
+   width: 100px;
 }
 .discountcal{
     display: flex;
@@ -262,6 +272,11 @@ body {
     height: 25px;
 
 }
+.discountcal input{
+   text-align: right;
+   width: 100px;
+   background-color: antiquewhite;
+} 
 .total{
     display: flex;
     justify-content: space-between;
@@ -273,6 +288,9 @@ body {
 }
 .total input{
     font-weight: bold;
+   text-align: right;
+   background-color: antiquewhite;
+   width: 100px;
 }
 .paybutton{
     position: absolute;

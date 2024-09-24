@@ -50,241 +50,281 @@ $orderInserSucess = "";
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $payment_date = date('Y-m-d'); // Current date
 $payment_time = date('H:i:s'); // Current time
-if (is_post()) {
-    $email = req('paymentEmail');
-    $paymentMethod = req('paymentMethod');
-    $cardNumber = req('cardNumber');
-    $expDate = req('expDate');
-    $cvv = req('cvv');
-    $cardholder = req('cardHolderName');
-    $shippingfee = req('shiping');
-    $paymentAmount = req('totalcal');
-    if ($email == '') {
-        $_err['email'] = 'Please enter the email';
-    } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
-        $_err['email'] = 'Invalid email format';
-    }
-    if ($paymentMethod == '') {
-        $_err['paymentMethod'] = 'Please select Payment Method';
-    } else if (!array_key_exists($paymentMethod, $paymentMethods)) {
-        $_err['paymentMethod'] = 'Please select valid Payment Method';
+
+//get addressID
+global $addressid, $address1, $state, $city, $zip, $contactname, $phonecontect;
+$addressQuery = $_db->prepare('
+           SELECT * from address where user_id=:user_id ');
+
+$addressQuery->bindParam(':user_id', $userID);
+
+$addressQuery->execute();
+$addressIDDB = $addressQuery->fetch(PDO::FETCH_ASSOC);
+if ($addressIDDB) {
+    $addressid = (string)$addressIDDB['address_id'];
+    $address1 = $addressIDDB['complete_address'];
+    $state = $addressIDDB['state'];
+    $city = $addressIDDB['city'];
+    $zip = $addressIDDB['zipCode'];
+    $contactname = $addressIDDB['contact_name'];
+    $phonecontect = $addressIDDB['contact_phone'];
+} else {
+    $addressid = "null";
+    $addressgetID = $_db->prepare('
+           SELECT * from address order by address_id');
+
+
+    $addressgetID->execute();
+    $addressgetIDall = $addressgetID->fetchAll(PDO::FETCH_ASSOC);
+
+    if (count($addressgetIDall) > 0) {
+        $lastaddressId = $addressgetIDall[count($addressgetIDall) - 1]['address_id'];
+        $nextaddressId = substr($lastaddressId, 1);
     }
 
-    if ($cardNumber == '') {
-        $_err['card'] = 'Please enter Card Number';
-    } elseif (!preg_match('/^\d{16}$/', $cardNumber)) {
-        $_err['card'] = 'Please enter a valid Card Number (16 digits)';
+    if ($nextaddressId <= 0) {
+        $addressID = "A001";
     } else {
-        // If card number is valid, check the expiration date
-        if ($expDate == '') {
-            $_err['card'] = 'Please enter the Expiration date of the card';
-        } elseif (!preg_match('/^(0[1-9]|1[0-2])\/([0-9]{2})$/', $expDate, $matches)) {
-            $_err['card'] = 'Please enter a valid Expiration date of the card (MM/YY)';
-        } else {
-            // Extract month and year from the matched pattern
-            $expMonth = $matches[1]; // MM part
-            $expYear = $matches[2];  // YY part
-
-            // Get the current month and year
-            $currentYear = (int)date("y");  // Current year in YY format
-            $currentMonth = (int)date("m"); // Current month in MM format
-            $expYearFull = 2000 + (int)$expYear; // Convert 2-digit year to 4-digit year (e.g., 23 becomes 2023)
-
-            // Check if the card is expired
-            if ($expYearFull < (int)date("Y") || ($expYearFull == (int)date("Y") && (int)$expMonth < $currentMonth)) {
-                $_err['card'] = "The card is expired.";
-            }
-            if ($cvv == '') {
-                $_err['card'] = 'Please enter CVV';
-            } else if (!preg_match('/^\d{3}$/', $cvv)) {
-                $_err['card'] = 'Please enter valid CVV (In 3 digit)';
-            }
+        $nextaddressId++;
+        if ($nextaddressId < 10) {
+            $addressID = "A00" . $nextaddressId;
+        } else if ($nextaddressId < 100) {
+            $addressID = "A0" . $nextaddressId;
+        } else if ($nextaddressId < 1000) {
+            $addressID = "A" . $nextaddressId;
         }
     }
-    if ($cardholder == '') {
-        $_err['holder'] =  "Please enter Card Holder Name";
-    } else if (strlen($cardholder) >= 200) {
-        $_err['holder'] =  "Card Holder Name is limit in 200 words";
-    }
-    if (empty($_err)) {
+}
 
-        $stm = $_db->prepare('SELECT payment_id FROM payment ORDER BY payment_id');
 
-        $stm->execute();
-
-        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($result) > 0) {
-            $lastPaymentId = $result[count($result) - 1]['payment_id'];
-            $paymentidDB = substr($lastPaymentId, 1);
+if (is_post()) {
+    if (isset($_POST['paymentEmail'])) {
+        $email = req('paymentEmail');
+        $paymentMethod = req('paymentMethod');
+        $cardNumber = req('cardNumber');
+        $expDate = req('expDate');
+        $cvv = req('cvv');
+        $cardholder = req('cardHolderName');
+        $shippingfee = req('shiping');
+        $paymentAmount = req('totalcal');
+        if ($email == '') {
+            $_err['email'] = 'Please enter the email';
+        } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
+            $_err['email'] = 'Invalid email format';
+        }
+        if ($paymentMethod == '') {
+            $_err['paymentMethod'] = 'Please select Payment Method';
+        } else if (!array_key_exists($paymentMethod, $paymentMethods)) {
+            $_err['paymentMethod'] = 'Please select valid Payment Method';
         }
 
-        if ($paymentidDB <= 0) {
-            $paymentid = "P001";
+        if ($cardNumber == '') {
+            $_err['card'] = 'Please enter Card Number';
+        } elseif (!preg_match('/^\d{16}$/', $cardNumber)) {
+            $_err['card'] = 'Please enter a valid Card Number (16 digits)';
         } else {
-            $paymentidDB++;
-            if ($paymentidDB < 10) {
-                $paymentid = "P00" . $paymentidDB;
-            } else if ($paymentidDB < 100) {
-                $paymentid = "P0" . $paymentidDB;
-            } else if ($paymentidDB < 1000) {
-                $paymentid = "P" . $paymentidDB;
+            // If card number is valid, check the expiration date
+            if ($expDate == '') {
+                $_err['card'] = 'Please enter the Expiration date of the card';
+            } elseif (!preg_match('/^(0[1-9]|1[0-2])\/([0-9]{2})$/', $expDate, $matches)) {
+                $_err['card'] = 'Please enter a valid Expiration date of the card (MM/YY)';
+            } else {
+                // Extract month and year from the matched pattern
+                $expMonth = $matches[1]; // MM part
+                $expYear = $matches[2];  // YY part
+
+                // Get the current month and year
+                $currentYear = (int)date("y");  // Current year in YY format
+                $currentMonth = (int)date("m"); // Current month in MM format
+                $expYearFull = 2000 + (int)$expYear; // Convert 2-digit year to 4-digit year (e.g., 23 becomes 2023)
+
+                // Check if the card is expired
+                if ($expYearFull < (int)date("Y") || ($expYearFull == (int)date("Y") && (int)$expMonth < $currentMonth)) {
+                    $_err['card'] = "The card is expired.";
+                }
+                if ($cvv == '') {
+                    $_err['card'] = 'Please enter CVV';
+                } else if (!preg_match('/^\d{3}$/', $cvv)) {
+                    $_err['card'] = 'Please enter valid CVV (In 3 digit)';
+                }
             }
         }
+        if ($cardholder == '') {
+            $_err['holder'] =  "Please enter Card Holder Name";
+        } else if (strlen($cardholder) >= 200) {
+            $_err['holder'] =  "Card Holder Name is limit in 200 words";
+        }
 
-        //get id
+        if (empty($_err)) {
 
-        $orderQuery = $_db->prepare('
+            $stm = $_db->prepare('SELECT payment_id FROM payment ORDER BY payment_id');
+
+            $stm->execute();
+
+            $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+            if (count($result) > 0) {
+                $lastPaymentId = $result[count($result) - 1]['payment_id'];
+                $paymentidDB = substr($lastPaymentId, 1);
+            }
+
+            if ($paymentidDB <= 0) {
+                $paymentid = "P001";
+            } else {
+                $paymentidDB++;
+                if ($paymentidDB < 10) {
+                    $paymentid = "P00" . $paymentidDB;
+                } else if ($paymentidDB < 100) {
+                    $paymentid = "P0" . $paymentidDB;
+                } else if ($paymentidDB < 1000) {
+                    $paymentid = "P" . $paymentidDB;
+                }
+            }
+
+            //get id
+
+            $orderQuery = $_db->prepare('
             SELECT order_id from orders Order By order_id');
-        $orderQuery->execute();
-        $orderID = $orderQuery->fetchAll(PDO::FETCH_ASSOC);
+            $orderQuery->execute();
+            $orderID = $orderQuery->fetchAll(PDO::FETCH_ASSOC);
 
 
-        if (count($orderID) > 0) {
-            $lastOrderId = $orderID[count($orderID) - 1]['order_id'];
-            $orderDB = substr($lastOrderId, 1);
-        }
-
-        if ($orderDB <= 0) {
-            $orderid = "O001";
-        } else {
-            $orderDB++;
-            if ($orderDB < 10) {
-                $orderid = "O00" . $orderDB;
-            } else if ($orderDB < 100) {
-                $orderid = "O0" . $orderDB;
-            } else if ($orderDB < 1000) {
-                $orderid = "O" . $orderDB;
+            if (count($orderID) > 0) {
+                $lastOrderId = $orderID[count($orderID) - 1]['order_id'];
+                $orderDB = substr($lastOrderId, 1);
             }
-        }
 
-        //get addressID
-        $addressQuery = $_db->prepare('
-            SELECT address_id from address where user_id=:user_id');
+            if ($orderDB <= 0) {
+                $orderid = "O001";
+            } else {
+                $orderDB++;
+                if ($orderDB < 10) {
+                    $orderid = "O00" . $orderDB;
+                } else if ($orderDB < 100) {
+                    $orderid = "O0" . $orderDB;
+                } else if ($orderDB < 1000) {
+                    $orderid = "O" . $orderDB;
+                }
+            }
 
-        $addressQuery->bindParam(':user_id', $userID);
 
-        $addressQuery->execute();
-        $addressIDDB = $addressQuery->fetch(PDO::FETCH_ASSOC);
-        if ($addressIDDB) {
-            $addressID = (string)$addressIDDB['address_id'];
-        }
 
-        //insert Order
-        $orderInseret = $_db->prepare('
+            //insert Order
+            $orderInseret = $_db->prepare('
         Insert INTO orders (order_id, user_id, order_date, order_time, order_status, address_id)
         value(?,?,?,?,?,?)
         ');
 
-        $orderInseret->bindParam(1, $orderid);
-        $orderInseret->bindParam(2, $userID);
-        $orderInseret->bindParam(3, $payment_date);
-        $orderInseret->bindParam(4, $payment_time);
-        $orderInseret->bindValue(5, 'S');
-        $orderInseret->bindParam(6, $addressID);
+            $orderInseret->bindParam(1, $orderid);
+            $orderInseret->bindParam(2, $userID);
+            $orderInseret->bindParam(3, $payment_date);
+            $orderInseret->bindParam(4, $payment_time);
+            $orderInseret->bindValue(5, 'S');
+            $orderInseret->bindParam(6, $addressid);
 
-        $orderInseret->execute();
-        if ($orderInseret->rowCount() > 0) {
+            $orderInseret->execute();
+            if ($orderInseret->rowCount() > 0) {
 
-            $itemOrder = $_SESSION['selectedItems'];
+                $itemOrder = $_SESSION['selectedItems'];
 
-            foreach ($itemOrder as $product) {
-                $orderbridge = $_db->prepare('
+                foreach ($itemOrder as $product) {
+                    $orderbridge = $_db->prepare('
             Insert INTO orders_detail (order_id,product_id,product_quantity)
             value(?,?,?)
             ');
 
-                $orderbridge->bindParam(1, $orderid);
-                $orderbridge->bindParam(2, $product['id']);
-                $orderbridge->bindParam(3, $product['quantity']);
-                $orderbridge->execute();
+                    $orderbridge->bindParam(1, $orderid);
+                    $orderbridge->bindParam(2, $product['id']);
+                    $orderbridge->bindParam(3, $product['quantity']);
+                    $orderbridge->execute();
+                }
+                $orderInserSucess = "True";
             }
-            $orderInserSucess = "True";
-        }
 
-        //insert bank card
-        if ($paymentMethod == "C") {
-            $bankCardInseret = $_db->prepare('
+            //insert bank card
+            if ($paymentMethod == "C") {
+                $bankCardInseret = $_db->prepare('
         Insert INTO bank_card (cardNumber, user_id, Card_vcc, Card_date, Card_holder)
         value(?,?,?,?,?)
         ');
 
-            $bankCardInseret->bindParam(1, $cardNumber);
-            $bankCardInseret->bindParam(2, $userID);
-            $bankCardInseret->bindParam(3, $cvv);
-            $bankCardInseret->bindParam(4, $currentYear);
-            $bankCardInseret->bindParam(5, $cardholder);
+                $bankCardInseret->bindParam(1, $cardNumber);
+                $bankCardInseret->bindParam(2, $userID);
+                $bankCardInseret->bindParam(3, $cvv);
+                $bankCardInseret->bindParam(4, $currentYear);
+                $bankCardInseret->bindParam(5, $cardholder);
 
-            $bankCardInseret->execute();
-        }
+                $bankCardInseret->execute();
+            }
 
 
-        //insert Payment
-        $paymentInseret = $_db->prepare('
+            //insert Payment
+            $paymentInseret = $_db->prepare('
         Insert INTO payment (payment_id, order_id, tax_id, cardNumber, payment_date, payment_time,
         payment_amount,payment_shipping_fee,payment_method,payment_status)
         value(?,?,?,?,?,?,?,?,?,?)
         ');
 
-        $paymentInseret->bindParam(1, $paymentid);
-        $paymentInseret->bindParam(2, $orderid);
-        $paymentInseret->bindValue(3, "T001");
-        $paymentInseret->bindParam(4, $cardNumber);
-        $paymentInseret->bindParam(5, $payment_date);
-        $paymentInseret->bindParam(6, $payment_time);
-        $paymentInseret->bindParam(7, $paymentAmount);
-        $paymentInseret->bindParam(8, $shippingfee);
-        $paymentInseret->bindParam(9, $paymentMethod);
-        $paymentInseret->bindValue(10, "S");
-        $paymentInseret->execute();
+            $paymentInseret->bindParam(1, $paymentid);
+            $paymentInseret->bindParam(2, $orderid);
+            $paymentInseret->bindValue(3, "T001");
+            $paymentInseret->bindParam(4, $cardNumber);
+            $paymentInseret->bindParam(5, $payment_date);
+            $paymentInseret->bindParam(6, $payment_time);
+            $paymentInseret->bindParam(7, $paymentAmount);
+            $paymentInseret->bindParam(8, $shippingfee);
+            $paymentInseret->bindParam(9, $paymentMethod);
+            $paymentInseret->bindValue(10, "S");
+            $paymentInseret->execute();
 
 
 
 
-        $shipingQuery = $_db->prepare('
+            $shipingQuery = $_db->prepare('
             SELECT  shipping_pacel_ref from shipping_detail order By shipping_pacel_ref');
-        $shipingQuery->execute();
-        $shippingID = $shipingQuery->fetchAll(PDO::FETCH_ASSOC);
+            $shipingQuery->execute();
+            $shippingID = $shipingQuery->fetchAll(PDO::FETCH_ASSOC);
 
 
-        if (count($shippingID) > 0) {
-            $lastShippingId = $shippingID[count($shippingID) - 1]['order_id'];
-            $shippingDB = substr($lastShippingId, 3);
-        }
-
-        if ($shippingDB <= 0) {
-            $shippingid = "SHP001";
-        } else {
-            $shippingDB++;
-            if ($shippingDB < 10) {
-                $shippingid = "SHP00" . $shippingDB;
-            } else if ($shippingDB < 100) {
-                $shippingid = "SHP0" . $shippingDB;
-            } else if ($shippingDB < 1000) {
-                $shippingid = "SHP" . $shippingDB;
+            if (count($shippingID) > 0) {
+                $lastShippingId = $shippingID[count($shippingID) - 1]['shipping_pacel_ref'];
+                $shippingDB = substr($lastShippingId, 3);
             }
-        }
 
-        $shipmentInseret = $_db->prepare('
+            if ($shippingDB <= 0) {
+                $shippingid = "SHP001";
+            } else {
+                $shippingDB++;
+                if ($shippingDB < 10) {
+                    $shippingid = "SHP00" . $shippingDB;
+                } else if ($shippingDB < 100) {
+                    $shippingid = "SHP0" . $shippingDB;
+                } else if ($shippingDB < 1000) {
+                    $shippingid = "SHP" . $shippingDB;
+                }
+            }
+
+            $shipmentInseret = $_db->prepare('
         Insert INTO shipping_detail (shipping_pacel_ref, order_id, shipping_company, shipping_status)
         value(?,?,?,?)
         ');
 
-        $shipmentInseret->bindParam(1, $shippingid);
-        $shipmentInseret->bindParam(2, $orderid);
-        $shipmentInseret->bindValue(3, "");
-        $shipmentInseret->bindValue(4, "P");
-        $shipmentInseret->execute();
+            $shipmentInseret->bindParam(1, $shippingid);
+            $shipmentInseret->bindParam(2, $orderid);
+            $shipmentInseret->bindValue(3, "");
+            $shipmentInseret->bindValue(4, "P");
+            $shipmentInseret->execute();
 
 
-        $alertMessage = "Successful make payment !"; // Customize your alert message
-        $redirectUrl = "home.php";
-        unset($_SESSION['selectedItems']);
-        echo '<script type="text/javascript">';
-        echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
-        echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
-        echo '</script>';
-        exit();
+            $alertMessage = "Successful make payment !"; // Customize your alert message
+            $redirectUrl = "home.php";
+            unset($_SESSION['selectedItems']);
+            echo '<script type="text/javascript">';
+            echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
+            echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
+            echo '</script>';
+            exit();
+        }
     }
 }
 global $itemOrder;
@@ -311,6 +351,37 @@ if (isset($_SESSION['selectedItems'])) {
 
 
         $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+
+if (is_post()) {
+    // Retrieve form values
+    if (isset($_POST['address'])) {
+        $receiverName = $_POST['receivername'];
+        $receiverPhone = $_POST['receiverphone'];
+        $addressLine1 = $_POST['addressline1'];
+        $state = $_POST['malaysia_state'];
+        $city = $_POST['city'];
+        $zipCode = $_POST['zipCode'];
+
+        $stmt = $_db->prepare("INSERT INTO address (address_id, user_id, contact_name, contact_phone, complete_address, city, zipCode, state) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Bind each variable to the statement
+        $stmt->bindParam(1, $addressID);
+        $stmt->bindParam(2, $userID);
+        $stmt->bindParam(3, $receiverName);
+        $stmt->bindParam(4, $receiverPhone);
+        $stmt->bindParam(5, $addressLine1);
+        $stmt->bindParam(6, $city);
+        $stmt->bindParam(7, $zipCode);
+        $stmt->bindParam(8, $state);
+
+        // Execute the statement
+        $stmt->execute();
+        header("Location: http://localhost:8000/web/PaymentPage.php");
+
     }
 }
 ?>
@@ -367,7 +438,7 @@ if (isset($_SESSION['selectedItems'])) {
             </div>
         </div>
         <input type="hidden" id="recordIn" value="<?= $orderInserSucess ?>">
-        <form method="POST" action="PaymentPage.php">
+        <form method="POST" action="PaymentPage.php" id="paymentForm" name="paymentForm">
             <div class="paymentMethod">
                 <div class="paymentWord">
                     <p>Payment Details</p>
@@ -429,7 +500,7 @@ if (isset($_SESSION['selectedItems'])) {
                         <label for="shiping">
                             Shipping Fee
                         </label>
-                        RM<input type="text" id="shiping" name="shiping" value="4.90">
+                        <input type="text" id="shiping" name="shiping" value="RM 4.90">
                     </div>
                     <div class="discountcal">
                         <label for="discountcal">
@@ -441,81 +512,78 @@ if (isset($_SESSION['selectedItems'])) {
                         <label for="totalcal">
                             Total
                         </label>
-                        <input type="text" id="totalcal" name="totalcal" value="<?= $sub_payment + 4.9 ?>">
+                        <input type="text" id="totalcal" name="totalcal" value="RM <?= number_format($sub_payment + 4.9, 2) ?>">
                     </div>
                 </div>
                 <div class="changeaddress">
-                    <a id="openmodal">Change Deliver Address</a>
+                    <a id="openmodal" style="display: none;">Change Delive  r Address</a>
                 </div>
+
+
                 <div class="paybutton">
-                    <button class="paymentbtn" id="paymentbtn" type="submit">Pay RM<?= $subtotal  + 4.9 ?></button>
+                    <button class="paymentbtn" id="payment_add" name="payment_add" onclick="checkAddressAndSubmit()" type="button">Pay RM<?= number_format($sub_payment + 4.9, 2)  ?></button>
                 </div>
             </div>
         </form>
-
     </div>
     <div class="modelwindows" id="modelwindows">
-        <div class="modelherder">
-            <p>
-                Change Deliver Address
-            </p>
-            <a id="closemodal"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-close-round-512.png" alt="close"></a>
-        </div>
-        <div class="addressConainer">
-            <div class="form-group">
-                <div class="labels receiver">
-                    <label for="receivername">Name</label>
-                    <label for="receiverphone">Phone Number</label>
+        <form action="" method="post" class="modelAddress">
+            <div class="modelherder">
+                <p>
+                    Change Deliver Address
+                    <input type="hidden" id="addressID" value="<?= $addressid ?>">
+                </p>
+                <a id="closemodal"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-close-round-512.png" alt="close"></a>
+            </div>
+            <div class="addressConainer">
+                <div class="form-group">
+                    <div class="labels receiver">
+                        <label for="receivername">Name</label>
+                        <label for="receiverphone">Phone Number</label>
+                    </div>
+
+                    <div class="inputs receiverInput">
+                        <input type="text" placeholder="Name" id="receivername" name="receivername" value="<?= $contactname ?>">
+                        <input type="text" placeholder="Phone Number" id="receiverphone" name="receiverphone" value="<?= $phonecontect ?>">
+                    </div>
+                </div>
+                <label for="addressline1">
+                    Address line 1
+                </label>
+                <input type="text" placeholder="Address line1" id="addressline1" name="addressline1" value="<?= $address1 ?>">
+                <label for="State">
+                    State
+                </label>
+                <select name="malaysia_state" id="malaysia_state">
+                    <option value="" disabled>Select State</option>
+                    <?php
+
+                    // Loop through the states to create options
+                    foreach ($states as $key => $value) {
+                        // Check if the current state matches the one stored in the database
+                        $selected = ($key === $state) ? 'selected' : '';
+                        echo "<option value='$key' $selected>$value</option>";
+                    }
+                    ?>
+                </select>
+                <div class="form-group">
+                    <div class="labels">
+                        <label for="city">City</label>
+                        <label for="zipCode">Zip Code</label>
+                    </div>
+
+                    <div class="inputs">
+                        <input type="text" placeholder="City" id="city" name="city" value="<?= $city ?>">
+                        <input type="text" placeholder="Zip Code" id="zipCode" name="zipCode" value="<?= $zip ?>">
+                    </div>
+                </div>
+                <div class="modelbutton">
+                    <button>Cancel</button>
+                    <button type="submit" name="address">Submit</button>
                 </div>
 
-                <div class="inputs receiverInput">
-                    <input type="text" placeholder="Name" id="receivername" name="receivername">
-                    <input type="text" placeholder="Phone Number" id="receiverphone" name="receiverphone">
-                </div>
             </div>
-            <label for="addressline1">
-                Address line 1
-            </label>
-            <input type="text" placeholder="Address line1" id="addressline1" name="addressline1">
-            <label for="addressline2">
-                Address line 2 (Optional)
-            </label>
-            <input type="text" placeholder="Address line2" id="addressline1" name="addressline2">
-            <label for="State">
-                State
-            </label>
-            <select name="malaysia_state" id="malaysia_state">
-                <option value="johor">Johor</option>
-                <option value="kedah">Kedah</option>
-                <option value="kelantan">Kelantan</option>
-                <option value="melaka">Malacca (Melaka)</option>
-                <option value="negeri_sembilan">Negeri Sembilan</option>
-                <option value="pahang">Pahang</option>
-                <option value="penang">Penang (Pulau Pinang)</option>
-                <option value="perak">Perak</option>
-                <option value="perlis">Perlis</option>
-                <option value="selangor">Selangor</option>
-                <option value="terengganu">Terengganu</option>
-                <option value="sabah">Sabah</option>
-                <option value="sarawak">Sarawak</option>
-            </select>
-            <div class="form-group">
-                <div class="labels">
-                    <label for="city">City</label>
-                    <label for="zipCode">Zip Code</label>
-                </div>
-
-                <div class="inputs">
-                    <input type="text" placeholder="City" id="city" name="city">
-                    <input type="text" placeholder="Zip Code" id="zipCode" name="zipCode">
-                </div>
-            </div>
-            <div class="modelbutton">
-                <button>Cancel</button>
-                <button type="submit">Submit</button>
-            </div>
-
-        </div>
+        </form>
     </div>
 </body>
 <script>
@@ -531,11 +599,6 @@ if (isset($_SESSION['selectedItems'])) {
         modal.style.display = "none";
     });
 
-    window.addEventListener("click", function(event) {
-        if (event.target != modal && event.target != openmodal) {
-            modal.style.display = "none";
-        }
-    });
     var selectedContainer = null;
 
     function handleClick(element) {
@@ -565,6 +628,20 @@ if (isset($_SESSION['selectedItems'])) {
         }
     }
 
+    function checkAddressAndSubmit() {
+        // Get the address input value
+        var addressID = document.getElementById('addressID').value;
+
+        // Check if the address is empty
+        if (addressID == "null") {
+            // Display the modal if the address is empty
+            modal.style.display = "block";
+            console.log(modal.style.display);
+        } else {
+            // Submit the form if the address is not empty
+            document.getElementById('paymentForm').submit();
+        }
+    }
 </script>
 
 </html>

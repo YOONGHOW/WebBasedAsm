@@ -1,7 +1,7 @@
 .nav_order{
     display: flex; 
     justify-content: space-around;
-    background-color:rgb(247, 228, 203);
+    background-color:  #b5b0b0;
     height: 45px;
     width: 1000px;
     margin-bottom: 10px;
@@ -19,7 +19,7 @@
     text-decoration: none;
     align-content: center;
     font-size: 18px;
-    color: rgb(121, 114, 104);
+    color: rgb(13, 12, 10);
     width: 120px;
     text-align: center;
     justify-content: center;
@@ -29,6 +29,6 @@
     transition: background-color 0.3s ease, border-bottom 0.3s ease;
 }
 .nav_order a:hover {
-    background-color: #f0d5aa;
+    background-color: #796e5d;
     border-bottom: 3px solid gray;
 }
