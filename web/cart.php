@@ -137,7 +137,7 @@ try {
     <!-- htmlt-->
 
     <main style="min-height: 500px;">
-
+    <form method="POST" action="cart.php">
         <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
             <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
             <h1 style="margin: 0;">My Cart</h1>
@@ -239,7 +239,7 @@ try {
                             </div>
                         </div>
 
-
+                        </form>
                 <?php
                     }
                 } catch (PDOException $e) {
@@ -269,11 +269,12 @@ try {
                     <p class="label">Total Payment:</p>
                     <p id="totalPayment">RM <?= number_format($total_payment, 2) ?></p>
                 </div>
-
+                
                 <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
+            </form>
             </div>
 
-            </form>
+            
             </div>
         </section>
         <br>
