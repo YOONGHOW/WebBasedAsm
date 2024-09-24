@@ -37,15 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
     } else {
         $newCartID = generateID('CART', 'cart', 'cart_id');
         
-        $sql = "INSERT INTO cart (cart_id, user_id, product_id, quantity)
-                VALUES (:cart_id, :user_id, :product_id, :quantity)";
+        $sql = "INSERT INTO cart (cart_id, user_id, product_id)
+                VALUES (:cart_id, :user_id, :product_id)";
         
         $stmt = $_db->prepare($sql);
         $stmt->bindParam(':cart_id', $newCartID);
         $stmt->bindParam(':user_id', $userID);
-        $stmt->bindParam(':product_id', $productID);
-        $stmt->bindParam(':quantity', $quantity);
-        
+        $stmt->bindParam(':product_id', $productID);        
         if ($stmt->execute()) {
             echo '<script>
             alert("Item added to cart");
@@ -61,27 +59,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addWish'])) {
     $userID = $_user->user_id;  
     $productID = $_POST['product_id'];
-    $wishID = $_POST['wish_id'];
+    
+    $checkWishSql = "SELECT * FROM wish WHERE user_id = :user_id AND product_id = :product_id";
+    $checkWishStmt = $_db->prepare($checkWishSql);
+    $checkWishStmt->bindParam(':user_id', $userID);
+    $checkWishStmt->bindParam(':product_id', $productID);
+    $checkWishStmt->execute();
 
-    $newCartID = generateID('W', 'wish', 'wish_id');
+        $newWishID = generateID('W', 'wish', 'wish_id');
         
         $sql = "INSERT INTO wish (wish_id, user_id, product_id)
                 VALUES (:wish_id, :user_id, :product_id)";
         
         $stmt = $_db->prepare($sql);
-        $stmt->bindParam(':wish_id', $newCartID);
+        $stmt->bindParam(':wish_id', $newWishID);
         $stmt->bindParam(':user_id', $userID);
         $stmt->bindParam(':product_id', $productID);
         
         if ($stmt->execute()) {
             echo '<script>
-            alert("Add Wish Successfully");
+            alert("Item added to wishlist");
             window.location.href = "product_list.php";        
             </script>';
         } else {
-            echo "<script>alert('Error: Could not add item to cart.')</script>";
+            echo "<script>alert('Error: Could not add item to wishlist.')</script>";
         }
+    
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cancelWish'])) {
+
+    $userID = $_user->user_id;  
+    $productID = $_POST['product_id'];
+
+    $deleteWishSql = "DELETE FROM wish WHERE user_id = :user_id AND product_id = :product_id";
+    $deleteWishStmt = $_db->prepare($deleteWishSql);
+    $deleteWishStmt->bindParam(':user_id', $userID);
+    $deleteWishStmt->bindParam(':product_id', $productID);
+    
+    if ($deleteWishStmt->execute()) {
+        echo '<script>
+        alert("Item removed from wishlist");
+        window.location.href = "product_list.php";        
+        </script>';
+    } else {
+        echo "<script>alert('Error: Could not remove item from wishlist.')</script>";
+    }
+
+} 
+
 
 ?>
 
@@ -90,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addWish'])) {
 <?php
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
-    $stmt = $_db->prepare("SELECT p.*, pi.product_IMG_name 
+    $stmt = $_db->prepare("SELECT p.*, pi.product_IMG_source 
                            FROM product p 
                            LEFT JOIN product_img pi ON p.product_id = pi.product_id 
                            WHERE p.product_id = :product_id");
@@ -100,11 +126,17 @@ if (isset($_GET['product_id'])) {
     $product = $stmt->fetch(PDO::FETCH_OBJ);
 
     if ($product) {
+        $userID = $_user->user_id;  
+        $checkWishSql = "SELECT * FROM wish WHERE user_id = :user_id AND product_id = :product_id";
+        $checkWishStmt = $_db->prepare($checkWishSql);
+        $checkWishStmt->bindParam(':user_id', $userID);
+        $checkWishStmt->bindParam(':product_id', $product_id);
+        $checkWishStmt->execute();
 ?>
         <nav class="image_side">
 
         <?php
-        echo '<img src="../image/' . $product->product_IMG_name . '" alt="' . $product->product_name . '">';
+        echo '<img src="../image/' . $product->product_IMG_source . '" alt="' . $product->product_name . '">';
         ?>
         </nav>
         <div class="details_side">
@@ -124,7 +156,16 @@ if (isset($_GET['product_id'])) {
                 <input type="hidden" name="product_name" value="<?= $product->product_name ?>">
                 <input type="hidden" name="product_price" value="<?= $product->product_price ?>">
                 <input type="submit" id="addCartBtn" name="addCart" value="Add to Cart"/><br>
-                <input type="submit" id="wishBtn" name="addWish" value="Save To wishlish"/>
+
+                <?php 
+                
+                if ($checkWishStmt->rowCount() > 0) {
+                echo '<input type="submit" id="cancel_wishBtn" name="cancelWish" value="Cancel Wishlist"/>';
+                }else{
+                echo '<input type="submit" id="wishBtn" name="addWish" value="Save To wishlish"/>';
+                }
+
+                ?>
                 </form>
                 
         </div>  

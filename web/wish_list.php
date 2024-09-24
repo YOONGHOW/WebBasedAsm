@@ -24,19 +24,29 @@ try {
     $stmt->execute();
     $wishs = $stmt->fetchAll();
     ?>
-<main>
+<main  style="min-height: 600px;">
+<section>
+<h1 class="wish_title">Wish List</h1>
+<div class="wish-box">
 <?php
         foreach ($wishs as $wish) {
-        $product_img = "../image/" . $wish->product_IMG_name;
+        $product_img = "../image/" . $wish->product_IMG_source;
     ?>
-
-<img src="<?= $product_img;?>">
-
+        <div class="wish-list">
+            <div class="product-item" onclick="window.location.href='product_details.php?product_id=<?= $wish->product_id ?>'">
+            <input type="hidden" name="productID" value="<?= $wish->product_id ?>">                                 
+            <img src="../image/<?= $product_img ?>" alt="<?= $wish->product_name ?>" class="product-image">
+            <h3 class="product-name"><?= $wish->product_name ?></h3><br>
+            <p class="product-cost">Price: RM<?= number_format($wish->product_price, 2) ?></p><br>                            
+            </div>
+        </div>
  <?php 
         }
         } catch (PDOException $e) {
             echo 'Error: ' . $e->getMessage();
         }
 ?>
+</div>
+</section>
 </main>
 <?php include "footer.php"; ?>

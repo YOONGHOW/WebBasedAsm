@@ -126,6 +126,11 @@ background-color: black;
     color: #000000;
   }
 
+  .product-container {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+}
 
 
   /*Product Details Page*/
@@ -197,6 +202,17 @@ background-color: black;
     padding:10px;
     font-size: 17px;
     font-family: "Times New Roman", Times, serif;
+  }
+
+  input#cancel_wishBtn{
+    margin-top: 20px;
+    width: 60%;
+    font-weight: bold;
+    border:3px solid #d0d0d0;
+    padding:10px;
+    font-size: 17px;
+    font-family: "Times New Roman", Times, serif;
+    background-color: rgb(255, 255, 255);
   }
 
 input#quantity{
@@ -344,4 +360,18 @@ img.cart_btn_img2{
 /*Hidden text field*/
 input#quantity_input{
   border-color: #6d6d6d;
+}
+
+
+/*Wish List*/
+.wish-list {
+    display: inline-block;
+    margin-top: 40px;
+    margin-left: 40px;
+  }
+
+h1.wish_title{
+  background-color: #DEDEDE;
+  text-align: center;
+  font-size: 25px;
 }

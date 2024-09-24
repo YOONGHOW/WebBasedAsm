@@ -53,7 +53,7 @@ $stmt = $_db->prepare("
             $selectedCategory = $_POST["category"] ?? 'all';
         
             $sql = "
-                SELECT p.*, pi.product_IMG_name, c.*
+                SELECT p.*, pi.product_IMG_source, c.*
                 FROM product p
                 LEFT JOIN product_img pi ON p.product_id = pi.product_id
                 LEFT JOIN category c ON p.category_id = c.category_id
@@ -78,7 +78,7 @@ $stmt = $_db->prepare("
 
         }else {
             $stmt = $_db->prepare("
-            SELECT p.*, pi.product_IMG_name, c.*
+            SELECT p.*, pi.product_IMG_source, c.*
             FROM product p
             LEFT JOIN product_img pi ON p.product_id = pi.product_id
             LEFT JOIN category c ON p.category_id = c.category_id
@@ -93,7 +93,7 @@ $stmt = $_db->prepare("
             }
 
         foreach ($products as $product) {
-            $product_img = "../image/" . $product->product_IMG_name;
+            $product_img = "../image/" . $product->product_IMG_source;
     ?>
 
 
