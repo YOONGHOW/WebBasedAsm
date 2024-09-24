@@ -347,6 +347,18 @@ $returnStatus = [
         }
 
     };
+    var openmodal = document.getElementById("openmodal");
+    var closemodal = document.getElementById("closemodal");
+    var modal = document.getElementById("modelwindows");
+
+    openmodal.addEventListener("click", function() {
+        modal.style.display = "block";
+    });
+
+    closemodal.addEventListener("click", function() {
+        modal.style.display = "none";
+    });
+
 </script>
 
 </html>
