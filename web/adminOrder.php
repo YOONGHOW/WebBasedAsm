@@ -36,7 +36,7 @@ if (isset($_GET['search'])) {
     LEFT JOIN product ON orders_detail.product_id = product.product_id
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
     LEFT JOIN product_img ON product.product_id = product_img.product_id
-    ORDER BY orders_detail.order_id
+
 ');
     } else if ($search == 'toPay') {
         $stm = $_db->prepare('
