@@ -13,7 +13,8 @@ global $_user, $name, $ic, $date, $gender, $confirm, $password, $contact, $state
 
 $_user = $_SESSION['user'] ?? null;
 
-$id = $_user->user_id ?? null; // Make sure the user is set and has an ID
+$id = $_user->user_id ?? null; 
+
 if ($_user && $id) {
 
     if (strcmp($_user->user_rule, "user") != 0) {
@@ -22,9 +23,9 @@ if ($_user && $id) {
       }
 
     // Retrieve data from users 
-    $sqlUsers = 'SELECT * FROM users WHERE user_id = :user_id'; // Add the table name here
+    $sqlUsers = 'SELECT * FROM users WHERE user_id = :user_id'; 
     $stmtUsers = $_db->prepare($sqlUsers);
-    $stmtUsers->execute([':user_id' => $id]); // Use associative array for binding
+    $stmtUsers->execute([':user_id' => $id]); 
     $users = $stmtUsers->fetch();
 
     if ($users) {
@@ -42,7 +43,7 @@ if ($_user && $id) {
     // SQL to retrieve user address
     $sql = 'SELECT * FROM address WHERE user_id = :user_id';
     $stmt = $_db->prepare($sql);
-    $stmt->execute([':user_id' => $id]); // Correct binding
+    $stmt->execute([':user_id' => $id]); 
     $address = $stmt->fetch();
 
     if ($address) {
@@ -100,11 +101,14 @@ if (is_post()) {
     }
 
     if (empty($_err)) {
+        $photo = save_photo($photo, '../image');
+
         // Update users table
         $sql = 'UPDATE users 
                 SET user_name = :name, 
                     user_phoneNumber = :contact, 
-                    user_gender = :gender 
+                    user_gender = :gender,
+                    users_IMG_source = :photo 
                 WHERE user_id = :user_id';
 
         $stmt = $_db->prepare($sql);
@@ -112,6 +116,7 @@ if (is_post()) {
             ':name' => $name,
             ':contact' => $contact,
             ':gender' => $gender,
+            ':photo' => $photo,
             ':user_id' => $id
         ]);
 
@@ -230,6 +235,7 @@ if (is_post()) {
                         <?= err('city') ?>
                     </div>
 
+                    <div><a href='changePassword.php'>Change Password</a></div>
 
                     <div class="button">
                         <input type="submit" value="Update">

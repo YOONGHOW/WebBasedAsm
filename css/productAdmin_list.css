@@ -105,8 +105,37 @@ h1 {
   .tbl-content tr:nth-child(even) {
     background-color: rgba(248,246,255,1);
   }
+
+#photo-link{
+  color: blue;
+}
+
+#photo-link:hover{
+  background-color: #f0f0f0; 
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+
+}
+
+.action-links {
+  display: flex;
+  justify-content: center; 
+  gap: 10px; 
+}
+
+.action-links a {
+  text-decoration: none;
+  color: blue; 
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.action-links a:hover {
+  background-color: #f0f0f0; 
+}
   
-  /* Body style */
   
   body{
     background-color: #A9A9A9;

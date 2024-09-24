@@ -52,7 +52,8 @@ function html_file($key, $attr = '')
 }
 
 // function html_
-function displayCategoryList(){
+function displayCategoryList()
+{
     $categoryID = encode($GLOBALS["category"] ?? '');
     global $_db;
     $stm = $_db->query("SELECT * FROM category");
@@ -71,6 +72,24 @@ function displayCategoryList(){
     }
 
     echo "</select>";
+}
+
+function displayCategoryInText()
+{
+    $categoryID = encode($GLOBALS["category"] ?? '');
+    global $_db;
+    $stm = $_db->query("SELECT * FROM category");
+    $categories = $stm->fetchAll();
+
+    $categoryName = '';
+    foreach ($categories as $category) {
+        if (strcmp($category->category_id, $categoryID) == 0) {
+            $categoryName = $category->category_name;
+            break;
+        }
+    }
+
+    echo "<input type='text' id='category' name='category' value='" . htmlspecialchars($categoryName) . "' disabled>";
 }
 
 //get hidden number for every id
@@ -124,6 +143,12 @@ function checkProductName($name)
     if (trim($name) === "") {
         return "Product name cannot be empty.";
     }
+
+    // Check for invalid characters (only allow letters, numbers, and spaces)
+    if (!preg_match('/^[a-zA-Z0-9\s]+$/', $name)) {
+        return "Product name can only contain letters, numbers, and spaces.";
+    }
+        
     return null;
 }
 
@@ -150,7 +175,8 @@ function checkDescription($description)
     }
 }
 
-function checkImageFile($fileKey, $uploadDir = '../image/') {
+function checkImageFile($fileKey, $uploadDir = '../image/')
+{
     $f = $_FILES[$fileKey];
     $allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $maxSize = 1 * 1024 * 1024; // 1MB

@@ -1,0 +1,86 @@
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow wrapping to the next line */
+    gap: 10px;
+    /* Space between images */
+    justify-content: flex-start;
+    /* Align items to the start */
+}
+
+.image-item {
+    position: relative;
+    /* Make this the positioning context for the button */
+    width: calc(25% - 10px);
+    /* Set width for each image */
+}
+
+.image-item img {
+    display: block;
+    width: 100%;
+    /* Ensure the image takes up the full container width */
+    height: auto;
+    object-fit: cover;
+    /* Ensure the images maintain aspect ratio */
+}
+
+.image-item button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.image-item button:hover {
+    background-color: white;
+}
+
+.product-details {
+display: grid;
+grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+gap: 20px; /* Spacing between items */
+margin-top: 20px; /* Space from the image container */
+padding: 20px;
+background-color: #f9f9f9;
+border-radius: 10px;
+max-width: 800px; /* Adjust as needed */
+}
+
+.input-box {
+display: flex;
+flex-direction: column;
+margin-bottom: 10px;
+}
+
+.input-box label {
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+input, textarea, select {
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 5px;
+width: 100%; /* Ensure full width */
+}
+
+.container {
+display: flex;
+flex-direction: column;
+align-items: center; /* Center content horizontally */
+}
+
+.header {
+width: 100%;
+max-width: 800px; /* Match product-details width */
+}
+
+.content {
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 100%;
+}

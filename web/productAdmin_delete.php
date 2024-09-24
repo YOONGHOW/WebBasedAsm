@@ -30,24 +30,29 @@ if ($productId) {
 
 // Process form submission
 if (is_post()) {
-    // Begin transaction
-    $_db->beginTransaction();
-
     try {
-        // Delete the product from the `product_img` table first
+        // Begin transaction
+        $_db->beginTransaction();
+    
+        // Delete comments related to the product
+        $sqlComment = 'DELETE FROM comment WHERE product_id = :productId';
+        $stmtComment = $_db->prepare($sqlComment);
+        $stmtComment->execute(['productId' => $productId]);
+    
+        // Delete the product from the `product_img` table
         $sqlImage = 'DELETE FROM product_img WHERE product_id = :productId';
         $stmtImage = $_db->prepare($sqlImage);
         $stmtImage->execute(['productId' => $productId]);
-
+    
         // Delete the product from the `product` table
         $sqlProduct = 'DELETE FROM product WHERE product_id = :productId';
         $stmtProduct = $_db->prepare($sqlProduct);
         $stmtProduct->execute(['productId' => $productId]);
-
+    
         // Commit the transaction
         $_db->commit();
-
-        // Redirect back to product list after deletion
+    
+        // Redirect back to the product list after deletion
         header('Location: productAdmin_list.php');
         exit();
     } catch (Exception $e) {
