@@ -296,6 +296,16 @@ button#save_btn{
   margin-top: 25px;
   }
 
+  button#save_btn{
+    display: flex;
+    border: none;
+    background: none;
+    margin-left: -3px;
+    margin-top: 25px;
+    }
+
+
+ 
 img.cart_btn_img{
   width: 25px;
   height: 25px;
@@ -311,4 +321,3 @@ img.cart_btn_img2{
 input#quantity_input{
   border-color: #6d6d6d;
 }
-  

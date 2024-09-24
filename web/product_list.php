@@ -1,6 +1,14 @@
-
 <?php include "header.php"; ?>
 
+<?php 
+
+$stmt = $_db->prepare("
+        SELECT * FROM category;");
+    $stmt->execute();
+    $categorys = $stmt->fetchAll();
+
+?>
+ 
 <main>
     <p class="introduction">A comprehensive range from electronic devices
          to home appliances are available at here !</p>
@@ -13,17 +21,14 @@
 }
     
     ?>/>
-  <select name="category" id="category">
-        <option value="category">All</option>
-        <option value="study">Study Room</option>
-        <option value="bedroom">Bedroom</option>
-        <option value="kitchen">Kitchen</option>
-        <option value="bathroom">Bathroom</option>
-        <option value="games">Games Room</option>
-        <option value="living">Living Room</option>
-        <option value="dining">Dining Room</option>
-        <option value="garage">Garage</option>
-</select>
+ <select name="category" id="category" onchange="this.form.submit()">
+        <option value="all" <?= (isset($_POST['category']) && $_POST['category'] == 'all') ? 'selected' : '' ?>>All</option>
+        <?php foreach($categorys as $category){ ?>
+        <option value="<?= $category->category_name ?>" <?= (isset($_POST['category']) && $_POST['category'] == $category->category_name) ? 'selected' : '' ?>>
+            <?= $category->category_name ?>
+        </option>
+        <?php } ?>
+    </select>
   </nav>
   
   <div class="productList">
@@ -40,7 +45,8 @@
             LEFT JOIN category c ON p.category_id = c.category_id
             WHERE p.product_name LIKE '%$searchProd%'
 
-        ");           
+        "); 
+
         }else{
         $stmt = $_db->prepare("
         SELECT p.*, pi.product_IMG_name, c.category_name

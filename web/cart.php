@@ -52,6 +52,23 @@ try {
         
     }
 
+    if (isset($_POST['quantity']) && isset($_POST['productID'])) {
+        $product_id = $_POST["productID"];
+        $new_quantity = $_POST["quantity"];
+        
+        $stmt = $_db->prepare("
+            UPDATE cart SET quantity = :quantity WHERE product_id = :product_id AND user_id = :user_id
+        ");
+
+        $stmt->bindParam(':quantity', $new_quantity);
+        $stmt->bindParam(':user_id', $userID);
+        $stmt->bindParam(':product_id', $product_id);
+        $stmt->execute();
+        header("Location: cart.php"); 
+        exit;
+    }
+
+
     $stmt = $_db->prepare("
         SELECT cart.cart_id, cart.product_id, cart.quantity, product.*, product_img.*
         FROM cart
@@ -95,7 +112,9 @@ try {
                 checkboxes[i].checked = source.checked;
             }
             updateTotal();
-        }
+        }   
+
+
     </script>
 
     <!-- htmlt-->
@@ -124,6 +143,42 @@ try {
 
                         ?>
                             <form method="POST" action="cart.php">
+
+                            <script>
+                                function myFunction(button) {
+                                    var cartContainer = button.closest('.cart_container');
+
+                                    var x = cartContainer.querySelector('.quantity');
+                                    var y = cartContainer.querySelector('.edit_quantity');
+
+                                    var editBtn = cartContainer.querySelector('.edit_btn');
+                                    var saveBtn = cartContainer.querySelector('.save_btn');
+
+                                    if (y.style.display === "none" || y.style.display === "") {
+                                        x.style.display = "none";          
+                                        y.style.display = "block";         
+                                        editBtn.style.display = "none";    
+                                        saveBtn.style.display = "inline-block"; 
+                                    } else {
+                                        x.style.display = "block";         
+                                        y.style.display = "none";          
+                                        editBtn.style.display = "inline-block"; 
+                                        saveBtn.style.display = "none";    
+                                    }
+                                }
+
+                                function saveQuantity(button) {
+                                    var cartContainer = button.closest('.cart_container');
+
+                                    var quantityInput = cartContainer.querySelector('.edit_quantity input');
+                                    var newQuantity = parseInt(quantityInput.value);
+
+                                    cartContainer.querySelector('input[name="quantity"]').value = newQuantity;
+                                    var form = cartContainer.querySelector('form');
+                                    form.submit(); 
+                                }
+                            </script>
+
                             <div class="cart_container">
                             <div class="cart-feature">
                             
@@ -134,8 +189,14 @@ try {
                                     onchange="updateTotal()" />
                                     <input type="hidden" name="productID" value="<?= $cart->product_id ?>">
                                     <button type="submit" name="deleteBtn" id="dlt_btn"><img src="../image/delete.png" class="cart_btn_img"></button>
-                                 <button name="editBtn" id="edit_btn"><img src="../image/pencil.png" class="cart_btn_img2"></button>
-                                 </div>
+                                    <button type="button" name="editBtn" id="edit_btn" class="edit_btn" onclick="myFunction(this)"><img src="../image/pencil.png" class="cart_btn_img2"></button>
+                                    
+                                    <button type="submit" name="saveBtn" id="save_btn" class="save_btn" onclick="saveQuantity(this)"  style="display: none;">
+                                        <img src="../image/save.png" class="cart_btn_img">
+                                    </button>
+
+                                    
+                                </div>
 
                                 <div class="cart_image_box">
                                     <img src="../image/<?= $product_img ?>" alt="<?= $cart->product_name ?>">
@@ -143,14 +204,17 @@ try {
                                 <div class="cart_details_box">
                                     <h1><?= $cart->product_name ?></h1><br>
                                     <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-                                    <p>Quantity: <span id="quantity_display"><?= $cart->quantity ?></span>
+
+                                    <span class="quantity" style="display: block;"><p>Quantity:<?= $cart->quantity ?></p></span>
+                                    <span class="edit_quantity" style="display: none;"><p>Quantity: <input type="number" value="<?= $cart->quantity ?>" name="editQty" style="width:30%;" min="1" max="<?= $cart->product_stock?>"></p></span>
+
                                     <input type="hidden" name="quantity" value="<?= $cart->quantity ?>"
                                         min="1" max="<?= $cart->product_stock ?>"
                                         class="quantityInput"
                                         data-price="<?= $cart->product_price ?>"
-                                        oninput="updateTotal()" style="width:25%;" /> <br>
+                                        oninput="updateTotal()" style="width:25%;" />
 
-                                    <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
+                                        <br><p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
                                 </div>
                             </div>
                             </form>
