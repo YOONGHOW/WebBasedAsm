@@ -25,10 +25,7 @@ if ($_user) {
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }
-} else {
-    temp("info", "Please login first.");
-    redirect("login.php");
-}
+} 
 ?>
 <html lang="en">
 
@@ -40,6 +37,7 @@ if ($_user) {
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/product_list.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
 </head>
 
 <body>

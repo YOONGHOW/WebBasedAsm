@@ -1,7 +1,6 @@
 <?php include "header.php"; ?>
 <?php
 global $_user;
-$_user = $_SESSION['user'] ?? null;
 
 if($_user == null){
     echo "<script>alert('You must login as member first')
