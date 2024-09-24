@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/css/adminOrder.css">
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/adminModal.css">
+    <title>Admin Order</title>
 </head>
 <?php
 include "header.php";
@@ -246,7 +247,7 @@ $returnStatus = [
                 </div>
                 <div class="deliverState">
                     <?php if ($orderInfo['order_status'] == "S") {
-                        echo '<p>' . $shippingStatus[$orderInfo['shipping_status']] . '</p>';
+                        echo '<p><a>' . $shippingStatus[$orderInfo['shipping_status']] . '</a></p>';
                     } else if (isset($orderInfo['returnStatus'])) {
                         echo '<p>' . $returnStatus[$orderInfo['returnStatus']] . '</p>';
                     } else {
@@ -291,6 +292,7 @@ $returnStatus = [
                     <div class="total">
                         <p>Order Total:</p>
                         <input type="text" value="RM <?= $total ?>" placeholder="Total">
+
                     </div>
                 </div>
             </div>
@@ -303,7 +305,34 @@ $returnStatus = [
     ?>
 </body>
 
+<div class="modelwindows" id="modelwindows">
+        <form action="" method="post" class="modelAddress">
+            <div class="modelherder">
+                <p>
+                    Shipping Detail
+                </p>
+                <a id="closemodal"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-close-round-512.png" alt="close"></a>
+            </div>
+            <div class="addressConainer">
+                <div class="form-group">
+                    <div class="receiver">
+                        <label for="receivername">Shipping Company</label>
+                        <input type="text" placeholder="Name" id="receivername" name="receivername" value="<?= $contactname ?>">
 
+                        <label for="receiverphone">Shipping ref Code</label>
+                       <input type="text" placeholder="Phone Number" id="receiverphone" name="receiverphone" value="<?= $phonecontect ?>">
+
+                    </div>
+
+                </div>
+                <div class="modelbutton">
+                    <button>Cancel</button>
+                    <button type="submit" name="address">Submit</button>
+                </div>
+               
+            </div>
+        </form>
+    </div>
 <script>
     window.onload = function() {
         var getCountElement = document.getElementById('ordercount');

@@ -1,0 +1,76 @@
+.modelwindows {
+    position: fixed;
+    display: block;
+    top: 15%;
+    left: 38%;
+    border-radius: 10px;
+    width: 300px;
+    height: 50%;
+    background-color: rgb(195, 170, 138);
+    z-index: 1;
+}
+
+.modelherder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 50px;
+}
+
+.modelherder::after {
+    position: absolute;
+    display: inline;
+    top: 50px;
+    left: 0;
+    content: "";
+    background-color: black;
+    height: 1px;
+    width: 100%;
+}
+
+.modelherder p {
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.modelherder img {
+    float: right;
+    width: 20px;
+    cursor: pointer;
+    padding-right: 10px;
+    padding-bottom: 5px;
+}
+
+
+.form-group {
+    width: 100%;
+}
+.receiver{
+    display: block;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+.receiver input{
+    display: block;
+    width: 80%;
+    height: 25px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+
+.modelbutton{
+    display: flex;
+    float: right;
+    width: 100%;
+    margin-top: 20px;
+}
+.modelbutton button{
+    margin-left: 5px;
+    width: 40%;
+    height: 40px;
+    border-radius: 10px;
+    border:none;
+}
