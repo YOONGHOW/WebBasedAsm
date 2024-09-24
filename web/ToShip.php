@@ -147,7 +147,6 @@ if (isset($_GET['search'])) {
     $stm->execute();
 
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-    print_r($result[0]);
 } else {
     // If 'search' parameter is not found, output a message
     echo "No search parameter found in the URL.";
