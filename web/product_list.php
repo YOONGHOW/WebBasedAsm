@@ -1,7 +1,11 @@
 <?php include "header.php"; ?>
 
 <?php 
-
+if($_user == null){
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
+}
 $stmt = $_db->prepare("
         SELECT * FROM category;");
     $stmt->execute();
@@ -18,9 +22,15 @@ $stmt = $_db->prepare("
     <input type="search" name="search" id="search_prod" placeholder="Search..." 
     <?php if(isset($_POST['search'])){
     echo 'value="'.$_POST['search'].'"';    
-}
-    
+    }
     ?>/>
+
+<br><br>
+    <label>Filter by Price : </label><br><br>
+    <input type="submit" name="sort_High_Low" id="priceBtn" value="High to Low"/> <br><br>
+    <input type="submit" name="sort_Low_High" id="priceBtn" value="Low to High">
+
+
  <select name="category" id="category" onchange="this.form.submit()">
         <option value="all" <?= (isset($_POST['category']) && $_POST['category'] == 'all') ? 'selected' : '' ?>>All</option>
         <?php foreach($categorys as $category){ ?>
@@ -29,13 +39,15 @@ $stmt = $_db->prepare("
         </option>
         <?php } ?>
     </select>
-  </nav>
-  
-  <div class="productList">
-    <div class="product-list">
 
+  
+  </nav>
+  </form>
+  <div class="productList">
+  <div class="product-list">
 <?php
     try {
+        
         if(isset($_POST["search"]) || isset($_POST["category"])){
             $searchProd = $_POST["search"] ?? '';
             $selectedCategory = $_POST["category"] ?? 'all';
@@ -50,6 +62,12 @@ $stmt = $_db->prepare("
             if ($selectedCategory != 'all') {
                 $sql .= " AND c.category_name = :selectedCategory";
             }
+
+            if (isset($_POST['sort_High_Low'])) {
+                $sql .= " ORDER BY p.product_price DESC"; 
+            }elseif (isset($_POST['sort_Low_High'])) {
+                $sql .= " ORDER BY p.product_price ASC"; 
+            }
         
             $stmt = $_db->prepare($sql);
             $stmt->bindValue(':searchProd', "%$searchProd%");
@@ -57,25 +75,29 @@ $stmt = $_db->prepare("
             if ($selectedCategory != 'all') {
                 $stmt->bindValue(':selectedCategory', $selectedCategory);
             }
-        
-        } else {
+
+        }else {
             $stmt = $_db->prepare("
             SELECT p.*, pi.product_IMG_name, c.*
             FROM product p
             LEFT JOIN product_img pi ON p.product_id = pi.product_id
             LEFT JOIN category c ON p.category_id = c.category_id
             ");
+
         }
 
             $stmt->execute();
             $products = $stmt->fetchAll();
             if($products == null){
             echo '<p>No record found(s)</p>';
-    }
+            }
 
         foreach ($products as $product) {
             $product_img = "../image/" . $product->product_IMG_name;
     ?>
+
+
+
             <div class="product-item" onclick="window.location.href='product_details.php?product_id=<?= $product->product_id ?>'">
             <input type="hidden" value="<?=$product->category_name?>"/>
             <input type="hidden" value="<?=$product->product_id?>"/>
@@ -95,7 +117,6 @@ $stmt = $_db->prepare("
 
 </div>
 </section>
-</form>
 </main>
 
 <?php include "footer.php"; ?>

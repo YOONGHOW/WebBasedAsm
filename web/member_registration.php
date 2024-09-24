@@ -130,14 +130,13 @@ if (is_post()) {
     <script src="../js/photo.js"></script>
     <title>Member Registration</title>
 
+
+    <!-- password real time validate -->
     <script>
         function submitForm() {
             document.getElementById("state").submit();
         }
-    </script>
 
-    <!-- password real time validate -->
-    <script>
         window.onload = function() {
             validatePassword();
         };
@@ -181,12 +180,12 @@ if (is_post()) {
             }
         }
 
-        function validateEmail(){
+        function validateEmail() {
             const input = document.getElementById("email");
-            
+
         }
 
-        
+
         //function to update the verifed status
         function updateStatus(isValid) {
             if (!isValid) {
@@ -200,7 +199,8 @@ if (is_post()) {
 
 <body>
 
-
+    <!-- Flash message -->
+    <div id="info"><?= temp('info') ?></div>
     <div class="container">
         <div class="title">Registration</div>
         <div class="content">
@@ -227,7 +227,6 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="email">Email</label>
                         <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" required') ?>
-                        <span id="verify" class="fa">&#xf00c;Verified</span><a href="sendVerifyEmail.php">Verify Email</a><br />
                         <?= err('email') ?>
                     </div>
 

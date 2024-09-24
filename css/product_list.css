@@ -46,10 +46,14 @@ p.introduction{
 /*Side bar */
 
 select#category{
-    margin-top: 40px;
+    margin-top: 20px;
     padding:10px;
     width: 100%;
-    border: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    border-bottom: 1px solid black;
     height: 10%;
     font-size: 15px;
 }
@@ -57,9 +61,27 @@ select#category{
 input#search_prod{
     padding:8px;
     border: 1px solid black;
+    width: 100%;
+    border: 1px solid #b3b3b3;
+    border-radius: 50px;
 }
 
 /*Product list page */
+input#priceBtn{
+padding:10px;
+width: 100%;
+border: 1px solid #b3b3b3;
+border-radius: 50px;
+background: none;
+transition-duration: 0.3s;
+}
+
+input#priceBtn:hover {
+color: white;
+background-color: black;
+
+}
+
 
 .product-list {
     display: flex;
