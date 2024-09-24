@@ -194,11 +194,10 @@ try {
                                 form.submit();
                             }
                         </script>
-
+                        
                         <div class="cart_container">
                             <div class="cart-feature">
-                                <form method="POST" action="cart.php">
-
+                            <form method="POST" action="cart.php">
                                     <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
                                         data-price="<?= $cart->product_price ?>"
                                         data-quantity="<?= $cart->quantity ?>"
