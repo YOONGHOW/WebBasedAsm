@@ -47,9 +47,11 @@ p.introduction{
 
 select#category{
     margin-top: 40px;
+    padding:10px;
     width: 100%;
     border: none;
     height: 10%;
+    font-size: 15px;
 }
 
 input#search_prod{
