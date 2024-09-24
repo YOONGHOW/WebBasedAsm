@@ -9,10 +9,7 @@
 </head>
 <?php
 include "header.php";
-global $_user;
-$_user = $_SESSION['user'] ?? null;
-
-
+global $userID;
 if ($_user == null) {
     $userID = "U001";
 } else {
@@ -22,7 +19,7 @@ if ($_user == null) {
 <?php
 // Check if 'search' parameter is present in the URL
 if (isset($_GET['search'])) {
-    global  $search;
+    global  $search, $stm;
     // Get the value of the 'search' parameter
     $search = $_GET['search'];
     if ($search == 'all') {
