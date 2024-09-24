@@ -44,7 +44,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
     LEFT JOIN product_img ON product.product_id = product_img.product_id
     WHERE orders.user_id = :user_id
-    ORDER BY orders_detail.order_id
+    
 ');
     } else if ($search == 'toPay') {
         $stm = $_db->prepare('
@@ -150,10 +150,12 @@ if (isset($_GET['search'])) {
     $stm->execute();
 
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+    print_r($result[0]);
 } else {
     // If 'search' parameter is not found, output a message
     echo "No search parameter found in the URL.";
 }
+
 $orderStatus = [
     "C" => "Cancle",
     "P" => "Waiting Payment",
@@ -202,6 +204,7 @@ $returnStatus = [
             <p>No orders yet</p>
         </div>
         <?php
+        
         $orderDetails = []; // Initialize an empty array to hold grouped order details
 
         // Group products by order_id
@@ -241,7 +244,7 @@ $returnStatus = [
         }
 
         // Now print the grouped orders and their products
-        foreach ($orderDetails as $orderId => $orderInfo): ?>
+        foreach ($orderDetails as $orderId => $orderInfo):  ?>
             <div class="deliverHis" id="deliverHis">
                 <div class="deliverDetail ">
                     <?php if ($orderInfo['shipping_status'] == "R") { ?>
@@ -257,7 +260,8 @@ $returnStatus = [
                     <?php } ?>
                 </div>
                 <div class="deliverState">
-                    <?php if ($orderInfo['order_status'] == "S") {
+                    <?php 
+                    if ($orderInfo['order_status'] == "S") {
                         echo '<p>' . $shippingStatus[$orderInfo['shipping_status']] . '</p>';
                     } else if (isset($orderInfo['returnStatus'])) {
                         echo '<p>' . $returnStatus[$orderInfo['returnStatus']] . '</p>';
