@@ -22,6 +22,7 @@ if ($_user) {
         foreach ($carts as $cart) {
             $total_item += $cart->quantity;
         }
+
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }
@@ -53,9 +54,7 @@ if ($_user) {
                 <ul>
                     <li><a href="home.php">Home</a></li>
                     <li><a href="product_list.php">Products</a></li>
-                    <li><a href="promotion_list.php">Promotion</a></li>
                     <li><a href="wish_list.php">Wish
-                            <span style="background-color:red; border:none; border-radius:50%; padding:4px;font-size:10px;"><?= $total_item ?></span>
                         </a></li>
                     <li><a href="cart.php">Cart
                             <span style="background-color:red; border:none; border-radius:50%; padding:4px;font-size:10px;"><?= $total_item ?></span>

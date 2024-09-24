@@ -10,6 +10,7 @@ $categoryId = $_GET['id'] ?? null;
 $_err = [];
 
 if($categoryId){
+    //retrieve data from category table
     $sql = "SELECT * FROM category WHERE category_id = :category_id";
     $stmt = $_db->prepare($sql);
     $stmt->execute([':category_id' => $categoryId]);
@@ -41,6 +42,7 @@ if(is_post()){
     }
 
     if(empty($_err)){
+        //update data into category table
         $sql = "UPDATE category SET category_name = :category_name,category_description = :category_descirption WHERE category_id = :id";
         $stmt = $_db->prepare($sql);
         $stmt->execute([':category_name'=>$categoryName,':category_descirption'=>$categoryDescription,':id'=>$categoryId]);

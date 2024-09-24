@@ -1,11 +1,11 @@
-html,
+paymentInseretbhtml,
 body {
     height: 100%;
     margin: 0;
 }
 
 .hisContainer {
-    height:auto;
+    height:89%;
     margin-left: 17%;
     margin-top: 10px;
 }
@@ -13,7 +13,7 @@ body {
 .deliverHis {
     display: flex;
     align-items: center;
-    background-color: antiquewhite;
+    background-color: rgb(181, 176, 176);
     height: 50px;
     width: 1000px;
     border-radius: 10px;
@@ -59,7 +59,7 @@ body {
 
 .productDetail {
     position: relative;
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
     height: auto;
     width: 1000px;
     border-radius: 10px 10px 10px 10px;
@@ -89,6 +89,7 @@ body {
     vertical-align: middle;
     padding-left: 20px;
     padding-top: 20px;
+   
 }
 
 .productName {
@@ -99,16 +100,19 @@ body {
 .productName textarea {
     width: 650px;
     border: none;
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
     text-align: start;
     resize: none;
     overflow: hidden;
     font-size: 17px;
+    
 }
 
 
 .quantity input {
     font-size: 17px;
+    background-color:  rgb(181, 176, 176);
+    border: none;
 
 }
 
@@ -125,22 +129,27 @@ body {
 
 .productPrice input {
     text-align: center;
-    font-size: 15px;
+    font-size: 20px;
     margin: auto;
     width: 150px;
     height: 50px;
     padding: 20px;
     border: none;
+    background-color:  rgb(181, 176, 176);
+    font-weight: bold;
+
 }
 
 .payContainer {
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
+
     width: 1000px;
     height: 200px;
 }
 
 .productCal {
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
+
     height: auto;
     width: 1000px;
     border-radius: 10px 10px 10px 10px;
@@ -168,7 +177,8 @@ body {
 }
 
 .orderInfo input {
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
+
     outline: none;
     border: none;
 }
@@ -178,7 +188,8 @@ body {
     align-items: center;
 }
 .total input {
-    background-color: antiquewhite;
+    background-color:  rgb(181, 176, 176);
+
     outline: none;
     border: none;
     text-align: center;

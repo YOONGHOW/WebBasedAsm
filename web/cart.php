@@ -60,8 +60,8 @@ try {
         $product_id = $_POST["productID"];
 
         $stmt = $_db->prepare("
-            DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
-            ");
+        DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
+        ");
 
         $stmt->bindParam(':user_id', $userID);
         $stmt->bindParam(':product_id', $product_id);
@@ -156,7 +156,7 @@ try {
                     }
                     foreach ($carts as $cart) {
 
-                        $product_img = "../image/" . $cart->product_IMG_name;
+                        $product_img = "../image/" . $cart->product_IMG_source;
 
                     ?>
 
@@ -194,11 +194,10 @@ try {
                                 form.submit();
                             }
                         </script>
-
+                        
                         <div class="cart_container">
                             <div class="cart-feature">
-                                <form method="POST" action="cart.php">
-
+                            <form method="POST" action="cart.php">
                                     <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
                                         data-price="<?= $cart->product_price ?>"
                                         data-quantity="<?= $cart->quantity ?>"
