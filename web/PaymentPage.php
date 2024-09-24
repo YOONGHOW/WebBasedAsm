@@ -311,7 +311,7 @@ if (is_post()) {
 
             $shipmentInseret->bindParam(1, $shippingid);
             $shipmentInseret->bindParam(2, $orderid);
-            $shipmentInseret->bindValue(3, "");
+            $shipmentInseret->bindValue(3, "null");
             $shipmentInseret->bindValue(4, "P");
             $shipmentInseret->execute();
 
