@@ -60,8 +60,8 @@ try {
         $product_id = $_POST["productID"];
 
         $stmt = $_db->prepare("
-            DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
-            ");
+        DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
+        ");
 
         $stmt->bindParam(':user_id', $userID);
         $stmt->bindParam(':product_id', $product_id);
@@ -137,7 +137,7 @@ try {
     <!-- htmlt-->
 
     <main style="min-height: 500px;">
-
+    <form method="POST" action="cart.php">
         <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
             <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
             <h1 style="margin: 0;">My Cart</h1>
@@ -194,11 +194,10 @@ try {
                                 form.submit();
                             }
                         </script>
-
+                        
                         <div class="cart_container">
                             <div class="cart-feature">
-                                <form method="POST" action="cart.php">
-
+                            <form method="POST" action="cart.php">
                                     <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
                                         data-price="<?= $cart->product_price ?>"
                                         data-quantity="<?= $cart->quantity ?>"
@@ -240,7 +239,7 @@ try {
                             </div>
                         </div>
 
-
+                        </form>
                 <?php
                     }
                 } catch (PDOException $e) {
@@ -270,11 +269,12 @@ try {
                     <p class="label">Total Payment:</p>
                     <p id="totalPayment">RM <?= number_format($total_payment, 2) ?></p>
                 </div>
-
+                
                 <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
+            </form>
             </div>
 
-            </form>
+            
             </div>
         </section>
         <br>

@@ -7,6 +7,9 @@ require '../helperFile/ProductMaintenance_base.php';
 
 $search = isset($_POST['search']) ? $_POST['search'] : '';
 
+// Select all columns from the 'product' table (aliased as 'p')
+// Limit the result to 1 row, ensuring only one image source is selected per product
+//The condition 'WHERE 1=1' is always true, effectively allowing for additional dynamic conditions
 $sql = 'SELECT p.*, (SELECT pi.product_IMG_source FROM product_img pi WHERE pi.product_id = p.product_id LIMIT 1) as product_IMG_source 
         FROM product p WHERE 1=1';
 

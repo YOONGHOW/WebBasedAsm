@@ -37,13 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCart'])) {
     } else {
         $newCartID = generateID('CART', 'cart', 'cart_id');
         
-        $sql = "INSERT INTO cart (cart_id, user_id, product_id)
-                VALUES (:cart_id, :user_id, :product_id)";
+        $sql = "INSERT INTO cart (cart_id, user_id, product_id, quantity)
+                VALUES (:cart_id, :user_id, :product_id, :quantity)";
         
         $stmt = $_db->prepare($sql);
         $stmt->bindParam(':cart_id', $newCartID);
         $stmt->bindParam(':user_id', $userID);
-        $stmt->bindParam(':product_id', $productID);        
+        $stmt->bindParam(':product_id', $productID);  
+        $stmt->bindParam(':quantity', $quantity);      
         if ($stmt->execute()) {
             echo '<script>
             alert("Item added to cart");
