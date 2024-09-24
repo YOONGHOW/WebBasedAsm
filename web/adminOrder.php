@@ -8,8 +8,8 @@
     <title>Document</title>
 </head>
 <?php
-include "header.php";
-
+include "sidebar.php";
+require "../helperFile/Member_base.php";
 ?>
 <?php
 // Check if 'search' parameter is present in the URL
@@ -298,9 +298,7 @@ $returnStatus = [
     </div>
     </div>
 
-    <?php
-    include "footer.php";
-    ?>
+    
 </body>
 
 

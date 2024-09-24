@@ -40,6 +40,7 @@ if (strcmp($_user->user_rule, "admin") != 0) {
   <a href="member_list.php">Member Listing</a><br />
   <a href="productAdmin_list.php">Product listing</a><br />
   <a href="CategoryMaintenance_list.php">Category listing</a><br />
+  <a href="adminOrder.php?search=all">Order listing</a><br />
   <a href="logout.php">Logout</a>
 </div>
 
