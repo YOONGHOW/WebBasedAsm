@@ -26,7 +26,6 @@
     // Get the full URL
     const urlParams = new URLSearchParams(window.location.search);
     var all = document.getElementById('all');
-    var pay = document.getElementById('pay');
     var ship = document.getElementById('ship');
     var com = document.getElementById('com');
     var can = document.getElementById('can');

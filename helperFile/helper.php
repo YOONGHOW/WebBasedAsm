@@ -46,13 +46,13 @@ $citiesAndState = [
     "PHG" => ["Kuantan", "Temerloh", "Bentong", "Raub", "Jerantut"],
     "PNG" => ["George Town", "Butterworth", "Bayan Lepas", "Bukit Mertajam", "Balik Pulau"],
     "PRK" => ["Ipoh", "Taiping", "Teluk Intan", "Manjung", "Kampar"],
-    "PLS" => ["Kangar", "Arau", "Padang Besar"],
+    "PLS" => ["Kangar", "Arau", "Padang Besar", "Kuala Perlis", "Simpang Empat", "Kaki Bukit", "Beseri", "Chuping", "Sanglang", "Bintong"],
     "SBH" => ["Kota Kinabalu", "Sandakan", "Tawau", "Lahad Datu", "Keningau"],
     "SWK" => ["Kuching", "Miri", "Sibu", "Bintulu", "Limbang"],
     "SGR" => ["Shah Alam", "Petaling Jaya", "Klang", "Subang Jaya", "Kajang"],
     "TRG" => ["Kuala Terengganu", "Kemaman", "Dungun", "Marang", "Besut"],
-    "WKL" => ["Kuala Lumpur"],
-    "LBN" => ["Labuan"],
+    "WKL" => ["Kuala Lumpur City Centre", "Bukit Bintang", "Chow Kit", "Kampung Baru", "Pudu", "Bangsar", "Brickfields", "Cheras", "Mont Kiara", "Sentul", "Setapak", "Wangsa Maju", "Ampang", "Sri Hartamas", "Segambut", "Titiwangsa"],
+    "LBN" => ["Victoria", "Kiamsam", "Layang-Layang", "Patau-Patau", "Sungai Bedaun", "Sungai Lada", "Ganggarak", "Rancha-Rancha"],
     "PJY" => ["Putrajaya"]
 ];
 
@@ -355,7 +355,7 @@ function checkAddress($address)
     if($address == null){
         return "Please enter your address";
     }
-    else if (!preg_match('/^[ 0-9\w\s,.\'-]+$/', $address)) {
+    else if (!preg_match('/^[ 0-9\w\s,.\'-()]+$/', $address)) {
         return "The address format is invalid";
     }
 }

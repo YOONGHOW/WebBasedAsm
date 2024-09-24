@@ -46,10 +46,14 @@ p.introduction{
 /*Side bar */
 
 select#category{
-    margin-top: 40px;
+    margin-top: 20px;
     padding:10px;
     width: 100%;
-    border: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    border-bottom: 1px solid black;
     height: 10%;
     font-size: 15px;
 }
@@ -57,9 +61,27 @@ select#category{
 input#search_prod{
     padding:8px;
     border: 1px solid black;
+    width: 100%;
+    border: 1px solid #b3b3b3;
+    border-radius: 50px;
 }
 
 /*Product list page */
+input#priceBtn{
+padding:10px;
+width: 100%;
+border: 1px solid #b3b3b3;
+border-radius: 50px;
+background: none;
+transition-duration: 0.3s;
+}
+
+input#priceBtn:hover {
+color: white;
+background-color: black;
+
+}
+
 
 .product-list {
     display: flex;
@@ -104,6 +126,11 @@ input#search_prod{
     color: #000000;
   }
 
+  .product-container {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+}
 
 
   /*Product Details Page*/
@@ -175,6 +202,17 @@ input#search_prod{
     padding:10px;
     font-size: 17px;
     font-family: "Times New Roman", Times, serif;
+  }
+
+  input#cancel_wishBtn{
+    margin-top: 20px;
+    width: 60%;
+    font-weight: bold;
+    border:3px solid #d0d0d0;
+    padding:10px;
+    font-size: 17px;
+    font-family: "Times New Roman", Times, serif;
+    background-color: rgb(255, 255, 255);
   }
 
 input#quantity{
@@ -322,4 +360,18 @@ img.cart_btn_img2{
 /*Hidden text field*/
 input#quantity_input{
   border-color: #6d6d6d;
+}
+
+
+/*Wish List*/
+.wish-list {
+    display: inline-block;
+    margin-top: 40px;
+    margin-left: 40px;
+  }
+
+h1.wish_title{
+  background-color: #DEDEDE;
+  text-align: center;
+  font-size: 25px;
 }
