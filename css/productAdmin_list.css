@@ -143,9 +143,11 @@ h1 {
   }
   
   section{
-    margin: 100px;
+    margin: 100px 250px;
   }
   
+  Section 
+
   /* Custom scrollbar for webkit browsers */
   
   ::-webkit-scrollbar {
@@ -157,4 +159,5 @@ h1 {
   ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
   }
+  
   
