@@ -56,7 +56,7 @@ if (isset($_GET['search'])) {
         SELECT orders.order_id
         FROM payment
         WHERE payment_status = "N" 
-    )and
+    )
     ORDER BY orders_detail.order_id
 ');
     } else if ($search == 'toShip') {
@@ -117,23 +117,23 @@ if (isset($_GET['search'])) {
 ');
     } else if ($search == 'refund') {
         $stm = $_db->prepare('
-        SELECT 
-              orders.*, 
-      shipping_detail.*, 
-      return_refund.*,
-      orders_detail.*, 
-      product.product_name, 
-      product.product_price, 
-      product_img.product_IMG_source ,
-        product_img.product_IMG_name
-  FROM orders
-  LEFT JOIN shipping_detail ON orders.order_id = shipping_detail.order_id
-  LEFT JOIN orders_detail ON orders.order_id = orders_detail.order_id
-  LEFT JOIN product ON orders_detail.product_id = product.product_id
-  LEFT JOIN product_img ON product.product_id = product_img.product_id
-  LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
-  WHERE orders.order_status = "R"
-  ORDER BY orders_detail.order_id
+      SELECT 
+    orders.order_id, 
+    orders.order_date, 
+    shipping_detail.shipping_address, 
+    return_refund.refund_status, 
+    orders_detail.quantity, 
+    product.product_name, 
+    product.product_price, 
+    product_img.product_IMG_source
+FROM orders
+LEFT JOIN shipping_detail ON orders.order_id = shipping_detail.order_id
+LEFT JOIN orders_detail ON orders.order_id = orders_detail.order_id
+LEFT JOIN product ON orders_detail.product_id = product.product_id
+LEFT JOIN product_img ON product.product_id = product_img.product_id
+LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
+WHERE orders.order_status = "R"
+ORDER BY orders_detail.order_id;
 ');
     }
     $stm->execute();
@@ -166,7 +166,6 @@ $returnStatus = [
         <input type="hidden" value="<?= count($result) ?>" id="ordercount">
         <?php include 'admin_orderNav.php' ?>
         <div class="notthing" id="notthing">
-            <a href="http://localhost:8000/web/home.php">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="150px" height="150px" viewBox="0 0 150 150" version="1.1">
                     <g id="surface1">
                         <path style=" stroke:none;fill-rule:nonzero;fill:rgb(99.215686%,80%,49.019608%);fill-opacity:1;" d="M 30.992188 18.671875 C 31.386719 18.671875 31.785156 18.671875 32.179688 18.671875 C 33.257812 18.667969 34.335938 18.667969 35.417969 18.667969 C 36.582031 18.667969 37.75 18.667969 38.917969 18.664062 C 41.199219 18.660156 43.484375 18.660156 45.765625 18.660156 C 47.625 18.660156 49.480469 18.660156 51.335938 18.660156 C 51.601562 18.660156 51.867188 18.660156 52.140625 18.660156 C 52.679688 18.660156 53.214844 18.660156 53.753906 18.660156 C 58.796875 18.65625 63.835938 18.65625 68.878906 18.65625 C 73.480469 18.660156 78.085938 18.65625 82.691406 18.652344 C 87.425781 18.644531 92.160156 18.640625 96.894531 18.644531 C 99.550781 18.644531 102.207031 18.644531 104.863281 18.640625 C 107.125 18.636719 109.382812 18.636719 111.644531 18.640625 C 112.796875 18.640625 113.949219 18.640625 115.101562 18.636719 C 124.402344 18.609375 132.929688 19.84375 140.039062 26.367188 C 140.308594 26.613281 140.582031 26.863281 140.859375 27.117188 C 146.269531 32.277344 149.84375 39.515625 150.097656 47.039062 C 150.222656 56.59375 147.714844 64.175781 141.027344 71.191406 C 134.878906 77.160156 127.070312 79.734375 118.609375 79.730469 C 118.222656 79.730469 117.835938 79.730469 117.4375 79.730469 C 116.371094 79.734375 115.304688 79.734375 114.238281 79.734375 C 113.082031 79.734375 111.929688 79.738281 110.777344 79.738281 C 108.257812 79.742188 105.738281 79.746094 103.21875 79.746094 C 101.644531 79.746094 100.070312 79.75 98.496094 79.75 C 94.128906 79.753906 89.761719 79.757812 85.398438 79.757812 C 85.117188 79.757812 84.839844 79.757812 84.550781 79.757812 C 84.132812 79.757812 84.132812 79.757812 83.703125 79.757812 C 83.136719 79.757812 82.570312 79.757812 82.003906 79.757812 C 81.582031 79.757812 81.582031 79.757812 81.152344 79.757812 C 76.597656 79.757812 72.046875 79.765625 67.492188 79.769531 C 62.8125 79.777344 58.128906 79.78125 53.449219 79.78125 C 50.824219 79.78125 48.199219 79.785156 45.574219 79.789062 C 43.335938 79.792969 41.101562 79.796875 38.863281 79.792969 C 37.722656 79.792969 36.585938 79.792969 35.445312 79.796875 C 24.855469 79.832031 16.109375 77.996094 8.277344 70.515625 C 2.703125 64.738281 -0.128906 57.269531 -0.0898438 49.292969 C -0.0898438 48.929688 -0.0898438 48.566406 -0.0859375 48.191406 C 0.0234375 39.808594 3.445312 32.992188 9.210938 27.027344 C 15.117188 21.273438 22.851562 18.648438 30.992188 18.671875 Z M 30.992188 18.671875 " />
@@ -187,7 +186,7 @@ $returnStatus = [
                         <path style=" stroke:none;fill-rule:nonzero;fill:rgb(98.431373%,79.215686%,49.019608%);fill-opacity:1;" d="M 117.1875 41.601562 C 118.027344 41.578125 118.867188 41.554688 119.734375 41.527344 C 119.996094 41.519531 120.257812 41.507812 120.527344 41.496094 C 121.695312 41.480469 122.320312 41.515625 123.34375 42.128906 C 124.148438 43.019531 124.21875 43.636719 124.21875 44.824219 C 123.878906 45.632812 123.59375 46.105469 122.882812 46.621094 C 121.796875 47.007812 120.746094 46.9375 119.605469 46.910156 C 118.40625 46.894531 118.40625 46.894531 117.1875 46.875 C 117.1875 45.132812 117.1875 43.394531 117.1875 41.601562 Z M 117.1875 41.601562 " />
                     </g>
                 </svg>
-            </a>
+            
             <p>No orders yet</p>
         </div>
         <?php

@@ -39,22 +39,22 @@
     if (message) {
         // Apply styles based on the search value
         if (message == 'all') {
-            all.style.backgroundColor = "#e9c28e";
+            all.style.backgroundColor = "#797171";
             all.style.borderBottom = "2px solid gray";
         } else if (message == 'toPay') {
-            pay.style.backgroundColor = "#e9c28e";
+            pay.style.backgroundColor = "#797171";
             pay.style.borderBottom = "2px solid gray";
         } else if (message == 'toShip') {
-            ship.style.backgroundColor = "#e9c28e";
+            ship.style.backgroundColor = "#797171";
             ship.style.borderBottom = "2px solid gray";
         } else if (message == 'complete') {
-            com.style.backgroundColor = "#e9c28e";
+            com.style.backgroundColor = "#797171";
             com.style.borderBottom = "2px solid gray";
         } else if (message == 'cancelled') {
-            can.style.backgroundColor = "#e9c28e";
+            can.style.backgroundColor = "#797171";
             can.style.borderBottom = "2px solid gray";
         } else if (message == 'refund') {
-            refund.style.backgroundColor = "#e9c28e";
+            refund.style.backgroundColor = "#797171";
             refund.style.borderBottom = "2px solid gray";
         }
     } else {
