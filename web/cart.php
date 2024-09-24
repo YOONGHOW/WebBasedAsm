@@ -18,17 +18,34 @@ $total_price = 0;
 $total_payment = 0;
 
 try {
+    if (isset($_POST['deleteBtn'])) {
+            $product_id = $_POST["productID"];
+
+            $stmt = $_db->prepare("
+            DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
+            ");
+
+            $stmt->bindParam(':user_id', $userID);
+            $stmt->bindParam(':product_id', $product_id);
+            $stmt->execute();
+            $carts = $stmt->fetchAll();
+            header("Location: cart.php");
+            exit;
+        
+    }
+
     $stmt = $_db->prepare("
-    SELECT cart.cart_id, cart.product_id, cart.quantity, product.*, product_img.*
-    FROM cart
-    JOIN product ON cart.product_id = product.product_id
-    LEFT JOIN product_img ON product.product_id = product_img.product_id
-    WHERE cart.user_id = :user_id
+        SELECT cart.cart_id, cart.product_id, cart.quantity, product.*, product_img.*
+        FROM cart
+        JOIN product ON cart.product_id = product.product_id
+        LEFT JOIN product_img ON product.product_id = product_img.product_id
+        WHERE cart.user_id = :user_id
     ");
 
     $stmt->bindParam(':user_id', $userID);
     $stmt->execute();
     $carts = $stmt->fetchAll();
+
     ?>
 
 <!-- JavaScript-->
@@ -62,6 +79,10 @@ try {
             }
             updateTotal();
         }
+
+// button function
+
+
 </script>
 
 <!-- htmlt-->
@@ -73,7 +94,7 @@ try {
   <h1 style="margin: 0;">My Cart</h1>
 </span>
 
-<form method="POST" action="cart.php">
+
 <span style="display: flex;align-items: center;">
     <input type="checkbox" name="selectAll" id="selectAll" onclick="toggle(this)"/> &nbsp;&nbsp;All</span><br>
 
@@ -81,24 +102,35 @@ try {
 <nav class="cart_side">
 
     <ul>
+    <?php if($carts == null){?>
+           <p style="font-size:20px; margin-top:100px;">No record found(s). Go to Find your suitable product and bring it back home.😁</p>
+           <?php }?>
     <?php
         foreach ($carts as $cart) {
         $product_img = "../image/" . $cart->product_IMG_name;
     ?>
-
+<form method="post" action="cart.php">
 <div class="cart_container">
+
+<div class="cart-feature">
     <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem" 
            data-price="<?= $cart->product_price ?>" 
            data-quantity="<?= $cart->quantity ?>" 
            onchange="updateTotal()"/>
+           <input type="hidden" name="productID" value="<?= $cart->product_id ?>">
+           <button type="submit" name="deleteBtn" id="dlt_btn"><img src="../image/delete.png" class="cart_btn_img"></button>
+           <button name="editBtn" id="edit_btn"><img src="../image/pencil.png" class="cart_btn_img2"></button>
+    </div>
+
+
     <div class="cart_image_box" >
         <img src="../image/<?= $product_img ?>" alt="<?= $cart->product_name ?>">
     </div>
     <div class="cart_details_box">
         <h1><?= $cart->product_name ?></h1><br>
         <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-        <p>Quantity: <?= $cart->quantity ?></p>
-            
+        <p>Quantity: <span id="quantity_display"><?= $cart->quantity ?></span>
+        
         <input type="hidden" name="quantity" value="<?= $cart->quantity ?>" 
                              min="1" max="<?= $cart->product_stock ?>" 
                              class="quantityInput" 
@@ -106,14 +138,16 @@ try {
                              oninput="updateTotal()" style="width:25%;"/> <br>
 
         <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
+
     </div>
 </div>
-
+</form>
     <?php 
         }
         } catch (PDOException $e) {
             echo 'Error: ' . $e->getMessage();
         }
+
 ?>
       </ul>
       </nav>
@@ -146,7 +180,7 @@ try {
 </div>
 </section>
 <br>
-</form>
+
 
 
 </main>
