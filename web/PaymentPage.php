@@ -22,43 +22,26 @@ if ($_user == null) {
     </script>";
 } else {
     $userID = $_user->user_id;
-}
-$ids = [];
-$itemOrder = [];
-
-if (isset($_SESSION['selectedItems'])) {
-    foreach ($_SESSION['selectedItems'] as $item) {
-        $ids[] = $item['id'];
-    }
-    $itemOrder = $_SESSION['selectedItems'];
-    print_r($itemOrder);
-    // Create a string of placeholders for the SQL statement
-    if (count($ids) > 0) {
-        $stm = $_db->prepare('
+    $stm = $_db->prepare('
      SELECT 
-        product.*,
-        product_img.*
-    FROM 
-        product
-    LEFT JOIN 
-        product_img ON product.product_id = product_img.product_id
+      * 
+      FROM 
+      users
+      where user_id = :user_id
 ');
-        $stm->execute();
 
-        $stm->execute();
+    $stm->bindParam(':user_id', $userID);
 
-        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stm->execute();
+
+    $userInfo = $stm->fetch(PDO::FETCH_ASSOC);
 }
-
-
-
-
 $paymentMethods = [
     'C' => 'Bank Card',
     'F' => 'FPX',
     'P' => 'Paypal'
 ];
+
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
@@ -66,7 +49,6 @@ global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $payment_date = date('Y-m-d'); // Current date
 $payment_time = date('H:i:s'); // Current time
-
 if (is_post()) {
     $email = req('paymentEmail');
     $paymentMethod = req('paymentMethod');
@@ -76,7 +58,6 @@ if (is_post()) {
     $cardholder = req('cardHolderName');
     $shippingfee = req('shiping');
     $paymentAmount = req('totalcal');
-
     if ($email == '') {
         $_err['email'] = 'Please enter the email';
     } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
@@ -84,7 +65,7 @@ if (is_post()) {
     }
     if ($paymentMethod == '') {
         $_err['paymentMethod'] = 'Please select Payment Method';
-    } else if (!in_array($paymentMethod, $paymentMethods)) {
+    } else if (!array_key_exists($paymentMethod, $paymentMethods)) {
         $_err['paymentMethod'] = 'Please select valid Payment Method';
     }
 
@@ -141,7 +122,6 @@ if (is_post()) {
     if ($paymentidDB <= 0) {
         $paymentid = "P001";
     } else {
-        $paymentidDB++;
         if ($paymentidDB < 10) {
             $paymentid = "P00" . $paymentidDB;
         } else if ($paymentidDB < 100) {
@@ -151,31 +131,120 @@ if (is_post()) {
         }
     }
 
-    // Embedding JavaScript in PHP to trigger the popup
-    echo "<script type='text/javascript'>alert('$paymentid');</script>";
-    //   }
+    if (empty($_err)) {
+        //get id
+
+        $orderQuery = $_db->prepare('
+            SELECT order_id from orders');
+        $orderQuery->execute();
+        $orderID = $orderQuery->fetchAll(PDO::FETCH_ASSOC);
+
+
+        if (count($orderID) > 0) {
+            $lastOrderId = $orderID[count($orderID) - 1]['order_id'];
+            $orderDB = substr($lastOrderId, 1);
+        }
+
+        $orderDB++;
+        if ($orderDB <= 0) {
+            $orderid = "O001";
+        } else {
+            if ($orderDB < 10) {
+                $orderid = "O00" . $orderDB;
+            } else if ($orderDB < 100) {
+                $orderid = "O0" . $orderDB;
+            } else if ($orderDB < 1000) {
+                $orderid = "O" . $orderDB;
+            }
+        }
+
+        //get addressID
+        $addressQuery = $_db->prepare('
+            SELECT address_id from address where user_id=:user_id');
+
+        $addressQuery->bindParam(':user_id', $userID);
+
+        $addressQuery->execute();
+        $addressIDDB = $addressQuery->fetch(PDO::FETCH_ASSOC);
+        if ($addressIDDB) {
+            $addressID = (string)$addressIDDB['address_id'];
+        }
+
+        //insert Order
+        $orderInseret = $_db->prepare('
+        Insert INTO orders (order_id, user_id, order_date, order_time, order_status, address_id)
+        value(?,?,?,?,?,?)
+        ');
+
+        $orderInseret->bindParam(1, $orderid);
+        $orderInseret->bindParam(2, $userID);
+        $orderInseret->bindParam(3, $payment_date);
+        $orderInseret->bindParam(4, $payment_time);
+        $orderInseret->bindValue(5, 'S');
+        $orderInseret->bindParam(6, $addressID);
+
+        $orderInseret->execute();
+        if ($orderInseret->rowCount() > 0) {
+            $itemOrder = $_SESSION['selectedItems'];
+            foreach ($itemOrder as $product) {
+                $orderbridge = $_db->prepare('
+            Insert INTO orders_detail (order_id,product_id,product_quantity)
+            value(?,?,?)
+            ');
+
+                $orderbridge->bindParam(1, $orderid);
+                $orderbridge->bindParam(2, $product['id']);
+                $orderbridge->bindParam(3, $product['quantity']);
+                $orderbridge->execute();
+            }
+        }
+    }
 }
 
+global $itemOrder;
+$ids = [];
+$itemOrder = [];
 
+if (isset($_SESSION['selectedItems'])) {
+    foreach ($_SESSION['selectedItems'] as $item) {
+        $ids[] = $item['id'];
+    }
+    $itemOrder = $_SESSION['selectedItems'];
+    // Create a string of placeholders for the SQL statement
+    if (count($ids) > 0) {
+        $stm = $_db->prepare('
+     SELECT 
+        product.*,
+        product_img.*
+    FROM 
+        product
+    LEFT JOIN 
+        product_img ON product.product_id = product_img.product_id
+');
+        $stm->execute();
+
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
 ?>
 
 <body>
     <div class="paymentContainer" id="paymentContainer">
 
         <div class="Infocontainer">
-
             <div class="user_image">
-                <img src="https://picsum.photos/200/300" alt="productImage">
-                <input type="text" placeholder="userName">
+                <img src="../image/<?= $userInfo['users_IMG_source'] ?>" alt="productImage">
+                <input type="text" placeholder="userName" value="<?= $userInfo['user_name'] ?>">
             </div>
 
             <div class="productDetail">
                 <div class="product_Name">
-                    <input type="text" placeholder="productName">
-                    <input type="text" placeholder="productprice">
+                    <input type="text" placeholder="productName" id="pname">
+                    <input type="text" placeholder="productprice" id="pprice">
                 </div>
                 <div class="product_image">
-                    <img src="https://picsum.photos/200/300" alt="productImage">
+                    <img src="https://picsum.photos/200/300" alt="productImage" id="pimage">
                 </div>
             </div>
             <div class="checkOurList">
@@ -189,7 +258,9 @@ if (is_post()) {
 
                             <div class="orderContainer container<?= $countNum ?>" id="orderContainer"
                                 data-product-name="<?= $product['product_name'] ?>"
-                                data-product-price="<?= number_format($product['product_price'], 2) ?>"
+                                data-product-price="<?= $product['product_price'] ?>"
+                                data-product-image="<?= $product['product_IMG_source'] ?>"
+                                data-product-image-name="<?= $product['product_IMG_name'] ?>"
                                 onclick="handleClick(this)">
                                 <input type="text" value="<?= $product['product_name'] ?>" placeholder="productName" readonly>
                                 <input type="text" value="RM <?= number_format($product['product_price'], 2) ?>" placeholder="productPrice" readonly>
@@ -204,7 +275,7 @@ if (is_post()) {
                 } ?>
             </div>
         </div>
-        <form method="POST" action="">
+        <form method="POST" action="PaymentPage.php">
             <div class="paymentMethod">
                 <div class="paymentWord">
                     <p>Payment Details</p>
@@ -220,7 +291,7 @@ if (is_post()) {
                     <label for="paymentMethod">
                         Payment Method
                     </label>
-                    <select name="paymentMethod" id="paymentMethod">
+                    <select name="paymentMethod" id="   ">
                         <?php
                         // Loop through the array to create options dynamically
                         foreach ($paymentMethods as $key => $method) {
@@ -373,15 +444,25 @@ if (is_post()) {
             modal.style.display = "none";
         }
     });
+    var selectedContainer = null;
 
     function handleClick(element) {
         // Get the product name and price from the data attributes
-        var productName = element.getAttribute('data-product-name');
-        var productPrice = element.getAttribute('data-product-price');
-        // Display the product name and price
-        alert("Product Name: " + productName + "\nProduct Price: RM " + productPrice);
-        
-        element.style.border = "2px solid black";
+        var productname = element.getAttribute('data-product-name');
+        var productprice = element.getAttribute('data-product-price');
+        var productImage = element.getAttribute('data-product-image');
+        var productImageName = element.getAttribute('data-product-image-name');
+        if (selectedContainer) {
+            selectedContainer.style.outline = "none"; // Reset the border of the previously selected element
+        }
+
+        // Set the border for the clicked element
+        element.style.outline = "2px solid black";
+        selectedContainer = element;
+        document.getElementById('pname').value = productname;
+        document.getElementById('pprice').value = "RM " + productprice;
+        document.getElementById('pimage').src = "../image/" + productImage;
+        document.getElementById('pimage').alt = productImageName;
     }
 
     // Simulate a click on the first orderContainer on page load
