@@ -30,7 +30,7 @@ try {
 <div class="wish-box">
 <?php
         foreach ($wishs as $wish) {
-        $product_img = "../image/" . $wish->product_IMG_name;
+        $product_img = "../image/" . $wish->product_IMG_source;
     ?>
         <div class="wish-list">
             <div class="product-item" onclick="window.location.href='product_details.php?product_id=<?= $wish->product_id ?>'">

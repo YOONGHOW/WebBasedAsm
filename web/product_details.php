@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cancelWish'])) {
 <?php
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
-    $stmt = $_db->prepare("SELECT p.*, pi.product_IMG_name 
+    $stmt = $_db->prepare("SELECT p.*, pi.product_IMG_source 
                            FROM product p 
                            LEFT JOIN product_img pi ON p.product_id = pi.product_id 
                            WHERE p.product_id = :product_id");
@@ -136,7 +136,7 @@ if (isset($_GET['product_id'])) {
         <nav class="image_side">
 
         <?php
-        echo '<img src="../image/' . $product->product_IMG_name . '" alt="' . $product->product_name . '">';
+        echo '<img src="../image/' . $product->product_IMG_source . '" alt="' . $product->product_name . '">';
         ?>
         </nav>
         <div class="details_side">

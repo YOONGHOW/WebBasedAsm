@@ -156,7 +156,7 @@ try {
                     }
                     foreach ($carts as $cart) {
 
-                        $product_img = "../image/" . $cart->product_IMG_name;
+                        $product_img = "../image/" . $cart->product_IMG_source;
 
                     ?>
 
