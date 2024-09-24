@@ -71,7 +71,7 @@ h1 {
   }
   
   .tbl-content{
-    height: 300px;
+    height: 400px;
     overflow-x: auto;
     margin-top: 0px;
     background-color: #fff;
@@ -136,7 +136,10 @@ h1 {
   background-color: #f0f0f0; 
 }
   
-  
+#product-table-body{
+  padding-right: 5px;
+} 
+
   body{
     background-color: #A9A9A9;
     font-family: 'Roboto', sans-serif;
