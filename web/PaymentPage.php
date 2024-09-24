@@ -9,7 +9,55 @@
 
     <title>Document</title>
 </head>
-<?php require "../helperFile/helper.php";
+<?php
+
+require "../helperFile/helper.php";
+
+global $_user;
+$_user = $_SESSION['user'] ?? null;
+
+if ($_user == null) {
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
+} else {
+    $userID = $_user->user_id;
+}
+$ids = [];
+$itemOrder = [];
+
+if (isset($_SESSION['selectedItems'])) {
+    foreach ($_SESSION['selectedItems'] as $item) {
+        $ids[] = $item['id'];
+    }
+    $itemOrder = $_SESSION['selectedItems'];
+    print_r(implode(',', array_fill(0, count($ids), '?')));
+    // Create a string of placeholders for the SQL statement
+    if (count($ids) > 0) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $stm = $_db->prepare('
+     SELECT 
+        product.*,
+        product_img.*
+    FROM 
+        product
+    LEFT JOIN 
+        product_img ON product.product_id = product_img.product_id
+    WHERE 
+        product_id IN ($placeholders)
+');
+$idString=implode(",",$ids);
+        $stm->execute($idString);
+
+        $stm->execute();
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+
+
 
 $paymentMethods = [
     'C' => 'Bank Card',
@@ -19,7 +67,7 @@ $paymentMethods = [
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
-$paymentid,$shippingfee,$payementStatus,$ref_payment,$paymentAmount;
+    $paymentid, $shippingfee, $payementStatus, $ref_payment, $paymentAmount;
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $payment_date = date('Y-m-d'); // Current date
 $payment_time = date('H:i:s'); // Current time
@@ -31,8 +79,8 @@ if (is_post()) {
     $expDate = req('expDate');
     $cvv = req('cvv');
     $cardholder = req('cardHolderName');
-    $shippingfee=req('shiping');
-    $paymentAmount=req('totalcal');
+    $shippingfee = req('shiping');
+    $paymentAmount = req('totalcal');
 
     if ($email == '') {
         $_err['email'] = 'Please enter the email';
@@ -90,7 +138,7 @@ if (is_post()) {
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($result) > 0) {
-        $lastPaymentId = $result[count($result) - 1]['payment_id']; 
+        $lastPaymentId = $result[count($result) - 1]['payment_id'];
         $paymentidDB = substr($lastPaymentId, 1);
     }
 
