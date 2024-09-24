@@ -143,7 +143,7 @@ if (is_post()) {
 
                 <form method="POST" action="">
                     <div class="input-box">
-                        <label class="details" for="oldpassword" style="float:left;margin-left:10%;">Password</label><br />
+                        <label class="details" for="oldpassword" style="float:left;margin-left:10%;">Old Password</label><br />
                         <!-- <input id="password" name="password" type="text" placeholder="Enter your password" required> -->
                         <?= generatePassword('oldpassword', 'placeholder="Enter your old password"" required') ?><br />
                         <?= err('oldpassword'); ?>
@@ -175,6 +175,8 @@ if (is_post()) {
                     <br />
                     <input type="submit" class="login-submit" style="float:none;width:12rem;">
                 </form>
+                <br />
+                <a href="member_profile.php">Back to Profile</a>
             </div>
         </section>
     <?php } ?>
