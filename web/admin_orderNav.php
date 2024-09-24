@@ -17,8 +17,6 @@
             <a href="?search=toPay" id="pay" class="pay">To Pay</a>
             <a href="?search=toShip" id="ship" class="ship">To Ship</a>
             <a href="?search=complete" id="com" class="com">Completed</a>
-            <a href="?search=cancelled" id="can" class="can">Cancelled</a>
-            <a href="?search=refund" id="refund" class="refund">Return Refund</a>
         </nav>
     </head>
 </body>

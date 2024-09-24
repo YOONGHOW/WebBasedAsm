@@ -1,6 +1,6 @@
 .modelwindows {
     position: fixed;
-    display: block;
+    display: none;
     top: 15%;
     left: 38%;
     border-radius: 10px;
