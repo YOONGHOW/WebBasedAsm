@@ -135,8 +135,7 @@ try {
     </script>
 
     <!-- htmlt-->
-
-    <main style="min-height: 500px;">
+    <main style="min-height: 500px;"> 
     <form method="POST" action="cart.php">
         <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
             <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
@@ -148,7 +147,6 @@ try {
 
         <section class="cart_section">
             <nav class="cart_side">
-
                 <ul>
                     <?php
                     if ($carts == null) {
@@ -195,6 +193,7 @@ try {
                             }
                         </script>
                         
+
                         <div class="cart_container">
                             <div class="cart-feature">
                             <form method="POST" action="cart.php">
@@ -238,8 +237,8 @@ try {
                                 <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
                             </div>
                         </div>
-
                         </form>
+                        
                 <?php
                     }
                 } catch (PDOException $e) {
@@ -271,7 +270,7 @@ try {
                 </div>
                 
                 <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
-            </form>
+            
             </div>
 
             
@@ -279,8 +278,9 @@ try {
         </section>
         <br>
 
-
+</form>
     </main>
+    
 
   
     <?php include "footer.php"; ?>
