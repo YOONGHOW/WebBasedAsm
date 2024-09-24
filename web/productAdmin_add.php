@@ -108,7 +108,7 @@ if (is_post()) {
                     }
                 }
 
-                header('Location: productAdmin_add.php');
+                header('Location: productAdmin_list.php');
             } else {
                 header('Location: productAdmin_add.php');
             }
