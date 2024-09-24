@@ -60,8 +60,8 @@ try {
         $product_id = $_POST["productID"];
 
         $stmt = $_db->prepare("
-            DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
-            ");
+        DELETE FROM cart WHERE product_id = :product_id AND user_id = :user_id
+        ");
 
         $stmt->bindParam(':user_id', $userID);
         $stmt->bindParam(':product_id', $product_id);
