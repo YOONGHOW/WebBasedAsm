@@ -37,8 +37,6 @@
 
     // Display the message in the console (or use it as needed)
     if (message) {
-        console.log('Message from URL:', message);
-
         // Apply styles based on the search value
         if (message == 'all') {
             all.style.backgroundColor = "#e9c28e";

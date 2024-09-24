@@ -9,7 +9,50 @@
 
     <title>Document</title>
 </head>
-<?php require "../helperFile/helper.php";
+<?php
+
+require "../helperFile/helper.php";
+
+global $_user;
+$_user = $_SESSION['user'] ?? null;
+
+if ($_user == null) {
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
+} else {
+    $userID = $_user->user_id;
+}
+$ids = [];
+$itemOrder = [];
+
+if (isset($_SESSION['selectedItems'])) {
+    foreach ($_SESSION['selectedItems'] as $item) {
+        $ids[] = $item['id'];
+    }
+    $itemOrder = $_SESSION['selectedItems'];
+    print_r($itemOrder);
+    // Create a string of placeholders for the SQL statement
+    if (count($ids) > 0) {
+        $stm = $_db->prepare('
+     SELECT 
+        product.*,
+        product_img.*
+    FROM 
+        product
+    LEFT JOIN 
+        product_img ON product.product_id = product_img.product_id
+');
+        $stm->execute();
+
+        $stm->execute();
+
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+
+
 
 $paymentMethods = [
     'C' => 'Bank Card',
@@ -19,7 +62,7 @@ $paymentMethods = [
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
-$paymentid,$shippingfee,$payementStatus,$ref_payment,$paymentAmount;
+    $paymentid, $shippingfee, $payementStatus, $ref_payment, $paymentAmount;
 date_default_timezone_set('Asia/Kuala_Lumpur');
 $payment_date = date('Y-m-d'); // Current date
 $payment_time = date('H:i:s'); // Current time
@@ -31,8 +74,8 @@ if (is_post()) {
     $expDate = req('expDate');
     $cvv = req('cvv');
     $cardholder = req('cardHolderName');
-    $shippingfee=req('shiping');
-    $paymentAmount=req('totalcal');
+    $shippingfee = req('shiping');
+    $paymentAmount = req('totalcal');
 
     if ($email == '') {
         $_err['email'] = 'Please enter the email';
@@ -90,7 +133,7 @@ if (is_post()) {
     $result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($result) > 0) {
-        $lastPaymentId = $result[count($result) - 1]['payment_id']; 
+        $lastPaymentId = $result[count($result) - 1]['payment_id'];
         $paymentidDB = substr($lastPaymentId, 1);
     }
 
@@ -118,6 +161,7 @@ if (is_post()) {
 
 <body>
     <div class="paymentContainer" id="paymentContainer">
+
         <div class="Infocontainer">
 
             <div class="user_image">
@@ -134,16 +178,31 @@ if (is_post()) {
                     <img src="https://picsum.photos/200/300" alt="productImage">
                 </div>
             </div>
-
             <div class="checkOurList">
-                <div class="orderContainer">
-                    <input type="text" placeholder="productName">
-                    <input type="text" placeholder="productPrice">
-                    <input type="text" placeholder="orderQuantity">
-                    <input type="text" placeholder="subTotal">
-                </div>
-            </div>
+                <?php
+                $countNum = 0;
+                foreach ($itemOrder as $orderDetails) {
+                    foreach ($result as $product) {
+                        if ($product['product_id'] == $orderDetails['id']) {
+                            $subtotal = $product['product_price'] * $orderDetails['quantity'];
+                ?>
 
+                            <div class="orderContainer container<?= $countNum ?>" id="orderContainer"
+                                data-product-name="<?= $product['product_name'] ?>"
+                                data-product-price="<?= number_format($product['product_price'], 2) ?>"
+                                onclick="handleClick(this)">
+                                <input type="text" value="<?= $product['product_name'] ?>" placeholder="productName" readonly>
+                                <input type="text" value="RM <?= number_format($product['product_price'], 2) ?>" placeholder="productPrice" readonly>
+                                <input type="text" value="<?= $orderDetails['quantity'] ?>x" placeholder="orderQuantity" readonly>
+                                <input type="text" value="RM <?= number_format($subtotal, 2) ?>" placeholder="subTotal" readonly>
+                            </div>
+
+                <?php
+                        }
+                    }
+                    $countNum++;
+                } ?>
+            </div>
         </div>
         <form method="POST" action="">
             <div class="paymentMethod">
@@ -314,6 +373,24 @@ if (is_post()) {
             modal.style.display = "none";
         }
     });
+
+    function handleClick(element) {
+        // Get the product name and price from the data attributes
+        var productName = element.getAttribute('data-product-name');
+        var productPrice = element.getAttribute('data-product-price');
+        // Display the product name and price
+        alert("Product Name: " + productName + "\nProduct Price: RM " + productPrice);
+        
+        element.style.border = "2px solid black";
+    }
+
+    // Simulate a click on the first orderContainer on page load
+    window.onload = function() {
+        var firstContainer = document.querySelector('.orderContainer');
+        if (firstContainer) {
+            firstContainer.click(); // Trigger the click event
+        }
+    }
 </script>
 
 </html>

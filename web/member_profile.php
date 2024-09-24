@@ -91,7 +91,7 @@ if (is_post()) {
     if (strcmp($city, "none") == 0) {
         $_err['city'] = "Please select your city.";
     }
-
+    echo $state . "   " .  $city;
     if (checkAddress($completeAddress) != null) {
         $_err['completeAddress'] = checkAddress($completeAddress);
     }
