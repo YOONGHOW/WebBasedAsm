@@ -7,15 +7,12 @@ require '../helperFile/helper.php';
 
 //validation part
 $_err = [];
-global $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $address1, $address2, $postal, $photo, $validate;
+global $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $address1, $address2, $postal, $photo;
 $id = generateID("U", "users", "user_id");
 $addressID = generateID("A", "address", "address_id");
 $state = req("state") ?? "none";
-$validate = false;
-$_SESSION['verify'] = $validate;
 
 if (is_post()) {
-    $validate = $_SESSION['verify'];
     $photo = get_file('photo');
     $createDate = date("d/m/Y");
     $name = trim(req("name"));
@@ -130,7 +127,7 @@ if (is_post()) {
     <script src="../js/photo.js"></script>
     <title>Member Registration</title>
 
-
+   
     <!-- password real time validate -->
     <script>
         function submitForm() {
@@ -179,22 +176,9 @@ if (is_post()) {
                 element.innerHTML = element.innerHTML.replace("✅", "❌");
             }
         }
-
-        function validateEmail() {
-            const input = document.getElementById("email");
-
-        }
-
-
-        //function to update the verifed status
-        function updateStatus(isValid) {
-            if (!isValid) {
-                $('#verify').css('color', '90EE90');
-            } else {
-                $('#verify').css('color', 'grey');
-            }
-        }
+       
     </script>
+    
 </head>
 
 <body>
