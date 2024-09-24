@@ -166,7 +166,7 @@ form .button a {
   height: 100%;
   width: 100%;
   border-radius: 5px;
-  padding:0.5em;
+  padding: 0.5em;
   text-decoration: none;
   border: none;
   color: #fff;
@@ -263,6 +263,10 @@ form .button a:hover {
 }
 
 /* Photo Upload ------------------------------------------------------------ */
+label.upload {
+  width: 200px;
+  display: flex;
+}
 
 label.upload img {
   display: block;
@@ -277,6 +281,7 @@ label.upload img {
 .valid {
   color: green;
 }
+
 .invalid {
   color: red;
 }

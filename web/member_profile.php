@@ -5,6 +5,8 @@
 
 require '../helperFile/helper.php';
 
+
+
 // Validation part
 $_err = [];
 global $_user, $name, $ic, $date, $gender, $confirm, $password, $contact, $state, $city, $completeAddress, $postal, $photo;
@@ -14,6 +16,11 @@ $_user = $_SESSION['user'] ?? null;
 $id = $_user->user_id ?? null; 
 
 if ($_user && $id) {
+
+    if (strcmp($_user->user_rule, "user") != 0) {
+        temp("info", "Your permission is denied.");
+        redirect("member_list.php");
+      }
 
     // Retrieve data from users 
     $sqlUsers = 'SELECT * FROM users WHERE user_id = :user_id'; 
