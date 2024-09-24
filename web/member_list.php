@@ -53,9 +53,9 @@ $arr = $stmt->fetchAll();
         <table cellpadding="0" cellspacing="0">
           <thead style="text-transform:uppercase;">
             <tr>
-              <th>ID</th>
+              <th style="width:5%;">ID</th>
               <th>Name</th>
-              <th>Email</th>
+              <th style="width:15%;">Email</th>
               <th>IC number</th>
               <th>Phone Number</th>
               <th>Gender</th>
@@ -71,9 +71,9 @@ $arr = $stmt->fetchAll();
           <tbody>
             <?php foreach ($arr as $s): ?>
               <tr>
-                <td><?= $s->user_id ?></td>
+                <td style="width:5%;"><?= $s->user_id ?></td>
                 <td><?= $s->user_name ?></td>
-                <td><?= $s->Email ?></td>
+                <td  style="width:15%;"><?= $s->Email ?></td>
                 <td><?= $s->user_IC ?></td>
                 <td><?= $s->user_phoneNumber ?></td>
                 <?php
