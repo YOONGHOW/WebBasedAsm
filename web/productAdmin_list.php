@@ -133,7 +133,7 @@ $arr = $stmt->fetchAll();
     </div>
 
     <div class="addButton">
-    <button id="button" onclick="window.location.href='productAdmin_add.php'">ADD Category +</button>
+    <button id="button" onclick="window.location.href='productAdmin_add.php'">ADD Product +</button>
      </div>
 
   </section>
