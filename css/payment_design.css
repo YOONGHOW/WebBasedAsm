@@ -301,3 +301,30 @@ body {
     padding-left: 50px;
     text-align: right;
 }
+.loadpage{
+    position: absolute;
+    display: none;
+    width: 35.5%;
+    flex-direction: column;
+    align-items: center;     
+    justify-content: center;
+    height: 66.5%;  
+    background-color: rgb(255, 253, 253);
+    border: none;
+    border-radius: 5px;
+    z-index: 1;
+    top: 10%;
+    left:32%;
+    border-radius: 100%;
+    
+}
+.loadpage img{
+    border-radius: 100%;
+width: 300px;
+margin-bottom: 0;
+
+}
+.loadpage p{
+font-size: 25px;
+margin-top: 0;
+}

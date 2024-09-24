@@ -131,9 +131,27 @@ if (is_post()) {
     <title>Member Registration</title>
 
     <script>
-        function submitForm() {
-            document.getElementById("state").submit();
-        }
+        //get the email to verify
+        $(document).ready(function() {
+            // When the button is clicked
+            $('#verify').on('click', function() {
+                // Get the value of the input field
+                var email = $('#email').val();
+
+                // Send the value to PHP via AJAX
+                $.ajax({
+                    url: 'sendVerifyEmail.php', // The PHP file to process the input
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        email: email
+                    }, // Send the email name
+                    error: function(xhr, status, error) {
+                        console.log("Error: " + error);
+                    }
+                });
+            });
+        });
     </script>
 
     <!-- password real time validate -->
@@ -181,12 +199,12 @@ if (is_post()) {
             }
         }
 
-        function validateEmail(){
+        function validateEmail() {
             const input = document.getElementById("email");
-            
+
         }
 
-        
+
         //function to update the verifed status
         function updateStatus(isValid) {
             if (!isValid) {
@@ -200,7 +218,8 @@ if (is_post()) {
 
 <body>
 
-
+    <!-- Flash message -->
+    <div id="info"><?= temp('info') ?></div>
     <div class="container">
         <div class="title">Registration</div>
         <div class="content">
