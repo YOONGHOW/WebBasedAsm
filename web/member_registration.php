@@ -130,33 +130,13 @@ if (is_post()) {
     <script src="../js/photo.js"></script>
     <title>Member Registration</title>
 
-    <script>
-        //get the email to verify
-        $(document).ready(function() {
-            // When the button is clicked
-            $('#verification').on('click', function() {
-                event.preventDefault();
-                // Get the value of the input field
-                var email = $('#email').val();
-
-                // Send the value to PHP via AJAX
-                $.ajax({
-                    url: 'sendVerifyEmail.php', // The PHP file to process the input
-                    type: 'POST',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: {
-                        email: email
-                    }, // Send the email name
-                    error: function(xhr, status, error) {
-                        console.log("Error: " + error);
-                    }
-                });
-            });
-        });
-    </script>
 
     <!-- password real time validate -->
     <script>
+        function submitForm() {
+            document.getElementById("state").submit();
+        }
+
         window.onload = function() {
             validatePassword();
         };
@@ -247,7 +227,6 @@ if (is_post()) {
                     <div class="input-box">
                         <label class="details" for="email">Email</label>
                         <?= generateTextField('email', 'maxlength="100"  placeholder="e.g. xxx@gmail.com" required') ?>
-                        <span id="verify"  class="fa">&#xf00c;Verified</span><a id="verification"  href="#">Verify Email</a><br />
                         <?= err('email') ?>
                     </div>
 

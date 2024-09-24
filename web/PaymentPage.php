@@ -41,7 +41,7 @@ $paymentMethods = [
     'F' => 'FPX',
     'P' => 'Paypal'
 ];
-
+// unset($_SESSION['selectedItems']);
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
@@ -237,6 +237,45 @@ if (is_post()) {
         $paymentInseret->bindParam(9, $paymentMethod);
         $paymentInseret->bindValue(10, "S");
         $paymentInseret->execute();
+
+
+
+
+        $shipingQuery = $_db->prepare('
+            SELECT  shipping_pacel_ref from shipping_detail order By shipping_pacel_ref');
+        $shipingQuery->execute();
+        $shippingID = $shipingQuery->fetchAll(PDO::FETCH_ASSOC);
+
+
+        if (count($shippingID) > 0) {
+            $lastShippingId = $shippingID[count($shippingID) - 1]['order_id'];
+            $shippingDB = substr($lastShippingId, 3);
+        }
+
+        if ($shippingDB <= 0) {
+            $shippingid = "SHP001";
+        } else {
+            $shippingDB++;
+            if ($shippingDB < 10) {
+                $shippingid = "SHP00" . $shippingDB;
+            } else if ($shippingDB < 100) {
+                $shippingid = "SHP0" . $shippingDB;
+            } else if ($shippingDB < 1000) {
+                $shippingid = "SHP" . $shippingDB;
+            }
+        }
+
+        $shipmentInseret = $_db->prepare('
+        Insert INTO shipping_detail (shipping_pacel_ref, order_id, shipping_company, shipping_status)
+        value(?,?,?,?)
+        ');
+
+        $shipmentInseret->bindParam(1, $shippingid);
+        $shipmentInseret->bindParam(2, $orderid);
+        $shipmentInseret->bindValue(3, "");
+        $shipmentInseret->bindValue(4, "P");
+        $shipmentInseret->execute();
+
 
         $alertMessage = "Successful make payment !"; // Customize your alert message
         $redirectUrl = "home.php";
@@ -526,26 +565,6 @@ if (isset($_SESSION['selectedItems'])) {
         }
     }
 
-    function checkOrderInput() {
-
-        const orderInput = document.getElementById("orderIn");
-        const myDiv = document.getElementById("loadpage");
-        alert(orderInput.value.trim());
-        // Check if the input field has a value
-        if (orderInput.value.trim() !== "") {
-            myDiv.style.display = "flex"; // Show the loading div
-
-            // Hide it again after 5 seconds
-            setTimeout(function() {
-                myDiv.style.display = "none"; // Hide the loading div again
-            }, 5000); // 5000 milliseconds = 5 seconds
-        } else {
-            alert("Please enter a valid order number."); // Alert if the input is empty
-        }
-    }
-
-    // Directly check when the page loads
-    window.onload = checkOrderInput;
 </script>
 
 </html>
