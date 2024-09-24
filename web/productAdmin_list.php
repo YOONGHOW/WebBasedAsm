@@ -5,11 +5,8 @@
 include "sidebar.php";
 require '../helperFile/ProductMaintenance_base.php';
 
-// Get search information and price range from the user
 $search = isset($_POST['search']) ? $_POST['search'] : '';
 
-
-// SQL query to get only the first image for each product
 $sql = 'SELECT p.*, (SELECT pi.product_IMG_source FROM product_img pi WHERE pi.product_id = p.product_id LIMIT 1) as product_IMG_source 
         FROM product p WHERE 1=1';
 
@@ -41,35 +38,38 @@ $arr = $stmt->fetchAll();
     }
 
     .addButton {
-    margin-top: 10px;
-    float: right;
-}
+      margin-top: 10px;
+      float: right;
+    }
 
-  .addButton #button {
-      border-radius: 20px; 
+    .addButton #button {
+      border-radius: 20px;
       border: none;
       background-color: #6495ED;
-      font-weight: bold; 
-      height: 40px; 
-      width: 160px; 
-      cursor: pointer; 
+      font-weight: bold;
+      height: 40px;
+      width: 160px;
+      cursor: pointer;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
-  }
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
 
-  .addButton #button:hover {
-      background-color: #4169E1; 
-      box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
-      transform: translateY(-2px); 
+    .addButton #button:hover {
+      background-color: #4169E1;
+      box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
       opacity: 0.9;
-  }
+    }
 
-  .addButton #button:active {
-      background-color: #1E3A8A; 
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
-      transform: translateY(1px); 
-  }   
+    .addButton #button:active {
+      background-color: #1E3A8A;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+      transform: translateY(1px);
+    }
 
+    tr.low-stock {
+      background-color: #ffcccc !important;
+    }
   </style>
 </head>
 
@@ -91,10 +91,10 @@ $arr = $stmt->fetchAll();
           <thead style="text-transform:uppercase;">
             <tr>
               <th>Product ID</th>
-              <th>product photo</th>
+              <th>Product Photo</th>
               <th>Category ID</th>
               <th>Product Name</th>
-              <th>Product Price(RM)</th>
+              <th>Product Price (RM)</th>
               <th>Stock</th>
               <th>Status</th>
               <th></th>
@@ -105,9 +105,11 @@ $arr = $stmt->fetchAll();
 
       <div class="tbl-content">
         <table cellpadding="0" cellspacing="0" border="0">
-          <tbody>
+          <tbody id="product-table-body">
             <?php foreach ($arr as $s): ?>
-              <tr>
+
+              <!-- if stock less than 10 low-stock class will be execute -->
+              <tr class="<?= ($s->product_stock < 10) ? 'low-stock' : 'regular-stock' ?>">
                 <td><?= $s->product_id ?></td>
                 <td>
                   <a href="productAdmin_image.php?id=<?= $s->product_id ?>"><img src="<?= $s->product_IMG_source ?>" alt="photo" class="product-img">
@@ -133,11 +135,16 @@ $arr = $stmt->fetchAll();
     </div>
 
     <div class="addButton">
-    <button id="button" onclick="window.location.href='productAdmin_add.php'">ADD Category +</button>
-     </div>
+      <button id="button" onclick="window.location.href='productAdmin_add.php'">ADD Product +</button>
+    </div>
 
+    <!-- Pass product data to JS BEFORE including external JS file -->
+    <script>
+      const products = <?= json_encode($arr); ?>;
+    </script>
+
+    <script src="../js/productAdmin_jsscript.js"></script>
   </section>
-
 </body>
 
 </html>
