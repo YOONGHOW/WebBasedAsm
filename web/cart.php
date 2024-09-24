@@ -239,7 +239,7 @@ try {
                             </div>
                         </div>
 
-
+                        </form>
                 <?php
                     }
                 } catch (PDOException $e) {
@@ -273,7 +273,7 @@ try {
                 <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
             </div>
 
-            </form>
+            
             </div>
         </section>
         <br>
