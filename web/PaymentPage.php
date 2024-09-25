@@ -323,6 +323,8 @@ if (is_post()) {
             echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
             echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
             echo '</script>';
+     unset($_SESSION['selectedItems']);
+
             exit();
         }
     }
