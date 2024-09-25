@@ -9,9 +9,14 @@
 </head>
 <?php
 include "header.php";
-global $userID;
+global $_user;
+$_user = $_SESSION['user'] ?? null;
+
+
 if ($_user == null) {
-    $userID = "U001";
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
 } else {
     $userID = $_user->user_id;
 }
@@ -19,7 +24,7 @@ if ($_user == null) {
 <?php
 // Check if 'search' parameter is present in the URL
 if (isset($_GET['search'])) {
-    global  $search, $stm;
+    global  $search;
     // Get the value of the 'search' parameter
     $search = $_GET['search'];
     if ($search == 'all') {
@@ -41,7 +46,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
     LEFT JOIN product_img ON product.product_id = product_img.product_id
     WHERE orders.user_id = :user_id
-    
+    ORDER BY orders_detail.order_id
 ');
     } else if ($search == 'toPay') {
         $stm = $_db->prepare('
@@ -142,6 +147,7 @@ if (isset($_GET['search'])) {
   ORDER BY orders_detail.order_id
 ');
     }
+
     $stm->bindParam(':user_id', $userID);
 
     $stm->execute();
