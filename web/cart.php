@@ -17,35 +17,38 @@ if (!isset($_SESSION['selectedItems'])) {
     $_SESSION['selectedItems'] = []; // Initialize if not set
 }
 
-if (isset($_POST['selectedItems'])) {
+if (isset($_POST['selectedItems']) && !isset($_POST['deleteBtn'])) {
+
+    if (isset($_POST['selectedItems'])) {
+        echo '<pre>';
+        print_r($_POST['selectedItems']);
+        echo '</pre>';
+        exit; // Temporarily exit to view the output
+    }
+
     foreach ($_POST['selectedItems'] as $item) {
-        if ($item !== "on") {
-            // Explode the value into id and quantity
-            list($id, $quantity) = explode(",", $item);
+        list($id, $quantity) = explode(",", $item);  // Separate id and quantity
 
-            // Check if the item already exists in the session to avoid duplicates
-            $found = false;
-            foreach ($_SESSION['selectedItems'] as &$existingItem) {
-                if ($existingItem['id'] == $id) {
-                    // Update the quantity if the item is already in the session
-                    $existingItem['quantity'] += $quantity;
-                    $found = true;
-                    break;
-                }
+        $found = false;
+        foreach ($_SESSION['selectedItems'] as &$existingItem) {
+            if ($existingItem['id'] == $id) {
+                $existingItem['quantity'] += $quantity; // Update quantity
+                $found = true;
+                break;
             }
+        }
 
-            // If item is not found, add it to the session
-            if (!$found) {
-                $_SESSION['selectedItems'][] = [
-                    'id' => $id,
-                    'quantity' => $quantity
-                ];
-            }
+        if (!$found) {
+            $_SESSION['selectedItems'][] = [
+                'id' => $id,
+                'quantity' => $quantity
+            ];
         }
     }
 
+    unset($_SESSION['selectedItems']);
     // Redirect to the payment page after the items are stored in the session
-    header("Location: http://localhost:8000/web/PaymentPage.php");
+    // header("Location: http://localhost:8000/web/PaymentPage.php");
     exit;
 }
 
@@ -135,152 +138,149 @@ try {
     </script>
 
     <!-- htmlt-->
-    <main style="min-height: 500px;"> 
-    <form method="POST" action="cart.php">
-        <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
-            <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
-            <h1 style="margin: 0;">My Cart</h1>
-        </span>
+    <main style="min-height: 500px;">
+        <form method="POST" action="cart.php">
+            <span style="display: flex; align-items: center; margin-left:670px; padding:15px;">
+                <img src="../image/shopping-cart.png" alt="cart" style="margin-right: 10px; width:30px; height:30px;">
+                <h1 style="margin: 0;">My Cart</h1>
+            </span>
 
-        <span style="display: flex;align-items: center;">
-            <input type="checkbox" name="selectAll" id="selectAll" onclick="toggle(this)" /> &nbsp;&nbsp;All</span><br>
+            <span style="display: flex;align-items: center;">
+                <input type="checkbox" name="selectAll" id="selectAll" onclick="toggle(this)" /> &nbsp;&nbsp;All</span><br>
 
-        <section class="cart_section">
-            <nav class="cart_side">
-                <ul>
-                    <?php
-                    if ($carts == null) {
-                        echo "<p style='font-size:20px; margin-top:100px;'>No record found(s). Go to find your suitable product and add it to cart😁</p>";
-                    }
-                    foreach ($carts as $cart) {
+            <section class="cart_section">
+                <nav class="cart_side">
+                    <ul>
+                        <?php
+                        if ($carts == null) {
+                            echo "<p style='font-size:20px; margin-top:100px;'>No record found(s). Go to find your suitable product and add it to cart😁</p>";
+                        }
+                        foreach ($carts as $cart) {
 
-                        $product_img = "../image/" . $cart->product_IMG_source;
+                            $product_img = "../image/" . $cart->product_IMG_source;
 
-                    ?>
+                        ?>
 
-                        <script>
-                            function myFunction(button) {
-                                var cartContainer = button.closest('.cart_container');
+                            <script>
+                                function myFunction(button) {
+                                    var cartContainer = button.closest('.cart_container');
 
-                                var x = cartContainer.querySelector('.quantity');
-                                var y = cartContainer.querySelector('.edit_quantity');
+                                    var x = cartContainer.querySelector('.quantity');
+                                    var y = cartContainer.querySelector('.edit_quantity');
 
-                                var editBtn = cartContainer.querySelector('.edit_btn');
-                                var saveBtn = cartContainer.querySelector('.save_btn');
+                                    var editBtn = cartContainer.querySelector('.edit_btn');
+                                    var saveBtn = cartContainer.querySelector('.save_btn');
 
-                                if (y.style.display === "none" || y.style.display === "") {
-                                    x.style.display = "none";
-                                    y.style.display = "block";
-                                    editBtn.style.display = "none";
-                                    saveBtn.style.display = "inline-block";
-                                } else {
-                                    x.style.display = "block";
-                                    y.style.display = "none";
-                                    editBtn.style.display = "inline-block";
-                                    saveBtn.style.display = "none";
+                                    if (y.style.display === "none" || y.style.display === "") {
+                                        x.style.display = "none";
+                                        y.style.display = "block";
+                                        editBtn.style.display = "none";
+                                        saveBtn.style.display = "inline-block";
+                                    } else {
+                                        x.style.display = "block";
+                                        y.style.display = "none";
+                                        editBtn.style.display = "inline-block";
+                                        saveBtn.style.display = "none";
+                                    }
                                 }
-                            }
 
-                            function saveQuantity(button) {
-                                var cartContainer = button.closest('.cart_container');
+                                function saveQuantity(button) {
+                                    var cartContainer = button.closest('.cart_container');
 
-                                var quantityInput = cartContainer.querySelector('.edit_quantity input');
-                                var newQuantity = parseInt(quantityInput.value);
+                                    var quantityInput = cartContainer.querySelector('.edit_quantity input');
+                                    var newQuantity = parseInt(quantityInput.value);
 
-                                cartContainer.querySelector('input[name="quantity"]').value = newQuantity;
-                                var form = cartContainer.querySelector('form');
-                                form.submit();
-                            }
-                        </script>
-                        
+                                    cartContainer.querySelector('input[name="quantity"]').value = newQuantity;
+                                    var form = cartContainer.querySelector('form');
+                                    form.submit();
+                                }
+                            </script>
 
-                        <div class="cart_container">
-                            <div class="cart-feature">
-                            <form method="POST" action="cart.php">
-                                    <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
+
+                            <div class="cart_container">
+                                <div class="cart-feature">
+                                        <input type="checkbox" name="selectedItems[]" id="selectOne" class="selectItem"
+                                            data-price="<?= $cart->product_price ?>"
+                                            data-quantity="<?= $cart->quantity ?>"
+                                            value="<?= $cart->product_id ?>,<?= $cart->quantity ?>"
+                                            onchange="updateTotal()" />
+                                        <input type="hidden" name="productID" value="<?= $cart->product_id ?>">
+                                        <button type="submit" name="deleteBtn" id="dlt_btn"><img src="../image/delete.png" class="cart_btn_img"></button>
+                                        <button type="button" name="editBtn" id="edit_btn" class="edit_btn" onclick="myFunction(this)"><img src="../image/pencil.png" class="cart_btn_img2"></button>
+
+                                        <button type="submit" name="saveBtn" id="save_btn" class="save_btn" onclick="saveQuantity(this)" style="display: none;">
+                                            <img src="../image/save.png" class="cart_btn_img">
+                                        </button>
+
+
+                                </div>
+
+                                <div class="cart_image_box">
+                                    <img src="../image/<?= $product_img ?>" alt="<?= $cart->product_name ?>">
+                                </div>
+                                <div class="cart_details_box">
+                                    <h1><?= $cart->product_name ?></h1><br>
+                                    <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
+
+                                    <span class="quantity" style="display: block;">
+                                        <p>Quantity:<?= $cart->quantity ?></p>
+                                    </span>
+                                    <span class="edit_quantity" style="display: none;">
+                                        <p>Quantity: <input type="number" value="<?= $cart->quantity ?>" name="editQty" style="width:30%;" min="1" max="<?= $cart->product_stock ?>"></p>
+                                    </span>
+
+                                    <input type="hidden" name="quantity" value="<?= $cart->quantity ?>"
+                                        min="1" max="<?= $cart->product_stock ?>"
+                                        class="quantityInput"
                                         data-price="<?= $cart->product_price ?>"
-                                        data-quantity="<?= $cart->quantity ?>"
-                                        value="<?= $cart->product_id ?>,<?= $cart->quantity ?>"
-                                        onchange="updateTotal()" />
-                                    <input type="hidden" name="productID" value="<?= $cart->product_id ?>">
-                                    <button type="submit" name="deleteBtn" id="dlt_btn"><img src="../image/delete.png" class="cart_btn_img"></button>
-                                    <button type="button" name="editBtn" id="edit_btn" class="edit_btn" onclick="myFunction(this)"><img src="../image/pencil.png" class="cart_btn_img2"></button>
+                                        oninput="updateTotal()" style="width:25%;" />
 
-                                    <button type="submit" name="saveBtn" id="save_btn" class="save_btn" onclick="saveQuantity(this)" style="display: none;">
-                                        <img src="../image/save.png" class="cart_btn_img">
-                                    </button>
-
-
+                                    <br>
+                                    <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
+                                </div>
                             </div>
+        </form>
 
-                            <div class="cart_image_box">
-                                <img src="../image/<?= $product_img ?>" alt="<?= $cart->product_name ?>">
-                            </div>
-                            <div class="cart_details_box">
-                                <h1><?= $cart->product_name ?></h1><br>
-                                <p>Price: RM<?= number_format($cart->product_price, 2) ?></p><br>
-
-                                <span class="quantity" style="display: block;">
-                                    <p>Quantity:<?= $cart->quantity ?></p>
-                                </span>
-                                <span class="edit_quantity" style="display: none;">
-                                    <p>Quantity: <input type="number" value="<?= $cart->quantity ?>" name="editQty" style="width:30%;" min="1" max="<?= $cart->product_stock ?>"></p>
-                                </span>
-
-                                <input type="hidden" name="quantity" value="<?= $cart->quantity ?>"
-                                    min="1" max="<?= $cart->product_stock ?>"
-                                    class="quantityInput"
-                                    data-price="<?= $cart->product_price ?>"
-                                    oninput="updateTotal()" style="width:25%;" />
-
-                                <br>
-                                <p>Total: RM<?= number_format($cart->product_price * $cart->quantity, 2) ?></p><br>
-                            </div>
-                        </div>
-                        </form>
-                        
-                <?php
+<?php
+                        }
+                    } catch (PDOException $e) {
+                        echo 'Error: ' . $e->getMessage();
                     }
-                } catch (PDOException $e) {
-                    echo 'Error: ' . $e->getMessage();
-                }
-                ?>
-                </ul>
-            </nav>
+?>
+</ul>
+</nav>
 
-            <div class="cart_total_container">
-                <div class="payment-details">
-                    <p class="label">Total:</p>
-                    <p id="totalPrice">RM <?= number_format($total_price, 2) ?></p>
-                </div><br>
+<div class="cart_total_container">
+    <div class="payment-details">
+        <p class="label">Total:</p>
+        <p id="totalPrice">RM <?= number_format($total_price, 2) ?></p>
+    </div><br>
 
-                <div class="payment-details">
-                    <p class="label">Shipping Fee:</p>
-                    <p>RM <?= number_format($ship_fee, 2) ?></p>
-                </div><br>
+    <div class="payment-details">
+        <p class="label">Shipping Fee:</p>
+        <p>RM <?= number_format($ship_fee, 2) ?></p>
+    </div><br>
 
-                <div class="payment-details">
-                    <p class="label">Voucher Discount:</p>
-                    <p>RM <?= number_format($discount, 2) ?></p>
-                </div><br>
+    <div class="payment-details">
+        <p class="label">Voucher Discount:</p>
+        <p>RM <?= number_format($discount, 2) ?></p>
+    </div><br>
 
-                <div class="payment-details">
-                    <p class="label">Total Payment:</p>
-                    <p id="totalPayment">RM <?= number_format($total_payment, 2) ?></p>
-                </div>
-                
-                <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
-            
-            </div>
+    <div class="payment-details">
+        <p class="label">Total Payment:</p>
+        <p id="totalPayment">RM <?= number_format($total_payment, 2) ?></p>
+    </div>
 
-            
-            </div>
-        </section>
-        <br>
+    <input type="submit" name="checkOutBtn" id="checkOutBtn" value="Place Order" />
 
-</form>
+</div>
+
+
+</div>
+</section>
+<br>
     </main>
-    
 
-  
+
+
     <?php include "footer.php"; ?>

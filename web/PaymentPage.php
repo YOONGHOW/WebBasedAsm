@@ -41,7 +41,7 @@ $paymentMethods = [
     'F' => 'FPX',
     'P' => 'Paypal'
 ];
-// unset($_SESSION['selectedItems']);
+//  unset($_SESSION['selectedItems']);
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
@@ -398,7 +398,7 @@ if (is_post()) {
         <div class="Infocontainer">
             <div class="user_image">
                 <img src="../image/<?= $userInfo['users_IMG_source'] ?>" alt="productImage">
-                <input type="text" placeholder="userName" value="<?= $userInfo['user_name'] ?>">
+                <input type="text" placeholder="userName"  value="<?= $userInfo['user_name'] ?>">
             </div>
 
             <div class="productDetail">
