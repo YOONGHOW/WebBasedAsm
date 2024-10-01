@@ -324,7 +324,17 @@ if (is_post()) {
             echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
             echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
             echo '</script>';
-            unset($_SESSION['selectedItems']);
+            print_r($itemOrder);
+            if (!empty($itemOrder)) {
+                // Delete cart items
+                $productIds = array_column($itemOrder, 'id');
+                $placeholders = implode(',', array_fill(0, count($itemOrder), '?')); 
+                $sql = "DELETE FROM cart WHERE user_id = ? AND product_id IN ($placeholders)"; 
+
+                $carddelete = $_db->prepare($sql);
+                $params = array_merge([$userID], $productIds);
+                $carddelete->execute($params);
+            }
 
             exit();
         }
@@ -569,7 +579,7 @@ if (is_post()) {
                     State
                 </label>
                 <select name="malaysia_state" id="malaysia_state" disabled>
-                    <option value="" >Select State</option>
+                    <option value="">Select State</option>
                     <?php
 
                     // Loop through the states to create options
