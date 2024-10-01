@@ -568,8 +568,8 @@ if (is_post()) {
                 <label for="State">
                     State
                 </label>
-                <select name="malaysia_state" id="malaysia_state">
-                    <option value="" disabled>Select State</option>
+                <select name="malaysia_state" id="malaysia_state" disabled>
+                    <option value="" >Select State</option>
                     <?php
 
                     // Loop through the states to create options
