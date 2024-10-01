@@ -1,4 +1,4 @@
-paymentInseretbhtml,
+html,
 body {
     height: 100%;
     margin: 0;
@@ -105,7 +105,7 @@ body {
     resize: none;
     overflow: hidden;
     font-size: 17px;
-    
+    outline: none;
 }
 
 
@@ -113,7 +113,7 @@ body {
     font-size: 17px;
     background-color:  rgb(181, 176, 176);
     border: none;
-
+    outline: none;
 }
 
 .productPrice {
@@ -137,7 +137,7 @@ body {
     border: none;
     background-color:  rgb(181, 176, 176);
     font-weight: bold;
-
+    outline: none;
 }
 
 .payContainer {
@@ -178,7 +178,7 @@ body {
 
 .orderInfo input {
     background-color:  rgb(181, 176, 176);
-
+    width: 500PX;
     outline: none;
     border: none;
 }
