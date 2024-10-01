@@ -19,12 +19,6 @@ if (!isset($_SESSION['selectedItems'])) {
 
 if (isset($_POST['selectedItems']) && !isset($_POST['deleteBtn'])) {
 
-    if (isset($_POST['selectedItems'])) {
-        echo '<pre>';
-        print_r($_POST['selectedItems']);
-        echo '</pre>';
-        exit; // Temporarily exit to view the output
-    }
 
     foreach ($_POST['selectedItems'] as $item) {
         list($id, $quantity) = explode(",", $item);  // Separate id and quantity
@@ -46,9 +40,8 @@ if (isset($_POST['selectedItems']) && !isset($_POST['deleteBtn'])) {
         }
     }
 
-    unset($_SESSION['selectedItems']);
     // Redirect to the payment page after the items are stored in the session
-    // header("Location: http://localhost:8000/web/PaymentPage.php");
+     header("Location: http://localhost:8000/web/PaymentPage.php");
     exit;
 }
 
