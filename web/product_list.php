@@ -57,7 +57,7 @@ $stmt = $_db->prepare("
                 FROM product p
                 LEFT JOIN product_img pi ON p.product_id = pi.product_id
                 LEFT JOIN category c ON p.category_id = c.category_id
-                WHERE p.product_name LIKE :searchProd";
+                WHERE p.product_name LIKE :searchProd"; 
             
             if ($selectedCategory != 'all') {
                 $sql .= " AND c.category_name = :selectedCategory";
