@@ -5,7 +5,7 @@
     left: 38%;
     border-radius: 10px;
     width: 300px;
-    height: 50%;
+    height: 35%;
     background-color: rgb(195, 170, 138);
     z-index: 1;
 }
@@ -52,7 +52,7 @@
     margin-left: 20px;
     margin-top: 10px;
 }
-.receiver input{
+.receiver input,select{
     display: block;
     width: 80%;
     height: 25px;

@@ -163,7 +163,7 @@ if (isset($_GET['product_id'])) {
                 if ($checkWishStmt->rowCount() > 0) {
                 echo '<input type="submit" id="cancel_wishBtn" name="cancelWish" value="Cancel Wishlist"/>';
                 }else{
-                echo '<input type="submit" id="wishBtn" name="addWish" value="Save To wishlish"/>';
+                echo '<input type="submit" id="wishBtn" name="addWish" value="Save To wishlist"/>';
                 }
 
                 ?>

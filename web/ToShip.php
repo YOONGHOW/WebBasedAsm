@@ -9,9 +9,14 @@
 </head>
 <?php
 include "header.php";
+global $_user;
+$_user = $_SESSION['user'] ?? null;
+
 
 if ($_user == null) {
-    $userID = "U001";
+    echo "<script>alert('You must login as member first')
+    window.location.href = 'home.php';
+    </script>";
 } else {
     $userID = $_user->user_id;
 }
@@ -19,7 +24,7 @@ if ($_user == null) {
 <?php
 // Check if 'search' parameter is present in the URL
 if (isset($_GET['search'])) {
-    global  $search, $stm, $userID;
+    global  $search;
     // Get the value of the 'search' parameter
     $search = $_GET['search'];
     if ($search == 'all') {
@@ -41,7 +46,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
     LEFT JOIN product_img ON product.product_id = product_img.product_id
     WHERE orders.user_id = :user_id
-    ORDER BY orders_detail.order_id
+    ORDER BY orders.order_date DESC
 ');
     } else if ($search == 'toPay') {
         $stm = $_db->prepare('
@@ -63,7 +68,7 @@ if (isset($_GET['search'])) {
         FROM payment
         WHERE payment_status = "N" 
     )and orders.user_id = :user_id
-    ORDER BY orders_detail.order_id
+    ORDER BY orders.order_date DESC
 ');
     } else if ($search == 'toShip') {
         $stm = $_db->prepare('
@@ -83,7 +88,7 @@ if (isset($_GET['search'])) {
   WHERE orders.order_status = "S"
     AND (shipping_detail.shipping_status = "P" OR shipping_detail.shipping_status = "S")
     AND orders.user_id = :user_id
-  ORDER BY orders_detail.order_id
+  ORDER BY orders.order_date DESC
 ');
     } else if ($search == 'complete') {
         $stm = $_db->prepare('
@@ -101,7 +106,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN product ON orders_detail.product_id = product.product_id
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   WHERE orders.order_status = "S" and shipping_detail.shipping_status = "R" and orders.user_id = :user_id
-  ORDER BY orders_detail.order_id
+  ORDER BY orders.order_date DESC
 ');
     } else if ($search == 'cancelled') {
         $stm = $_db->prepare('
@@ -119,7 +124,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN product ON orders_detail.product_id = product.product_id
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   WHERE orders.order_status = "C" and orders.user_id = :user_id
-  ORDER BY orders_detail.order_id
+  ORDER BY orders.order_date DESC
 ');
     } else if ($search == 'refund') {
         $stm = $_db->prepare('
@@ -139,9 +144,10 @@ if (isset($_GET['search'])) {
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
   WHERE orders.order_status = "R" and orders.user_id = :user_id
-  ORDER BY orders_detail.order_id
+  ORDER BY orders.order_date DESC
 ');
     }
+
     $stm->bindParam(':user_id', $userID);
 
     $stm->execute();
@@ -151,6 +157,7 @@ if (isset($_GET['search'])) {
     // If 'search' parameter is not found, output a message
     echo "No search parameter found in the URL.";
 }
+
 $orderStatus = [
     "C" => "Cancle",
     "P" => "Waiting Payment",
@@ -199,6 +206,7 @@ $returnStatus = [
             <p>No orders yet</p>
         </div>
         <?php
+        
         $orderDetails = []; // Initialize an empty array to hold grouped order details
 
         // Group products by order_id
@@ -238,7 +246,7 @@ $returnStatus = [
         }
 
         // Now print the grouped orders and their products
-        foreach ($orderDetails as $orderId => $orderInfo): ?>
+        foreach ($orderDetails as $orderId => $orderInfo):  ?>
             <div class="deliverHis" id="deliverHis">
                 <div class="deliverDetail ">
                     <?php if ($orderInfo['shipping_status'] == "R") { ?>
@@ -254,7 +262,8 @@ $returnStatus = [
                     <?php } ?>
                 </div>
                 <div class="deliverState">
-                    <?php if ($orderInfo['order_status'] == "S") {
+                    <?php 
+                    if ($orderInfo['order_status'] == "S") {
                         echo '<p>' . $shippingStatus[$orderInfo['shipping_status']] . '</p>';
                     } else if (isset($orderInfo['returnStatus'])) {
                         echo '<p>' . $returnStatus[$orderInfo['returnStatus']] . '</p>';

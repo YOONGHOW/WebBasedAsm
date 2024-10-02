@@ -41,7 +41,7 @@ $paymentMethods = [
     'F' => 'FPX',
     'P' => 'Paypal'
 ];
-// unset($_SESSION['selectedItems']);
+//  unset($_SESSION['selectedItems']);
 
 $_err = [];
 global  $email, $cardNumber, $expDate, $cvv, $cardholder, $paymentMethod,
@@ -98,15 +98,16 @@ if ($addressIDDB) {
 
 
 if (is_post()) {
-    if (isset($_POST['paymentEmail'])) {
-        $email = req('paymentEmail');
-        $paymentMethod = req('paymentMethod');
-        $cardNumber = req('cardNumber');
-        $expDate = req('expDate');
-        $cvv = req('cvv');
-        $cardholder = req('cardHolderName');
-        $shippingfee = req('shiping');
-        $paymentAmount = req('totalcal');
+    $email = req('email');
+    $paymentMethod = req('paymentMethod');
+    $cardNumber = req('cardNumber');
+    $expDate = req('expDate');
+    $cvv = req('cvv');
+    $cardholder = req('cardHolderName');
+    $shippingfee = req('shiping');
+    $paymentAmount = req('totalcal');
+
+    if (isset($_POST['email'])) {
         if ($email == '') {
             $_err['email'] = 'Please enter the email';
         } else if (!preg_match("/^[A-Za-z0-9]+@[A-Za-z0-9\.]+$/", $email)) {
@@ -311,7 +312,7 @@ if (is_post()) {
 
             $shipmentInseret->bindParam(1, $shippingid);
             $shipmentInseret->bindParam(2, $orderid);
-            $shipmentInseret->bindValue(3, "");
+            $shipmentInseret->bindValue(3, "null");
             $shipmentInseret->bindValue(4, "P");
             $shipmentInseret->execute();
 
@@ -323,6 +324,18 @@ if (is_post()) {
             echo 'alert("' . addslashes($alertMessage) . '");'; // Show the alert
             echo 'window.location.href = "' . $redirectUrl . '";'; // Redirect to home page
             echo '</script>';
+            print_r($itemOrder);
+            if (!empty($itemOrder)) {
+                // Delete cart items
+                $productIds = array_column($itemOrder, 'id');
+                $placeholders = implode(',', array_fill(0, count($itemOrder), '?')); 
+                $sql = "DELETE FROM cart WHERE user_id = ? AND product_id IN ($placeholders)"; 
+
+                $carddelete = $_db->prepare($sql);
+                $params = array_merge([$userID], $productIds);
+                $carddelete->execute($params);
+            }
+
             exit();
         }
     }
@@ -381,7 +394,6 @@ if (is_post()) {
         // Execute the statement
         $stmt->execute();
         header("Location: http://localhost:8000/web/PaymentPage.php");
-
     }
 }
 ?>
@@ -408,7 +420,7 @@ if (is_post()) {
                     <img src="https://picsum.photos/200/300" alt="productImage" id="pimage">
                 </div>
             </div>
-            <div class="checkOurList">
+            <div class="checkOurList" id="checkOurList">
                 <?php
                 $countNum = 0;
                 foreach ($itemOrder as $orderDetails) {
@@ -427,7 +439,7 @@ if (is_post()) {
                                 <input type="text" value="<?= $product['product_name'] ?>" placeholder="productName" readonly>
                                 <input type="text" value="RM <?= number_format($product['product_price'], 2) ?>" placeholder="productPrice" readonly>
                                 <input type="text" value="<?= $orderDetails['quantity'] ?>x" placeholder="orderQuantity" readonly>
-                                <input type="text" value="RM <?= number_format($subtotal, 2) ?>" placeholder="subTotal" readonly>
+                                <input type="text" value="RM <?= number_format($subtotal, 2) ?>" placeholder="subTotal">
                             </div>
 
                 <?php
@@ -449,16 +461,19 @@ if (is_post()) {
                     <label for="paymentEmail">
                         Email address
                     </label>
-                    <input autofocus type="text" placeholder="Email" id="paymentEmail" name="paymentEmail">
+                    <!-- <input autofocus type="text" placeholder="Email" id="paymentEmail" name="paymentEmail"> -->
+                    <?= generateTextField('email', 'class="login-input" autofocus placeholder="e.g. xxx@gmail.com" required') ?><br />
+
                     <p><?= err('email') ?></p>
                     <label for="paymentMethod">
                         Payment Method
                     </label>
-                    <select name="paymentMethod" id="   ">
+                    <select name="paymentMethod" id="">
                         <?php
                         // Loop through the array to create options dynamically
                         foreach ($paymentMethods as $key => $method) {
-                            echo "<option value='$key'>$method</option>";
+                            $selected = ($method === 'Bank Card') ? 'selected' : '';
+                            echo "<option value='$key' $selected>$method</option>";
                         }
                         ?>
                     </select>
@@ -469,16 +484,25 @@ if (is_post()) {
                     </label>
                     <div class="carddetail">
                         <img src="https://cdn3.iconfinder.com/data/icons/payment-method-1/64/_Visa-512.png" alt="Banking Icon">
-                        <input type="text" placeholder="Card Details" id="cardNumber" name="cardNumber">
+                        <!-- <input type="text" placeholder="Card Details" id="cardNumber" name="cardNumber">
                         <input type="text" placeholder="MM/YY" id="expDate" name="expDate" maxlength="5">
-                        <input type="password" placeholder="CVV" id="cvv" name="cvv" maxlength="3">
+                        <input type="password" placeholder="CVV" id="cvv" name="cvv" maxlength="3">-->
+
+                        <?= generateTextField('cardNumber', 'class="login-input" placeholder="Card Details" required') ?>
+
+                        <?= generateTextField('expDate', 'class="login-input" placeholder="MM/YY" maxlength="5" required') ?>
+
+                        <?= generatePassword('cvv', 'class="login-input" type="password" placeholder="CVV" maxlength="3" required') ?>
+
                     </div>
                     <p><?= err('card') ?></p>
 
                     <label for="cardHolderName">
                         Cardholder Name
                     </label>
-                    <input type="text" placeholder="cardHolder Name" id="cardHolderName" name="cardHolderName">
+                    <!-- <input type="text" placeholder="cardHolder Name" id="cardHolderName" name="cardHolderName"> -->
+
+                    <?= generateTextField('cardHolderName', 'class="login-input" placeholder="Cardholder Name" required') ?><br />
                     <p><?= err('holder') ?></p>
 
                 </div>
@@ -494,7 +518,7 @@ if (is_post()) {
                         <label for="subtotalcal">
                             Subtotal
                         </label>
-                        <input type="text" id="subtotalcal" name="subtotalcal" value="RM <?= $sub_payment ?>">
+                        <input type="text" id="subtotalcal" name="subtotalcal" value="RM <?= number_format($sub_payment, 2) ?>">
                     </div>
                     <div class="subtotal">
                         <label for="shiping">
@@ -506,7 +530,7 @@ if (is_post()) {
                         <label for="discountcal">
                             Discount
                         </label>
-                        <input type="text" id="discountcal" name="discountcal">
+                        <input type="text" id="discountcal" name="discountcal" value="RM 0.00">
                     </div>
                     <div class="total">
                         <label for="totalcal">
@@ -516,7 +540,7 @@ if (is_post()) {
                     </div>
                 </div>
                 <div class="changeaddress">
-                    <a id="openmodal" style="display: none;">Change Delive  r Address</a>
+                    <a id="openmodal" style="display: none;">Change Delive r Address</a>
                 </div>
 
 
@@ -554,8 +578,8 @@ if (is_post()) {
                 <label for="State">
                     State
                 </label>
-                <select name="malaysia_state" id="malaysia_state">
-                    <option value="" disabled>Select State</option>
+                <select name="malaysia_state" id="malaysia_state" disabled>
+                    <option value="">Select State</option>
                     <?php
 
                     // Loop through the states to create options
@@ -620,13 +644,7 @@ if (is_post()) {
         document.getElementById('pimage').alt = productImageName;
     }
 
-    // Simulate a click on the first orderContainer on page load
-    window.onload = function() {
-        var firstContainer = document.querySelector('.orderContainer');
-        if (firstContainer) {
-            firstContainer.click(); // Trigger the click event
-        }
-    }
+
 
     function checkAddressAndSubmit() {
         // Get the address input value
@@ -640,6 +658,22 @@ if (is_post()) {
         } else {
             // Submit the form if the address is not empty
             document.getElementById('paymentForm').submit();
+        }
+    }
+
+    const countNum = <?= json_encode($countNum) ?>;
+    console.log(countNum);
+    window.onload = function() {
+        if (countNum >= 3) {
+            const checkOurListElement = document.getElementById('checkOurList');
+            if (checkOurListElement) {
+                checkOurListElement.style.overflowY = 'scroll';
+            }
+        }
+
+        var firstContainer = document.querySelector('.orderContainer');
+        if (firstContainer) {
+            firstContainer.click(); // Trigger the click event
         }
     }
 </script>

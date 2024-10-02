@@ -9,7 +9,9 @@ body {
     margin-left: 17%;
     margin-top: 10px;
 }
-
+body input{
+outline: none;
+}
 .deliverHis {
     display: flex;
     align-items: center;
