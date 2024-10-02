@@ -9,7 +9,7 @@
 </head>
 <?php
 include "header.php";
-global $userID;
+
 if ($_user == null) {
     $userID = "U001";
 } else {
@@ -19,7 +19,7 @@ if ($_user == null) {
 <?php
 // Check if 'search' parameter is present in the URL
 if (isset($_GET['search'])) {
-    global  $search, $stm;
+    global  $search, $stm, $userID;
     // Get the value of the 'search' parameter
     $search = $_GET['search'];
     if ($search == 'all') {
@@ -274,7 +274,7 @@ $returnStatus = [
                 foreach ($products as $index => $product): ?>
                     <div class="product">
                         <div class="productIMg">
-                            <img src="../image/<?= $product['product_IMG_source']?>" alt="<?= $product['product_IMG_name']?>">
+                            <img src="../image/<?= $product['product_IMG_source'] ?>" alt="<?= $product['product_IMG_name'] ?>">
                         </div>
                         <div class="productName">
                             <textarea rows="1"><?= $product['product_name'] ?></textarea>
