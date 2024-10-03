@@ -283,7 +283,7 @@ $returnStatus = [
                 foreach ($products as $index => $product): ?>
                     <div class="product">
                         <div class="productIMg">
-                            <img src="../image/<?= $product['product_IMG_source']?>" alt="<?= $product['product_IMG_name']?>">
+                            <img src="../image/<?= $product['product_IMG_source'] ?>" alt="<?= $product['product_IMG_name'] ?>">
                         </div>
                         <div class="productName">
                             <textarea rows="1"><?= $product['product_name'] ?></textarea>
