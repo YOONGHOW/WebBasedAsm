@@ -55,7 +55,7 @@ if (isset($_GET['search'])) {
     LEFT JOIN product_img ON product.product_id = product_img.product_id
     LEFT JOIN payment ON orders.order_id = payment.order_id
     LEFT JOIN users ON orders.user_id = users.user_id
-ORDER BY orders.order_date DESC ;
+ORDER BY orders.order_date DESC,orders.order_time DESC ;
 
 ');
     } else if ($search == 'toPay') {
@@ -81,7 +81,7 @@ ORDER BY orders.order_date DESC ;
         FROM payment
         WHERE payment_status = "P" 
     )
-    ORDER BY orders.order_date DESC
+    ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'toShip') {
         $stm = $_db->prepare('
@@ -105,7 +105,7 @@ ORDER BY orders.order_date DESC ;
   WHERE orders.order_status = "S"
     AND (shipping_detail.shipping_status = "P" OR shipping_detail.shipping_status = "S")
     
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'complete') {
         $stm = $_db->prepare('
@@ -131,7 +131,7 @@ ORDER BY orders.order_date DESC ;
       FROM return_refund rr 
       WHERE rr.order_id = orders.order_id
   )
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'cancelled') {
         $stm = $_db->prepare('
@@ -153,7 +153,7 @@ ORDER BY orders.order_date DESC ;
     LEFT JOIN users ON orders.user_id = users.user_id
 
   WHERE orders.order_status = "C" 
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'refund') {
         $stm = $_db->prepare('

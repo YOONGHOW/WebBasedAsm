@@ -46,7 +46,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
     LEFT JOIN product_img ON product.product_id = product_img.product_id
     WHERE orders.user_id = :user_id
-    ORDER BY orders.order_date DESC
+    ORDER BY orders.order_date DESC,orders.order_time DESC,orders.order_time DESC
 ');
     } else if ($search == 'toPay') {
         $stm = $_db->prepare('
@@ -68,7 +68,7 @@ if (isset($_GET['search'])) {
         FROM payment
         WHERE payment_status = "N" 
     )and orders.user_id = :user_id
-    ORDER BY orders.order_date DESC
+    ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'toShip') {
         $stm = $_db->prepare('
@@ -88,7 +88,7 @@ if (isset($_GET['search'])) {
   WHERE orders.order_status = "S"
     AND (shipping_detail.shipping_status = "P" OR shipping_detail.shipping_status = "S")
     AND orders.user_id = :user_id
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'complete') {
         $stm = $_db->prepare('
@@ -106,7 +106,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN product ON orders_detail.product_id = product.product_id
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   WHERE orders.order_status = "S" and shipping_detail.shipping_status = "R" and orders.user_id = :user_id
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'cancelled') {
         $stm = $_db->prepare('
@@ -124,7 +124,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN product ON orders_detail.product_id = product.product_id
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   WHERE orders.order_status = "C" and orders.user_id = :user_id
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     } else if ($search == 'refund') {
         $stm = $_db->prepare('
@@ -144,7 +144,7 @@ if (isset($_GET['search'])) {
   LEFT JOIN product_img ON product.product_id = product_img.product_id
   LEFT JOIN return_refund ON orders.order_id = return_refund.order_id
   WHERE orders.order_status = "R" and orders.user_id = :user_id
-  ORDER BY orders.order_date DESC
+  ORDER BY orders.order_date DESC,orders.order_time DESC
 ');
     }
 
